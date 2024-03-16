@@ -11,12 +11,13 @@ public class ExcelParserController {
     // curl -X POST -d "path=/your/file/path" http://your-server-address/parse?path="/data"
     @PostMapping("/parse")
     public String processParsing(@RequestParam String path) {
+        String result = "";
         try {
-            excelParser.convertExcelToJson(path, ".xlsx");
+            result = excelParser.convertExcelToJson(path, ".xlsx");
         } catch (Exception e) {
             return e.getMessage();
         }
 
-        return "변환 성공";
+        return result + "success\n";
     }
 }

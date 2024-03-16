@@ -3,6 +3,7 @@ package com.inha.endgame.excel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,17 +30,22 @@ public class ExcelParser {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public void convertExcelToJson(String folderPath, String extension) throws IOException {
+    public String convertExcelToJson(String folderPath, String extension) throws IOException {
         File folder = new File(folderPath);
         File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(extension));
 
+        StringBuilder result = new StringBuilder();
+
         if (files != null) {
             for (File file : files) {
+                result.append("try to convert file : ").append(file.getName()).append("\n");
                 List<List<String>> excelData = readExcel(file);
                 String json = convertToJson(excelData);
                 saveJsonFile(file.getPath().replace(".xlsx", ".json"), json);
             }
         }
+
+        return result.toString();
     }
 
     private List<List<String>> readExcel(File file) throws IOException {
