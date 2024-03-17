@@ -2,6 +2,8 @@
 
 echo try to create json
 
-curl -X POST "localhost:12237/parse?path=../model/"
+set /p userPath="Enter the path: "
+
+curl -X POST "localhost:12237/parse?path=%userPath%"
 
 pause
