@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.dto.request;
+package com.inha.endgame.dto.response;
 
-import com.inha.endgame.core.ClientRequest;
-import com.inha.endgame.friendslist.FriendsListRequestType;
+import com.inha.endgame.core.ClientResponse;
+import com.inha.endgame.core.ResponseType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
-public class FriendsListRequest extends ClientRequest {
-	private FriendsListRequestType friendsListRequestType;
+@Getter
+public class AddUserResponse implements ClientResponse {
+    @Schema(description = "ADD_USER", defaultValue = "ADD_USER")
+    private final ResponseType type;
+    private final String userId;
 
-	public FriendsListRequestType getFriendsListRequestType() {
-		return friendsListRequestType;
-	}
-
-	public void setFriendsListRequestType(FriendsListRequestType friendsListRequestType) {
-		this.friendsListRequestType = friendsListRequestType;
-	}
+    public AddUserResponse(String userId) {
+        this.type = ResponseType.ADD_USER;
+        this.userId = userId;
+    }
 }

@@ -16,26 +16,14 @@
 
 package com.inha.endgame.unitysocket;
 
-import com.inha.endgame.dto.response.ExceptionResponse;
+import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.exception.ExceptionMessageTranslator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-/**
- * Handle connections from Unity by implementing a Spring
- * {@link WebSocketHandler} abstraction.
- *
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 
 @Component
 @RequiredArgsConstructor
@@ -43,22 +31,24 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger("UnitySocketWebSocketHandler");
 
 	private final UnitySocketService unitySocketService;
-	private final ExceptionMessageTranslator exceptionMessageTranslator;
+	private final SessionService sessionService;
+
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		// 실행 중 에러가 발생하더라도 세션 연결이 죽지 않도록
 		try {
 			String messageString = message.getPayload();
-			LOGGER.warn("GOT SOMETHING: \n{}", messageString);
-
 			this.unitySocketService.parseMessage(session, messageString);
 		} catch (Exception e) {
-			LOGGER.warn(session.getId() + ":" + e.getMessage());
-
-			String errMessage = exceptionMessageTranslator.translate(e);
-			this.unitySocketService.sendMessage(session, new ExceptionResponse(errMessage));
+			this.unitySocketService.sendErrorMessage(session, e);
 		}
+	}
+
+	@Override
+	protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+		if(!sessionService.validateSession(session))
+			throw new IllegalStateException("다른 세션에서 접속이 확인되어 종료합니다.");
 	}
 
 	@Override

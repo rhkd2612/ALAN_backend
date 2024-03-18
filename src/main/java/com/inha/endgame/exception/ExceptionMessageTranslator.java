@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Component
 public class ExceptionMessageTranslator {
-    private final static String baseError = "예기치 않은 오류입니다.";
+    private final static String baseError = "예않오";
     private final static Map<String, String> tempTranslator = new HashMap<>();
 
     public ExceptionMessageTranslator() {
@@ -23,6 +23,6 @@ public class ExceptionMessageTranslator {
         if(tempTranslator.containsKey(message))
             return tempTranslator.get(message);
 
-        return baseError;
+        return baseError + " : " + message;
     }
 }

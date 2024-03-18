@@ -23,6 +23,6 @@ package com.inha.endgame.core;
  */
 public enum RequestType {
 	FRIENDSLIST,
-	ADDFRIEND,
+	ADD_USER,
 	TEST,
 }

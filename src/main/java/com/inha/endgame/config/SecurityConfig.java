@@ -16,34 +16,20 @@
 
 package com.inha.endgame.config;
 
-import com.inha.endgame.user.User;
-import com.inha.endgame.user.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.inha.endgame.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 @Configuration
-@ComponentScan("com.example.test")
+@ComponentScan("com.inha.endgame")
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-    UserDao userDao;
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		for (User user : userDao.getUsers()) {
-			auth.inMemoryAuthentication().withUser(user.getUsername()).password(user.getPassword()).roles("USER");
-		}
-	}
+	private final UserService userService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

@@ -16,29 +16,64 @@
 
 package com.inha.endgame.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.inha.endgame.room.RoomService;
+import com.inha.endgame.unitysocket.SessionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 @Service
+@RequiredArgsConstructor
 public class UserService {
+	private final Map<String, User> mapUser = new ConcurrentHashMap<>(); // FIXME 필요에 따라 DB로 이관
+	private final SessionService sessionService;
 
-	@Autowired
-	private UserDao userDao;
-
-	public User getUserFromSession(WebSocketSession session) {
-		return userDao.getUser(session.getId());
+	public User getUser(String userId) {
+		return mapUser.get(userId);
 	}
 
-	public Collection<User> getFriendsList(User user) {
-		return userDao.getFriendsList(user);
+	public Collection<User> getAllUser() {
+		return Collections.unmodifiableCollection(mapUser.values());
+	}
+
+	public synchronized User addUser(WebSocketSession session, String name) throws NoSuchAlgorithmException {
+		if(sessionService.validateSession(session))
+			throw new IllegalArgumentException("이미 입장한 유저입니다.");
+
+		var sessionId = session.getId();
+		var userId = createIdByUserName(name);
+
+		if(mapUser.containsKey(userId)) {
+			var prevUser = mapUser.get(userId);
+			sessionService.kickSession(prevUser.getSessionId());
+
+			prevUser.setSessionId(sessionId);
+
+			// FIXME 현재 상태 보내주기
+			// session.sendMessage
+		}
+
+		var newUser = new User(sessionId, name, userId);
+		mapUser.put(userId, newUser);
+
+		sessionService.addSession(session, newUser);
+
+		return newUser;
+	}
+
+	private static String createIdByUserName(String name) throws NoSuchAlgorithmException {
+		var digest = MessageDigest.getInstance("SHA-256");
+		var hashBytes = digest.digest(name.getBytes());
+		var hashNumber = new BigInteger(1, hashBytes);
+		return hashNumber.toString();
 	}
 }
 

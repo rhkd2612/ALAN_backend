@@ -16,32 +16,35 @@
 
 package com.inha.endgame.user;
 
+import com.inha.endgame.room.Room;
+import lombok.Getter;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import java.util.Objects;
+import java.util.UUID;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
+@Getter
 public class User {
-	private String username;
-	private String password;
+	private final String userId;
+	private final String username;
+	private String sessionId;
+	//private final Room room;
 
-	public User(String username, String password) {
+	public User(String sessionId, String username, String userId) {
+		this.sessionId = sessionId;
 		this.username = username;
-		this.password = password;
+		this.userId = userId;
+		//this.room = room;
 	}
 
-	public String getUsername() {
-		return username;
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
-	public String getPassword() {
-		return password;
+	public RoomUser toRoomUser() {
+		return new RoomUser(this.userId, this.username, new Vector3D(0,0,0));
 	}
 
-	// This is naive implementation of equals() that just defers to username,
-	// but will work for our purposes
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof User)) {

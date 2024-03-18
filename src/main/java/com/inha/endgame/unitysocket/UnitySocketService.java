@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.endgame.core.ClientEvent;
 import com.inha.endgame.core.ClientRequest;
 import com.inha.endgame.core.ClientResponse;
+import com.inha.endgame.dto.response.ErrorResponse;
+import com.inha.endgame.exception.ExceptionMessageTranslator;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,35 +32,46 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.List;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 @Service
+@RequiredArgsConstructor
 public class UnitySocketService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("UnitySocketService");
 
-	private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final ApplicationEventPublisher publisher;
-
-	@Autowired
-	public UnitySocketService(ApplicationEventPublisher publisher) {
-		this.publisher = publisher;
-		objectMapper = new ObjectMapper();
-	}
+	private final ExceptionMessageTranslator exceptionMessageTranslator;
 
 	public void parseMessage(WebSocketSession session, String messageString) throws IOException {
 		ClientRequest cr = objectMapper.readValue(messageString, ClientRequest.class);
-
 		publisher.publishEvent(new ClientEvent<>(cr, session));
 	}
 
 	public void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
 		String json = objectMapper.writeValueAsString(clientResponse);
-		LOGGER.warn("sending message: {}", json);
 		session.sendMessage(new TextMessage(json));
+	}
+
+	public void sendMessageAll(List<WebSocketSession> sessions, ClientResponse clientResponse) throws IOException {
+		String json = objectMapper.writeValueAsString(clientResponse);
+
+		sessions.forEach(session -> {
+			try {
+				session.sendMessage(new TextMessage(json));
+			} catch (IOException e) {
+				LOGGER.warn("전송 오류 : " + session.getId());
+			}
+		});
+	}
+
+	public void sendErrorMessage(WebSocketSession session, Exception e) {
+		try {
+			String errMessage = exceptionMessageTranslator.translate(e);
+			this.sendMessage(session, new ErrorResponse(errMessage));
+		} catch (IOException ex) {
+			LOGGER.warn("error 생성 실패");
+		}
 	}
 }

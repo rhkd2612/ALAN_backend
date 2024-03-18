@@ -22,6 +22,6 @@ package com.inha.endgame.core;
  *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
  */
 public enum ResponseType {
-	FRIENDSLIST, ADDFRIEND, KEMONOMIMI, TEST
+	FRIENDSLIST, ADD_USER, KEMONOMIMI, TEST
 	, ERROR
 }

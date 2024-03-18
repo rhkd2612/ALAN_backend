@@ -18,27 +18,21 @@ package com.inha.endgame.dto.response;
 
 import com.inha.endgame.core.ClientResponse;
 import com.inha.endgame.core.ResponseType;
-import com.inha.endgame.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
-import java.util.Collection;
-import java.util.HashSet;
+@Getter
+public class ErrorResponse implements ClientResponse {
+	@Schema(description = "ERROR", defaultValue = "ERROR")
+	private final ResponseType type;
+	private final String errMessage;
 
-public class FriendsListResponse extends ClientResponse {
-	private Collection<String> usernames = new HashSet<>();
-
-	public FriendsListResponse(Collection<User> users) {
-		setType(ResponseType.FRIENDSLIST);
-		for (User user : users) {
-			usernames.add(user.getUsername());
-		}
-
+	public ErrorResponse(String errMessage) {
+		this.type = ResponseType.ERROR;
+		this.errMessage = errMessage;
 	}
 
-	public Collection<String> getUsernames() {
-		return usernames;
-	}
-
-	public void setUsernames(Collection<String> usernames) {
-		this.usernames = usernames;
+	public String getErrMessage() {
+		return errMessage;
 	}
 }

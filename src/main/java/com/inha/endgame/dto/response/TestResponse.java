@@ -22,12 +22,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
-public class TestResponse extends ClientResponse {
-	@Schema(defaultValue = "TEST")
-	protected ResponseType type = ResponseType.TEST;
-	private int answer;
+public class TestResponse implements ClientResponse {
+	@Schema(description = "TEST", defaultValue = "TEST")
+	private final ResponseType type;
+	private final int answer;
 
 	public TestResponse(int answer) {
+		this.type = ResponseType.TEST;
 		this.answer = answer;
 	}
 }

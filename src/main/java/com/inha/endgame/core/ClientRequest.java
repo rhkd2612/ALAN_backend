@@ -20,9 +20,7 @@ import com.inha.endgame.dto.request.TestRequest;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.inha.endgame.dto.request.AddFriendRequest;
-import com.inha.endgame.dto.request.FriendsListRequest;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.inha.endgame.dto.request.AddUserRequest;
 
 /**
  * @author L0G1C (David B) <a
@@ -35,20 +33,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 		property = "type", //
 		// defaultImpl = Event.class, //
 		visible = true)
-@JsonSubTypes({ //
-		@Type(value = FriendsListRequest.class, name = "FRIENDSLIST"), //
-		@Type(value = AddFriendRequest.class, name = "ADDFRIEND"), //
+@JsonSubTypes({
+		@Type(value = AddUserRequest.class, name = "ADD_USER"), //
 		@Type(value = TestRequest.class, name = "TEST"),
 })
-@Schema
-public abstract class ClientRequest {
-	private RequestType type;
-
-	public RequestType getType() {
-		return type;
-	}
-
-	public void setType(RequestType type) {
-		this.type = type;
-	}
+public interface ClientRequest {
+	RequestType getType();
 }

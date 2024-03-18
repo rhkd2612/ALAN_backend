@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.friendslist;
+package com.inha.endgame.dto.request;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
-public enum FriendsListRequestType {
-	INITIAL, UPDATE,
+import com.inha.endgame.core.ClientRequest;
+import com.inha.endgame.core.RequestType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+
+
+@Getter
+public class AddUserRequest implements ClientRequest {
+	@Schema(description = "ADD_USER", defaultValue = "ADD_USER")
+	private RequestType type;
+	private String userName;
+	private int roomId;
 }

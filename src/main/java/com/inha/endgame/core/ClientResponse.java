@@ -16,19 +16,6 @@
 
 package com.inha.endgame.core;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
-public abstract class ClientResponse {
-	protected ResponseType type;
-
-	public ResponseType getType() {
-		return type;
-	}
-
-	public void setType(ResponseType type) {
-		this.type = type;
-	}
+public interface ClientResponse {
+	ResponseType getType();
 }

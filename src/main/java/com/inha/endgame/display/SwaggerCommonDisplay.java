@@ -1,6 +1,9 @@
-package com.inha.endgame.dto.display;
+package com.inha.endgame.display;
 
+import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.dto.request.TestRequest;
+import com.inha.endgame.dto.response.AddUserResponse;
+import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.dto.response.TestResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,17 @@ public class SwaggerCommonDisplay {
     @GetMapping("/test")
     void test(TestRequest testRequest,
               TestResponse testResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
+    @GetMapping("/addUser")
+    void test(AddUserRequest AddUserRequest,
+              AddUserResponse AddUserResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
+    @GetMapping("/error")
+    void error(ErrorResponse ErrorResponse) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 }
