@@ -27,5 +27,5 @@ public class AddUserRequest implements ClientRequest {
 	@Schema(description = "ADD_USER", defaultValue = "ADD_USER")
 	private RequestType type;
 	private String userName;
-	private int roomId;
+	private long roomId;
 }

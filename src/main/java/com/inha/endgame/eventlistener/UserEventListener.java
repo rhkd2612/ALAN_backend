@@ -2,7 +2,7 @@ package com.inha.endgame.eventlistener;
 
 import com.inha.endgame.core.ClientEvent;
 import com.inha.endgame.dto.request.AddUserRequest;
-import com.inha.endgame.dto.response.ErrorResponse;
+import com.inha.endgame.dto.response.AddUserResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.unitysocket.UnitySocketService;
 import com.inha.endgame.user.UserService;
@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +26,25 @@ public class UserEventListener {
     private final RoomService roomService;
 
     @EventListener
-    public void onAddUserRequest(ClientEvent<AddUserRequest> event) {
+    public void onAddUserRequest(ClientEvent<AddUserRequest> event) throws IOException, NoSuchAlgorithmException {
         var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+        var newUser = userService.addUser(session, request);
+
         try {
-            var request = event.getClientRequest();
-            var newUser = userService.addUser(session, request.getUserName());
             session.sendMessage(new TextMessage(newUser.getUserId()));
 
-            roomService.joinRoom(request.getRoomId(), newUser);
+            if(newUser.isNew()) {
+                roomService.joinRoom(roomId, newUser);
+
+                var roomUsers = roomService.findAllRoomUsersById(roomId);
+                unitySocketService.sendMessageRoom(roomId, new AddUserResponse(newUser.getUserId(), roomUsers));
+            }
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
+            roomService.exitRoom(roomId, newUser);
+            session.close();
         }
     }
 }

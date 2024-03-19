@@ -16,25 +16,34 @@
 
 package com.inha.endgame.user;
 
-import com.inha.endgame.room.Room;
+import com.inha.endgame.room.RoomUser;
 import lombok.Getter;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import java.util.Date;
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 public class User {
 	private final String userId;
 	private final String username;
 	private String sessionId;
+	private boolean isNew;
+	private Date enterAt;
 	//private final Room room;
 
 	public User(String sessionId, String username, String userId) {
 		this.sessionId = sessionId;
 		this.username = username;
 		this.userId = userId;
+		this.isNew = true;
 		//this.room = room;
+	}
+
+	public void enterRoom() {
+		if(!isNew)
+			throw new IllegalStateException("입장 가능한 상태의 유저가 아닙니다.");
+		isNew = false;
+		enterAt = new Date();
 	}
 
 	public void setSessionId(String sessionId) {
@@ -42,7 +51,7 @@ public class User {
 	}
 
 	public RoomUser toRoomUser() {
-		return new RoomUser(this.userId, this.username, new Vector3D(0,0,0));
+		return new RoomUser(this);
 	}
 
 	@Override

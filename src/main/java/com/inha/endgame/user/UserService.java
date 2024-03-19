@@ -16,6 +16,7 @@
 
 package com.inha.endgame.user;
 
+import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.unitysocket.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -44,36 +45,42 @@ public class UserService {
 		return Collections.unmodifiableCollection(mapUser.values());
 	}
 
-	public synchronized User addUser(WebSocketSession session, String name) throws NoSuchAlgorithmException {
+	public synchronized User addUser(WebSocketSession session, AddUserRequest request) throws NoSuchAlgorithmException {
 		if(sessionService.validateSession(session))
 			throw new IllegalArgumentException("이미 입장한 유저입니다.");
 
 		var sessionId = session.getId();
-		var userId = createIdByUserName(name);
+		var userName = request.getUserName();
+		var userId = createIdByUserName(userName);
 
 		if(mapUser.containsKey(userId)) {
 			var prevUser = mapUser.get(userId);
-			sessionService.kickSession(prevUser.getSessionId());
-
-			prevUser.setSessionId(sessionId);
-
-			// FIXME 현재 상태 보내주기
-			// session.sendMessage
+			sessionService.changeSession(prevUser.getSessionId(), session);
+			return prevUser;
 		}
 
-		var newUser = new User(sessionId, name, userId);
+		// TODO 회원정보 계정명 뿐만 아니라 닉네임으로 추가
+		var newUser = new User(sessionId, userName,  userId);
 		mapUser.put(userId, newUser);
 
 		sessionService.addSession(session, newUser);
-
 		return newUser;
+	}
+
+	public void enterRoom(User user) {
+		user.enterRoom();
+	}
+
+	public void logout(User user) {
+		mapUser.remove(user.getUserId());
+		sessionService.kickSession(user.getSessionId());
 	}
 
 	private static String createIdByUserName(String name) throws NoSuchAlgorithmException {
 		var digest = MessageDigest.getInstance("SHA-256");
 		var hashBytes = digest.digest(name.getBytes());
 		var hashNumber = new BigInteger(1, hashBytes);
-		return hashNumber.toString();
+		return hashNumber.toString().substring(0, 12);
 	}
 }
 

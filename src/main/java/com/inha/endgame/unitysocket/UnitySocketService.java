@@ -22,6 +22,10 @@ import com.inha.endgame.core.ClientRequest;
 import com.inha.endgame.core.ClientResponse;
 import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.exception.ExceptionMessageTranslator;
+import com.inha.endgame.room.Room;
+import com.inha.endgame.room.RoomService;
+import com.inha.endgame.user.User;
+import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +47,9 @@ public class UnitySocketService {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final ApplicationEventPublisher publisher;
 	private final ExceptionMessageTranslator exceptionMessageTranslator;
+	private final RoomService roomService;
+	private final UserService userService;
+	private final SessionService sessionService;
 
 	public void parseMessage(WebSocketSession session, String messageString) throws IOException {
 		ClientRequest cr = objectMapper.readValue(messageString, ClientRequest.class);
@@ -54,10 +61,21 @@ public class UnitySocketService {
 		session.sendMessage(new TextMessage(json));
 	}
 
-	public void sendMessageAll(List<WebSocketSession> sessions, ClientResponse clientResponse) throws IOException {
-		String json = objectMapper.writeValueAsString(clientResponse);
+	public void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
+		var json = objectMapper.writeValueAsString(clientResponse);
+		var room = roomService.findRoomById(roomId);
+		if(room == null)
+			throw new IllegalArgumentException("존재하지 않는 방에 대한 요청");
 
-		sessions.forEach(session -> {
+		room.getRoomUsers().keySet().forEach(userId -> {
+			var user = userService.getUser(userId);
+			if(user == null)
+				return;
+
+			var session = sessionService.findSessionBySessionId(user.getSessionId());
+			if(session == null)
+				return;
+
 			try {
 				session.sendMessage(new TextMessage(json));
 			} catch (IOException e) {

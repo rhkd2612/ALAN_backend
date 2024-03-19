@@ -18,17 +18,23 @@ package com.inha.endgame.dto.response;
 
 import com.inha.endgame.core.ClientResponse;
 import com.inha.endgame.core.ResponseType;
+import com.inha.endgame.room.RoomUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class AddUserResponse implements ClientResponse {
     @Schema(description = "ADD_USER", defaultValue = "ADD_USER")
     private final ResponseType type;
     private final String userId;
+    private final List<RoomUser> roomUsers = new ArrayList<>();
 
-    public AddUserResponse(String userId) {
+    public AddUserResponse(String userId, List<RoomUser> roomUsers) {
         this.type = ResponseType.ADD_USER;
         this.userId = userId;
+        this.roomUsers.addAll(roomUsers);
     }
 }
