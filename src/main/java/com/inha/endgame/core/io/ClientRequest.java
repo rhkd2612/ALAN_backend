@@ -14,15 +14,29 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.core;
+package com.inha.endgame.core.io;
+
+import com.inha.endgame.dto.request.TestRequest;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.inha.endgame.dto.request.AddUserRequest;
 
 /**
  * @author L0G1C (David B) <a
  *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
  *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
  */
-public enum RequestType {
-	FRIENDSLIST,
-	ADD_USER,
-	TEST,
+@JsonTypeInfo( //
+		use = JsonTypeInfo.Id.NAME, //
+		include = JsonTypeInfo.As.PROPERTY, //
+		property = "type", //
+		// defaultImpl = Event.class, //
+		visible = true)
+@JsonSubTypes({
+		@Type(value = AddUserRequest.class, name = "ADD_USER"), //
+		@Type(value = TestRequest.class, name = "TEST"),
+})
+public interface ClientRequest {
+	RequestType getType();
 }

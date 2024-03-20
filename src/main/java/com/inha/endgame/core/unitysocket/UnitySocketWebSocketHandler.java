@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.unitysocket;
+package com.inha.endgame.core.unitysocket;
 
-import com.inha.endgame.dto.response.ErrorResponse;
-import com.inha.endgame.exception.ExceptionMessageTranslator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

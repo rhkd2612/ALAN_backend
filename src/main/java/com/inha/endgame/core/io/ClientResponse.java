@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.core;
+package com.inha.endgame.core.io;
 
 public interface ClientResponse {
 	ResponseType getType();

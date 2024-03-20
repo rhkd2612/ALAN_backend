@@ -1,4 +1,4 @@
-package com.inha.endgame.unitysocket;
+package com.inha.endgame.core.unitysocket;
 
 import com.inha.endgame.user.User;
 import org.springframework.stereotype.Service;

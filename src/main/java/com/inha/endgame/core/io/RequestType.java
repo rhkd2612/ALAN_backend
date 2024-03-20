@@ -14,38 +14,15 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.core;
-
-import org.springframework.core.ResolvableType;
-import org.springframework.core.ResolvableTypeProvider;
-import org.springframework.web.socket.WebSocketSession;
+package com.inha.endgame.core.io;
 
 /**
  * @author L0G1C (David B) <a
  *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
  *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
  */
-public class ClientEvent<T extends ClientRequest> implements ResolvableTypeProvider {
-
-	private final T clientRequest;
-	private final WebSocketSession session;
-	private String username;
-
-	public ClientEvent(T clientRequest, WebSocketSession session) {
-		this.clientRequest = clientRequest;
-		this.session = session;
-	}
-
-	public T getClientRequest() {
-		return clientRequest;
-	}
-
-	public WebSocketSession getSession() {
-		return session;
-	}
-
-	@Override
-	public ResolvableType getResolvableType() {
-		return ResolvableType.forClassWithGenerics(getClass(), ResolvableType.forInstance(clientRequest));
-	}
+public enum RequestType {
+	FRIENDSLIST,
+	ADD_USER,
+	TEST,
 }

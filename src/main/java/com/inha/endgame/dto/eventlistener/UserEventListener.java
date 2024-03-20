@@ -1,10 +1,10 @@
-package com.inha.endgame.eventlistener;
+package com.inha.endgame.dto.eventlistener;
 
-import com.inha.endgame.core.ClientEvent;
+import com.inha.endgame.core.io.ClientEvent;
 import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.dto.response.AddUserResponse;
 import com.inha.endgame.room.RoomService;
-import com.inha.endgame.unitysocket.UnitySocketService;
+import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

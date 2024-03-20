@@ -14,29 +14,38 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.core;
+package com.inha.endgame.core.io;
 
-import com.inha.endgame.dto.request.TestRequest;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.inha.endgame.dto.request.AddUserRequest;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.ResolvableTypeProvider;
+import org.springframework.web.socket.WebSocketSession;
 
 /**
  * @author L0G1C (David B) <a
  *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
  *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
  */
-@JsonTypeInfo( //
-		use = JsonTypeInfo.Id.NAME, //
-		include = JsonTypeInfo.As.PROPERTY, //
-		property = "type", //
-		// defaultImpl = Event.class, //
-		visible = true)
-@JsonSubTypes({
-		@Type(value = AddUserRequest.class, name = "ADD_USER"), //
-		@Type(value = TestRequest.class, name = "TEST"),
-})
-public interface ClientRequest {
-	RequestType getType();
+public class ClientEvent<T extends ClientRequest> implements ResolvableTypeProvider {
+
+	private final T clientRequest;
+	private final WebSocketSession session;
+	private String username;
+
+	public ClientEvent(T clientRequest, WebSocketSession session) {
+		this.clientRequest = clientRequest;
+		this.session = session;
+	}
+
+	public T getClientRequest() {
+		return clientRequest;
+	}
+
+	public WebSocketSession getSession() {
+		return session;
+	}
+
+	@Override
+	public ResolvableType getResolvableType() {
+		return ResolvableType.forClassWithGenerics(getClass(), ResolvableType.forInstance(clientRequest));
+	}
 }

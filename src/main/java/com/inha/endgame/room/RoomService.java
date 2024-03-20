@@ -23,7 +23,7 @@ public class RoomService {
     @PostConstruct
     void init() {
         // TEST용
-        Room room = new Room();
+        Room room = new Room(1L);
         mapRoom.put(room.getRoomId(), room);
     }
 

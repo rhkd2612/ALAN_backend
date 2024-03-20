@@ -1,4 +1,4 @@
-package com.inha.endgame.excel;
+package com.inha.endgame.core.excel;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

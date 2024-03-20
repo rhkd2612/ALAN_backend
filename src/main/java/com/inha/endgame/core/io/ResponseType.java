@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.core;
+package com.inha.endgame.core.io;
 
 /**
  * @author L0G1C (David B) <a

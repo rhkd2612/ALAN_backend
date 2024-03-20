@@ -1,4 +1,4 @@
-package com.inha.endgame.exception;
+package com.inha.endgame.core.exception;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.inha.endgame.display;
+package com.inha.endgame.core.display;
 
 import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.dto.request.TestRequest;

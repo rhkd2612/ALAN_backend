@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package com.inha.endgame.unitysocket;
+package com.inha.endgame.core.unitysocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.endgame.core.ClientEvent;
-import com.inha.endgame.core.ClientRequest;
-import com.inha.endgame.core.ClientResponse;
+import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.core.io.ClientRequest;
+import com.inha.endgame.core.io.ClientResponse;
 import com.inha.endgame.dto.response.ErrorResponse;
-import com.inha.endgame.exception.ExceptionMessageTranslator;
-import com.inha.endgame.room.Room;
+import com.inha.endgame.core.exception.ExceptionMessageTranslator;
 import com.inha.endgame.room.RoomService;
-import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

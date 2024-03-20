@@ -16,8 +16,8 @@
 
 package com.inha.endgame.dto.response;
 
-import com.inha.endgame.core.ClientResponse;
-import com.inha.endgame.core.ResponseType;
+import com.inha.endgame.core.io.ClientResponse;
+import com.inha.endgame.core.io.ResponseType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

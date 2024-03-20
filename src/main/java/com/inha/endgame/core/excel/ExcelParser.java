@@ -1,4 +1,4 @@
-package com.inha.endgame.excel;
+package com.inha.endgame.core.excel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

@@ -9,22 +9,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class Room {
-    private long roomId;
-    private Date createAt;
-    private Map<String, RoomUser> roomUsers;
-    private RoomState state;
+    private final long roomId;
+    private final Date createAt;
+    private final Map<String, RoomUser> roomUsers;
+    private RoomState curState;
+    private RoomState nextState;
 
-    // RoomState
-
-    public Room() {
-        this.roomId = 1; // 일단 1만 사용
+    public Room(long roomId) {
+        this.roomId = roomId;
         this.createAt = new Date();
         this.roomUsers = new ConcurrentHashMap<>();
-        this.state = RoomState.READY;
+        this.curState = null;
+        this.nextState = RoomState.NONE;
     }
 
     public void join(RoomUser user) {
-        if(this.state == RoomState.END)
+        if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
         if(this.roomUsers.containsKey(user.getUserId()))
             throw new IllegalStateException("해당 닉네임의 참가자가 이미 존재합니다.");
@@ -34,5 +34,14 @@ public class Room {
 
     public void kick(RoomUser user) {
         this.roomUsers.remove(user.getUserId());
+    }
+
+    // 일반적으로는 변경하면 안됨
+    public void setCurState(RoomState curState) {
+        this.curState = curState;
+    }
+
+    public void setNextState(RoomState nextState) {
+        this.nextState = nextState;
     }
 }
