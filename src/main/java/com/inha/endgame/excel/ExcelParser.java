@@ -56,9 +56,13 @@ public class ExcelParser {
             for (Row row : sheet) {
                 List<String> rowData = new ArrayList<>();
                 for (Cell cell : row) {
-                    rowData.add(cell.toString());
+                    if(!cell.toString().equals("")) {
+                        rowData.add(cell.toString());
+                    }
                 }
-                excelData.add(rowData);
+
+                if(!rowData.isEmpty())
+                    excelData.add(rowData);
             }
         }
         return excelData;
