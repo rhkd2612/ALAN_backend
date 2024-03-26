@@ -5,6 +5,7 @@ import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.request.StartRoomRequest;
 import com.inha.endgame.dto.response.StartRoomResponse;
 import com.inha.endgame.room.RoomService;
+import com.inha.endgame.room.RoomState;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,6 @@ public class RoomEventListener {
 
         try {
             roomService.startRoom(roomId);
-            unitySocketService.sendMessageRoom(roomId, new StartRoomResponse());
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

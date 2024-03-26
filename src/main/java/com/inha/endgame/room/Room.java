@@ -10,10 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class Room {
     private final long roomId;
-    private final Date createAt;
     private final Map<String, RoomUser> roomUsers;
+
     private RoomState curState;
     private RoomState nextState;
+
+    private final Date createAt;
+    private Date readyAt;
 
     public Room(long roomId) {
         this.roomId = roomId;
@@ -38,6 +41,27 @@ public class Room {
         if(this.curState != RoomState.NONE)
             throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.READY;
+        this.readyAt = new Date();
+    }
+
+    public Date getPlayAt() {
+        return new Date(this.readyAt.getTime() + 10000);
+    }
+
+    public Date getEndAt() {
+        return new Date(this.readyAt.getTime() + 1000000);
+    }
+
+    public synchronized void play() {
+        if(this.curState != RoomState.READY)
+            throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
+        this.nextState = RoomState.PLAY;
+    }
+
+    public synchronized void end() {
+        if(this.curState != RoomState.PLAY)
+            throw new IllegalStateException("종료할 수 없는 상태의 방입니다.");
+        this.nextState = RoomState.END;
     }
 
     public synchronized void kick(RoomUser user) {

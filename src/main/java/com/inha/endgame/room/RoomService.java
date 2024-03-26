@@ -50,10 +50,18 @@ public class RoomService {
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        if(room.getRoomUsers().size() < 2)
-            throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
+        // TODO 나중에 추가되어야 함 귀찮으니 일단 주석..
+        // if(room.getRoomUsers().size() < 1)
+        //    throw new IllegalStateException("1인 이상이여야 시작할 수 있습니다.");
 
         room.start();
+    }
+
+    public void playRoom(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+        room.play();
     }
     
     public void selectJob(long roomId) {
