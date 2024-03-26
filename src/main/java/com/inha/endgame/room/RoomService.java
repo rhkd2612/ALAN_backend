@@ -3,6 +3,7 @@ package com.inha.endgame.room;
 import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -54,6 +55,14 @@ public class RoomService {
             throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
 
         room.start();
+    }
+    
+    public void selectJob(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        // TODO  첫 MVP에는 보스가 없다
     }
 
     public void exitRoom(long roomId, User user) {
