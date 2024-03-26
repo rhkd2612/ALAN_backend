@@ -2,8 +2,6 @@ package com.inha.endgame.room;
 
 import com.inha.endgame.user.User;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -11,20 +9,20 @@ import java.util.UUID;
 @Getter
 public class RoomUser implements Serializable {
     private final String userId;
-    private final String username;
+    private final String nickname;
     private final rVector3D pos;
     private final RoomUserType roomUserType;
 
     public RoomUser(User user) {
         this.userId = user.getUserId();
-        this.username = user.getUsername();
+        this.nickname = user.getUsername();
         this.pos = new rVector3D(0,0,0);
         this.roomUserType = RoomUserType.USER;
     }
 
-    public RoomUser(String userId, String username, rVector3D pos, RoomUserType roomUserType) {
+    public RoomUser(String userId, String nickname, rVector3D pos, RoomUserType roomUserType) {
         this.userId = userId;
-        this.username = username;
+        this.nickname = nickname;
         this.pos = pos;
         this.roomUserType = roomUserType;
     }
@@ -41,7 +39,7 @@ public class RoomUser implements Serializable {
     public String toString() {
         return "RoomUser{" +
                 "userId='" + userId + '\'' +
-                ", username='" + username + '\'' +
+                ", username='" + nickname + '\'' +
                 ", pos=" + pos +
                 '}';
     }

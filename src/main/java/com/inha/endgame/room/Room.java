@@ -23,7 +23,7 @@ public class Room {
         this.nextState = RoomState.NONE;
     }
 
-    public void join(RoomUser user) {
+    public synchronized void join(RoomUser user) {
         if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
         if(this.roomUsers.containsKey(user.getUserId()))
@@ -32,7 +32,13 @@ public class Room {
         this.roomUsers.put(user.getUserId(), user);
     }
 
-    public void kick(RoomUser user) {
+    public synchronized void start() {
+        if(this.curState != RoomState.NONE)
+            throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
+        this.nextState = RoomState.READY;
+    }
+
+    public synchronized void kick(RoomUser user) {
         this.roomUsers.remove(user.getUserId());
     }
 

@@ -45,6 +45,17 @@ public class RoomService {
         userService.enterRoom(user);
     }
 
+    public void startRoom(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(room.getRoomUsers().size() < 2)
+            throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
+
+        room.start();
+    }
+
     public void exitRoom(long roomId, User user) {
         Room room = mapRoom.get(roomId);
         if(room == null)

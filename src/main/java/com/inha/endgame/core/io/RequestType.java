@@ -22,7 +22,7 @@ package com.inha.endgame.core.io;
  *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
  */
 public enum RequestType {
-	FRIENDSLIST,
-	ADD_USER,
 	TEST,
+	ADD_USER,
+	START_ROOM,
 }
