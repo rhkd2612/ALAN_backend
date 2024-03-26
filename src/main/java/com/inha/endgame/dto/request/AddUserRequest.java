@@ -26,6 +26,7 @@ import lombok.Getter;
 public class AddUserRequest implements ClientRequest {
 	@Schema(description = "ADD_USER", defaultValue = "ADD_USER")
 	private RequestType type;
-	private String userName;
+	private String username;
+	private String nickname;
 	private long roomId;
 }

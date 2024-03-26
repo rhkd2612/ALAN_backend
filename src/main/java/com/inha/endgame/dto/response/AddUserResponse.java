@@ -29,12 +29,12 @@ import java.util.List;
 public class AddUserResponse implements ClientResponse {
     @Schema(description = "ADD_USER", defaultValue = "ADD_USER")
     private final ResponseType type;
-    private final String userId;
+    private final String nickname;
     private final List<RoomUser> roomUsers = new ArrayList<>();
 
-    public AddUserResponse(String userId, List<RoomUser> roomUsers) {
+    public AddUserResponse(String nickname, List<RoomUser> roomUsers) {
         this.type = ResponseType.ADD_USER;
-        this.userId = userId;
+        this.nickname = nickname;
         this.roomUsers.addAll(roomUsers);
     }
 }

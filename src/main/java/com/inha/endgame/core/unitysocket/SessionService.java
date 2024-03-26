@@ -30,7 +30,7 @@ public class SessionService {
     public void kickSession(String sessionId) {
         WebSocketSession session = connectSession.get(sessionId);
         try {
-            if (session != null) {
+            if (session != null && session.isOpen()) {
                 session.sendMessage(new TextMessage("다른 클라이언트의 접속으로 인해 연결이 끊어졌습니다."));
                 session.close();
             }

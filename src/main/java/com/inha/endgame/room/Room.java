@@ -26,10 +26,12 @@ public class Room {
     public synchronized void join(RoomUser user) {
         if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
-        if(this.roomUsers.containsKey(user.getUserId()))
-            throw new IllegalStateException("해당 닉네임의 참가자가 이미 존재합니다.");
+        if(this.roomUsers.containsKey(user.getUsername())) {
+            // 재접속 로직
+            return;
+        }
 
-        this.roomUsers.put(user.getUserId(), user);
+        this.roomUsers.put(user.getUsername(), user);
     }
 
     public synchronized void start() {
@@ -39,7 +41,7 @@ public class Room {
     }
 
     public synchronized void kick(RoomUser user) {
-        this.roomUsers.remove(user.getUserId());
+        this.roomUsers.remove(user.getUsername());
     }
 
     // 일반적으로는 변경하면 안됨

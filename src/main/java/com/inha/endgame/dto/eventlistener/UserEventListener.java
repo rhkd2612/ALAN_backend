@@ -33,13 +33,13 @@ public class UserEventListener {
         var newUser = userService.addUser(session, request);
 
         try {
-            session.sendMessage(new TextMessage(newUser.getUserId()));
+            session.sendMessage(new TextMessage(newUser.getUsername()));
 
             if(newUser.isNew()) {
                 roomService.joinRoom(roomId, newUser);
 
                 var roomUsers = roomService.findAllRoomUsersById(roomId);
-                unitySocketService.sendMessageRoom(roomId, new AddUserResponse(newUser.getUserId(), roomUsers));
+                unitySocketService.sendMessageRoom(roomId, new AddUserResponse(newUser.getNickname(), roomUsers));
             }
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
