@@ -16,11 +16,6 @@
 
 package com.inha.endgame.core.io;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 public enum RequestType {
 	TEST,
 	ADD_USER,

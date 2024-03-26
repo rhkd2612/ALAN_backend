@@ -1,6 +1,7 @@
 package com.inha.endgame.room.state.action;
 
 import com.inha.endgame.core.unitysocket.UnitySocketService;
+import com.inha.endgame.dto.response.PlayRoomInfoResponse;
 import com.inha.endgame.dto.response.StartRoomResponse;
 import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomState;
@@ -26,7 +27,11 @@ public class RoomPlayStateAction implements RoomStateAction {
 
     @Override
     public void onUpdate(Room room) {
-
+        try {
+            unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllUserWithNpc()));
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
     }
 
     @Override

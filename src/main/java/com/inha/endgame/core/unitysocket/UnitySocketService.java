@@ -69,7 +69,7 @@ public class UnitySocketService {
 				return;
 
 			var session = sessionService.findSessionBySessionId(user.getSessionId());
-			if(session == null)
+			if(session == null || !session.isOpen())
 				return;
 
 			try {

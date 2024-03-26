@@ -3,7 +3,9 @@ package com.inha.endgame.room;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Room {
     private final long roomId;
     private final Map<String, RoomUser> roomUsers;
+    private final Map<String, RoomUser> roomNpcs;
 
     private RoomState curState;
     private RoomState nextState;
@@ -22,15 +25,27 @@ public class Room {
         this.roomId = roomId;
         this.createAt = new Date();
         this.roomUsers = new ConcurrentHashMap<>();
+        this.roomNpcs = new ConcurrentHashMap<>();
         this.curState = null;
         this.nextState = RoomState.NONE;
+
+        List<RoomUser> npcs = RoomUser.createNpc();
+        npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
+    }
+
+    public List<RoomUser> getAllUserWithNpc() {
+        List<RoomUser> result = new ArrayList<>();
+
+        result.addAll(this.roomUsers.values());
+        result.addAll(this.roomNpcs.values());
+
+        return result;
     }
 
     public synchronized void join(RoomUser user) {
         if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
         if(this.roomUsers.containsKey(user.getUsername())) {
-            // 재접속 로직
             return;
         }
 
@@ -45,7 +60,7 @@ public class Room {
     }
 
     public Date getPlayAt() {
-        return new Date(this.readyAt.getTime() + 10000);
+        return new Date(this.readyAt.getTime() + 5000);
     }
 
     public Date getEndAt() {

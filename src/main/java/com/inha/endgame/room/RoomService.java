@@ -33,7 +33,18 @@ public class RoomService {
 
     public List<RoomUser> findAllRoomUsersById(long roomId) {
         Room room = mapRoom.get(roomId);
-        return new CopyOnWriteArrayList<>(room.getRoomUsers().values());
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return new ArrayList<>(room.getRoomUsers().values());
+    }
+
+    public List<RoomUser> findAllRoomUsersWithNpcById(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return new ArrayList<>(room.getAllUserWithNpc());
     }
 
     public void joinRoom(long roomId, User user) {

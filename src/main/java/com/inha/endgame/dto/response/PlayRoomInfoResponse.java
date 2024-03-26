@@ -11,15 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class AddUserResponse implements ClientResponse {
-    @Schema(description = "ADD_USER", defaultValue = "ADD_USER")
+public class PlayRoomInfoResponse implements ClientResponse {
+    @Schema(description = "PLAY_ROOM_INFO", defaultValue = "PLAY_ROOM_INFO")
     private final ResponseType type;
-    private final String nickname;
     private final List<RoomUser> roomUsers = new ArrayList<>();
 
-    public AddUserResponse(String nickname, List<RoomUser> roomUsers) {
-        this.type = ResponseType.ADD_USER;
-        this.nickname = nickname;
+    public PlayRoomInfoResponse(List<RoomUser> roomUsers) {
+        this.type = ResponseType.PLAY_ROOM_INFO;
         this.roomUsers.addAll(roomUsers);
     }
 }
