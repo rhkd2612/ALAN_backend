@@ -13,7 +13,7 @@ public class RoomStateScheduler {
     private final StateChangePublisher publisher;
 
     // 0.5초마다 상태 체크(나중에는 더 빨리 바꿔야함, NPC는 별개로?)
-    @Scheduled(fixedRate = 500)
+    @Scheduled(fixedRate = 100)
     public void enterFrame() {
         roomService.getAllRoom().forEach(publisher::publishStateChange);
     }

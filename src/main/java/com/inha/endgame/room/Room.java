@@ -33,7 +33,7 @@ public class Room {
         npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
     }
 
-    public List<RoomUser> getAllUserWithNpc() {
+    public List<RoomUser> getAllMembers() {
         List<RoomUser> result = new ArrayList<>();
 
         result.addAll(this.roomUsers.values());

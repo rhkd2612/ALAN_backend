@@ -20,4 +20,5 @@ public enum RequestType {
 	TEST,
 	ADD_USER,
 	START_ROOM,
+	UPDATE_USER,
 }

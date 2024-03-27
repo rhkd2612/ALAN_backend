@@ -5,6 +5,7 @@ import com.inha.endgame.dto.response.StartRoomResponse;
 import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.RoomState;
+import com.inha.endgame.room.RoomUserNpc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,5 +44,11 @@ public class RoomReadyStateAction implements RoomStateAction {
     @Override
     public void onExit(Room room) {
         log.info("room ready exit");
+        room.getRoomNpcs().values().forEach(npc -> {
+            if(npc instanceof RoomUserNpc) {
+                RoomUserNpc roomUserNpc = (RoomUserNpc) npc;
+                roomUserNpc.startNpc();
+            }
+        });
     }
 }

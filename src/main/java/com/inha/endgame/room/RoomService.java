@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class RoomService {
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        return new ArrayList<>(room.getAllUserWithNpc());
+        return new ArrayList<>(room.getAllMembers());
     }
 
     public void joinRoom(long roomId, User user) {
@@ -66,6 +65,19 @@ public class RoomService {
         //    throw new IllegalStateException("1인 이상이여야 시작할 수 있습니다.");
 
         room.start();
+    }
+
+    public void updateUser(long roomId, RoomUser roomUser) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(!room.getCurState().equals(RoomState.PLAY))
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(room.getRoomUsers().containsKey(roomUser.getUsername())) {
+            room.getRoomUsers().put(roomUser.getUsername(), roomUser);
+        }
     }
 
     public void playRoom(long roomId) {

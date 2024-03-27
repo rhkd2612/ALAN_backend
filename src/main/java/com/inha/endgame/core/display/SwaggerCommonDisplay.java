@@ -1,6 +1,7 @@
 package com.inha.endgame.core.display;
 
 import com.inha.endgame.dto.request.AddUserRequest;
+import com.inha.endgame.dto.request.UpdateUserRequest;
 import com.inha.endgame.dto.request.StartRoomRequest;
 import com.inha.endgame.dto.request.TestRequest;
 import com.inha.endgame.dto.response.*;
@@ -34,6 +35,11 @@ public class SwaggerCommonDisplay {
 
     @GetMapping("/PLAY_ROOM_INFO")
     void test(PlayRoomInfoResponse PlayRoomInfoResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
+    @GetMapping("/UPDATE_USER")
+    void test(UpdateUserRequest UpdateUserRequest) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
