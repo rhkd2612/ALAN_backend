@@ -43,11 +43,11 @@ public class RoomUser implements Serializable {
     public static List<RoomUser> createNpc() {
         ArrayList<RoomUser> npcs = new ArrayList<>();
 
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 3; i++) {
             var username = UUID.randomUUID().toString();
             var nickname = UUID.randomUUID().toString();
 
-            var pos = new rVector3D(RandomUtils.nextInt(0, 100), 1, RandomUtils.nextInt(0, 100));
+            var pos = new rVector3D(RandomUtils.nextInt(0, 5), 0, RandomUtils.nextInt(0, 5));
             var rot = new rVector3D(0, 0, 0);
 
             npcs.add(new RoomUserNpc(username, nickname, pos, rot, RoomUserType.NPC));
