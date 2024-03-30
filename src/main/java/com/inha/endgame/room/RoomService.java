@@ -73,7 +73,7 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         if(!room.getCurState().equals(RoomState.PLAY))
-            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+            throw new IllegalArgumentException("방이 진행 중이지 않습니다.");
 
         if(room.getRoomUsers().containsKey(roomUser.getUsername())) {
             room.getRoomUsers().put(roomUser.getUsername(), roomUser);

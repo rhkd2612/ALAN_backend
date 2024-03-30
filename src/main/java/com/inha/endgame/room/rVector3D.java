@@ -1,10 +1,12 @@
 package com.inha.endgame.room;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Getter
+@NoArgsConstructor
 public class rVector3D implements Serializable {
     private static final long serialVersionUID = 1151561654154545L;
 

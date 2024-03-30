@@ -18,7 +18,7 @@ public class JsonReader {
     private static Map<String, Map<String, Object>> jsons = new ConcurrentHashMap<>();
 
     public JsonReader() {
-        readJsonFilesInFolder("/data");
+        //readJsonFilesInFolder("/data");
         log.info("success");
     }
 

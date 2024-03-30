@@ -2,6 +2,7 @@ package com.inha.endgame.room;
 
 import com.inha.endgame.user.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.io.Serializable;
@@ -10,15 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor
 public class RoomUser implements Serializable {
-    private final String username;
-    private final String nickname;
+    private String username;
+    private String nickname;
     private rVector3D pos;
     private rVector3D rot;
     private float velocity;
     private int anim;
     private int color;
-    private final RoomUserType roomUserType;
+    private RoomUserType roomUserType;
 
     public RoomUser(User user) {
         this.username = user.getUsername();
