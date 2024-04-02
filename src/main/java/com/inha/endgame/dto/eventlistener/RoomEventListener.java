@@ -60,7 +60,7 @@ public class RoomEventListener {
         int npcCount = request.getNpcCount();
 
         try {
-            List<RoomUser> npcs = roomService.setNpc(roomId, npcCount);
+            List<RoomUser> npcs = roomService.setNpc(roomId, npcCount, request.getNpcMinSpawnX(), request.getNpcMaxSpawnX(), request.getNpcMinSpawnZ(), request.getNpcMaxSpawnZ());
             unitySocketService.sendMessageRoom(roomId, new SettingRoomResponse(npcs));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
