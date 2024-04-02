@@ -28,9 +28,6 @@ public class Room {
         this.roomNpcs = new ConcurrentHashMap<>();
         this.curState = null;
         this.nextState = RoomState.NONE;
-
-        List<RoomUser> npcs = RoomUser.createNpc();
-        npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
     }
 
     public List<RoomUser> getAllMembers() {
@@ -40,6 +37,18 @@ public class Room {
         result.addAll(this.roomNpcs.values());
 
         return result;
+    }
+
+    public List<RoomUser> setRoomNpc(int npcCount) {
+        if(this.curState != RoomState.NONE)
+            throw new IllegalStateException("NONE 상태일 때만 세팅 가능합니다.");
+
+        this.roomNpcs.clear();
+
+        List<RoomUser> npcs = RoomUser.createNpc(npcCount);
+        npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
+
+        return npcs;
     }
 
     public synchronized void join(RoomUser user) {

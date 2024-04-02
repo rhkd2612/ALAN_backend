@@ -36,6 +36,12 @@ public class SwaggerCommonDisplay {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
+    @GetMapping("/SETTING_ROOM")
+    void test(SettingRoomRequest SettingRoomRequest,
+              SettingRoomResponse SettingRoomResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
     @GetMapping("/PLAY_ROOM_INFO")
     void test(PlayRoomInfoResponse PlayRoomInfoResponse) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");

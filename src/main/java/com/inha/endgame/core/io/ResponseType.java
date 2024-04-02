@@ -20,7 +20,8 @@ public enum ResponseType {
 	TEST,
 	ADD_USER,
 	CHECK_USER,
-	ERROR,
 	START_ROOM,
+	SETTING_ROOM,
 	PLAY_ROOM_INFO,
+	ERROR,
 }

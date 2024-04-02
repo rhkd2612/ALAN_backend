@@ -42,10 +42,10 @@ public class RoomUser implements Serializable {
         this.roomUserType = roomUserType;
     }
 
-    public static List<RoomUser> createNpc() {
+    public static List<RoomUser> createNpc(int npcCount) {
         ArrayList<RoomUser> npcs = new ArrayList<>();
 
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < npcCount; i++) {
             var username = UUID.randomUUID().toString();
             var nickname = "NPC_" + i;
 

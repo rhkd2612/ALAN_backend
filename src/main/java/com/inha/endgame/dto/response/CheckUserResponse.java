@@ -17,7 +17,7 @@ public class CheckUserResponse implements ClientResponse {
     private final boolean isExist;
 
     public CheckUserResponse(boolean isExist) {
-        this.type = ResponseType.ADD_USER;
+        this.type = ResponseType.CHECK_USER;
         this.isExist = isExist;
     }
 }

@@ -21,5 +21,6 @@ public enum RequestType {
 	ADD_USER,
 	CHECK_USER,
 	START_ROOM,
+	SETTING_ROOM,
 	UPDATE_USER,
 }
