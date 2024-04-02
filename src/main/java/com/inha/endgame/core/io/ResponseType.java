@@ -19,6 +19,7 @@ package com.inha.endgame.core.io;
 public enum ResponseType {
 	TEST,
 	ADD_USER,
+	CHECK_USER,
 	ERROR,
 	START_ROOM,
 	PLAY_ROOM_INFO,

@@ -1,5 +1,6 @@
 package com.inha.endgame.room;
 
+import com.inha.endgame.dto.request.CheckUserRequest;
 import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,10 @@ public class RoomService {
     @PostConstruct
     void init() {
         // TEST용
-        Room room = new Room(1L);
-        mapRoom.put(room.getRoomId(), room);
+        for(int i = 0; i < 5; i++) {
+            Room room = new Room(i);
+            mapRoom.put(room.getRoomId(), room);
+        }
     }
 
     public Room findRoomById(long roomId) {
@@ -44,6 +47,14 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         return new ArrayList<>(room.getAllMembers());
+    }
+
+    public boolean checkUser(long roomId, String username) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return room.getRoomUsers().containsKey(username);
     }
 
     public void joinRoom(long roomId, User user) {

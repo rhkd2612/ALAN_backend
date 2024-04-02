@@ -2,7 +2,10 @@ package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
 import com.inha.endgame.dto.request.AddUserRequest;
+import com.inha.endgame.dto.request.CheckUserRequest;
+import com.inha.endgame.dto.request.StartRoomRequest;
 import com.inha.endgame.dto.response.AddUserResponse;
+import com.inha.endgame.dto.response.CheckUserResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.user.UserService;
@@ -30,7 +33,7 @@ public class UserEventListener {
         var session = event.getSession();
         var request = event.getClientRequest();
         var roomId = request.getRoomId();
-        var newUser = userService.addUser(session, request);
+        var newUser = userService.addUser(session, request.getUsername(), request.getNickname());
 
         try {
             session.sendMessage(new TextMessage(newUser.getUsername()));
@@ -45,6 +48,20 @@ public class UserEventListener {
             unitySocketService.sendErrorMessage(session, e);
             roomService.exitRoom(roomId, newUser);
             session.close();
+        }
+    }
+
+    @EventListener
+    public void onCheckUserRequest(ClientEvent<CheckUserRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            boolean isExist = roomService.checkUser(roomId, request.getUsername());
+            unitySocketService.sendMessage(session, new CheckUserResponse(isExist));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
         }
     }
 }

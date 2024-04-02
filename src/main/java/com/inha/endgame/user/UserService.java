@@ -2,6 +2,7 @@ package com.inha.endgame.user;
 
 import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.core.unitysocket.SessionService;
+import com.inha.endgame.dto.request.CheckUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
@@ -28,11 +29,8 @@ public class UserService {
 		return Collections.unmodifiableCollection(mapUser.values());
 	}
 
-	public synchronized User addUser(WebSocketSession session, AddUserRequest request) {
+	public synchronized User addUser(WebSocketSession session, String username, String nickname) {
 		var sessionId = session.getId();
-		var username = request.getUsername();
-		var nickname=  request.getNickname();
-
 		if(mapUser.containsKey(username)) {
 			var prevUser = mapUser.get(username);
 			if(!prevUser.getSessionId().equals(sessionId))

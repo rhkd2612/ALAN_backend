@@ -19,6 +19,7 @@ package com.inha.endgame.core.io;
 public enum RequestType {
 	TEST,
 	ADD_USER,
+	CHECK_USER,
 	START_ROOM,
 	UPDATE_USER,
 }
