@@ -47,7 +47,7 @@ public class RoomUser implements Serializable {
 
         for(int i = 0; i < 3; i++) {
             var username = UUID.randomUUID().toString();
-            var nickname = UUID.randomUUID().toString();
+            var nickname = "NPC_" + i;
 
             var pos = new rVector3D(RandomUtils.nextInt(0, 5), 0, RandomUtils.nextInt(0, 5));
             var rot = new rVector3D(0, 0, 0);
