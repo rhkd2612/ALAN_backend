@@ -24,7 +24,7 @@ public class RoomUser implements Serializable {
 
     public RoomUser(User user) {
         this.username = user.getUsername();
-        this.nickname = user.getUsername();
+        this.nickname = user.getNickname();
         this.pos = new rVector3D(0,0,0);
         this.rot = new rVector3D(0,0,0);
         this.velocity = 1;
