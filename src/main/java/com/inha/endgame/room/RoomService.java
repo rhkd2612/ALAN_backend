@@ -41,6 +41,14 @@ public class RoomService {
         return new ArrayList<>(room.getRoomUsers().values());
     }
 
+    public List<RoomUser> findAllRoomNpcsById(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return new ArrayList<>(room.getRoomNpcs().values());
+    }
+
     public List<RoomUser> findAllRoomUsersWithNpcById(long roomId) {
         Room room = mapRoom.get(roomId);
         if(room == null)
@@ -78,7 +86,7 @@ public class RoomService {
         room.start();
     }
 
-    public List<RoomUser> setNpc(long roomId, int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
+    public void setNpc(long roomId, int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
@@ -86,7 +94,7 @@ public class RoomService {
         if(npcCount == 0)
             throw new IllegalArgumentException("1이상의 npc 수가 필요합니다.");
 
-        return room.setRoomNpc(npcCount, npcMinX, npcMaxX, npcMinZ, npcMaxZ);
+        room.setRoomNpc(npcCount, npcMinX, npcMaxX, npcMinZ, npcMaxZ);
     }
 
     public void updateUser(long roomId, RoomUser roomUser) {

@@ -39,7 +39,7 @@ public class Room {
         return result;
     }
 
-    public List<RoomUser> setRoomNpc(int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
+    public void setRoomNpc(int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
         if(this.curState != RoomState.NONE)
             throw new IllegalStateException("NONE 상태일 때만 세팅 가능합니다.");
 
@@ -47,8 +47,6 @@ public class Room {
 
         List<RoomUser> npcs = RoomUser.createNpc(npcCount, npcMinX, npcMaxX, npcMinZ, npcMaxZ);
         npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
-
-        return npcs;
     }
 
     public synchronized void join(RoomUser user) {
