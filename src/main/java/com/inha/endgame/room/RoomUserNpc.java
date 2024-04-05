@@ -58,6 +58,7 @@ public class RoomUserNpc extends RoomUser {
     public void startAnim(int animNum, Date endAt) {
         this.setAnim(animNum);
 
+        this.setVelocity(0);
         this.animPlay = true;
         this.npcState = NpcState.ANIM;
         this.stateUpAt = endAt;
