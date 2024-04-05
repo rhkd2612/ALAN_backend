@@ -58,6 +58,10 @@ public class RoomUser implements Serializable {
         return npcs;
     }
 
+    public void setAnim(int anim) {
+        this.anim = anim;
+    }
+
     public void setPos(rVector3D pos) {
         this.pos = pos;
     }

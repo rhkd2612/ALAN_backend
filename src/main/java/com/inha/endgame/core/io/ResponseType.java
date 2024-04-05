@@ -23,5 +23,6 @@ public enum ResponseType {
 	START_ROOM,
 	SETTING_ROOM,
 	PLAY_ROOM_INFO,
+	EVENT_INFO,
 	ERROR,
 }

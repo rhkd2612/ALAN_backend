@@ -22,10 +22,11 @@ public class RoomUserNpc extends RoomUser {
     }
 
     public synchronized void rollState() {
-        if(this.stateUpAt == null || this.npcState.equals(NpcState.DIE) || this.animPlay)
+        if(this.stateUpAt == null || this.npcState.equals(NpcState.DIE))
             return;
 
         this.animPlay = false;
+        this.setAnim(0);
 
         Date now = new Date();
         if(now.after(stateUpAt)) {
@@ -37,9 +38,11 @@ public class RoomUserNpc extends RoomUser {
                 this.npcState = NpcState.MOVE;
                 this.setRot(new rVector3D(0, RandomUtils.nextInt(0, 360), 0));
                 this.setVelocity(1);
+                this.setAnim(1);
             } else {
                 this.npcState = NpcState.STOP;
                 this.setVelocity(0);
+                this.setAnim(0);
             }
         }
     }
@@ -52,8 +55,11 @@ public class RoomUserNpc extends RoomUser {
         return this.getPos().add(this.getPos().normalize(this.getRot(), this.getVelocity(), frameCount));
     }
 
-    public void startAnim(Date endAt) {
+    public void startAnim(int animNum, Date endAt) {
+        this.setAnim(animNum);
+
         this.animPlay = true;
+        this.npcState = NpcState.ANIM;
         this.stateUpAt = endAt;
     }
 }

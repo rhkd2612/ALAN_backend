@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 
+import com.inha.endgame.room.event.AnimEvent;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Room {
     private final long roomId;
     private final Map<String, RoomUser> roomUsers;
     private final Map<String, RoomUser> roomNpcs;
+    private AnimEvent event;
 
     private RoomState curState;
     private RoomState nextState;
@@ -37,6 +39,10 @@ public class Room {
         result.addAll(this.roomNpcs.values());
 
         return result;
+    }
+
+    public void setEvent(AnimEvent event) {
+        this.event = event;
     }
 
     public void setRoomNpc(int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
