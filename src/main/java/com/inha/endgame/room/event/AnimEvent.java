@@ -18,7 +18,7 @@ public class AnimEvent {
     public synchronized void resetAnimEvent() {
         System.out.println("reset event");
 
-        this.animNum = RandomUtils.nextInt(1, 4);
+        this.animNum = RandomUtils.nextInt(2, 5);
         this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(10000, 30000));
         isAnnounce = false;
     }
