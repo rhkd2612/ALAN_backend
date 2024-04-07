@@ -25,10 +25,9 @@ public class RoomUserNpc extends RoomUser {
         if(this.stateUpAt == null || this.npcState.equals(NpcState.DIE))
             return;
 
-        this.animPlay = false;
-
         Date now = new Date();
         if(now.after(stateUpAt)) {
+            this.animPlay = false;
             stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(1000, 10000));
 
             // 추후 ANIM 추가
