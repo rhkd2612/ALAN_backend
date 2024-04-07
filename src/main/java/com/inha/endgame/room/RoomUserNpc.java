@@ -26,7 +26,6 @@ public class RoomUserNpc extends RoomUser {
             return;
 
         this.animPlay = false;
-        this.setAnim(0);
 
         Date now = new Date();
         if(now.after(stateUpAt)) {
