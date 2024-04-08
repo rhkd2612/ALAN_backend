@@ -50,7 +50,11 @@ public class RoomUserNpc extends RoomUser {
     }
 
     public rVector3D getNextPos(int frameCount) {
-        return this.getPos().add(this.getPos().normalize(this.getRot(), this.getVelocity(), frameCount));
+        rVector3D result = this.getPos().add(this.getPos().normalize(this.getRot(), this.getVelocity(), frameCount));
+        if(result.getX() < Room.minX || result.getX() > Room.maxX || result.getZ() < Room.minZ || result.getZ() > Room.maxZ)
+            return this.getPos();
+
+        return result;
     }
 
     public void startAnim(int animNum, Date endAt) {

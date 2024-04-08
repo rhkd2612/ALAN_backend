@@ -94,7 +94,8 @@ public class RoomService {
         if(npcCount == 0)
             throw new IllegalArgumentException("1이상의 npc 수가 필요합니다.");
 
-        room.setRoomNpc(npcCount, npcMinX, npcMaxX, npcMinZ, npcMaxZ);
+        Room.setRoomMapSize(npcMinX, npcMinZ, npcMaxX, npcMaxZ);
+        room.setRoomNpc(npcCount);
     }
 
     public void updateUser(long roomId, RoomUser roomUser) {

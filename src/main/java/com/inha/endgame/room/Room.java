@@ -23,6 +23,12 @@ public class Room {
     private final Date createAt;
     private Date readyAt;
 
+    public static float minX;
+    public static float minZ;
+    public static float maxX;
+    public static float maxZ;
+
+
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -30,6 +36,13 @@ public class Room {
         this.roomNpcs = new ConcurrentHashMap<>();
         this.curState = null;
         this.nextState = RoomState.NONE;
+    }
+
+    public static void setRoomMapSize(float minX, float minZ, float maxX, float maxZ) {
+        Room.minX = minX;
+        Room.minZ = minZ;
+        Room.maxX = maxX;
+        Room.maxZ = maxZ;
     }
 
     public List<RoomUser> getAllMembers() {
@@ -45,13 +58,13 @@ public class Room {
         this.event = event;
     }
 
-    public void setRoomNpc(int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
+    public void setRoomNpc(int npcCount) {
         if(this.curState != RoomState.NONE)
             throw new IllegalStateException("NONE 상태일 때만 세팅 가능합니다.");
 
         this.roomNpcs.clear();
 
-        List<RoomUser> npcs = RoomUser.createNpc(npcCount, npcMinX, npcMaxX, npcMinZ, npcMaxZ);
+        List<RoomUser> npcs = RoomUser.createNpc(npcCount);
         npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
     }
 

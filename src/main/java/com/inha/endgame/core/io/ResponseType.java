@@ -25,4 +25,5 @@ public enum ResponseType {
 	PLAY_ROOM_INFO,
 	EVENT_INFO,
 	ERROR,
+	PING,
 }

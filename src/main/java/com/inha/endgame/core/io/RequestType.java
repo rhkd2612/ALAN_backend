@@ -23,4 +23,5 @@ public enum RequestType {
 	START_ROOM,
 	SETTING_ROOM,
 	UPDATE_USER,
+	PING,
 }
