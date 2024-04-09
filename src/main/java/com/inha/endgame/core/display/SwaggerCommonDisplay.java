@@ -66,4 +66,9 @@ public class SwaggerCommonDisplay {
     void error(PingRequest PingRequest, PingResponse PingResponse) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
+
+    @GetMapping("/NETWORK_DELAY")
+    void error(NetworkDelayRequest NetworkDelayRequest) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
 }

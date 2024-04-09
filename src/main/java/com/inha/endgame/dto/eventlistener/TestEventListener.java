@@ -1,6 +1,7 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.dto.request.NetworkDelayRequest;
 import com.inha.endgame.dto.request.TestRequest;
 import com.inha.endgame.dto.response.TestResponse;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
@@ -27,6 +28,17 @@ public class TestEventListener {
             Integer answer = request.getA() + request.getB() + request.getC();
             unitySocketService.sendMessage(session, new TestResponse(answer));
         } catch (IOException e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onNetworkDelayRequest(ClientEvent<NetworkDelayRequest> event) {
+        var session = event.getSession();
+        try {
+            var request = event.getClientRequest();
+            UnitySocketService.setNetworkDelay(request.getNetworkDelay(), request.getNetworkBounce());
+        } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
     }

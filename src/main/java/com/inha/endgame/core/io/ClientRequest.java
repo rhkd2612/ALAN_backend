@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = SettingRoomRequest.class, name = "SETTING_ROOM"),
 		@Type(value = UpdateUserRequest.class, name = "UPDATE_USER"),
 		@Type(value = PingRequest.class, name = "PING"),
+		@Type(value = NetworkDelayRequest.class, name = "NETWORK_DELAY"),
 })
 public interface ClientRequest {
 	RequestType getType();

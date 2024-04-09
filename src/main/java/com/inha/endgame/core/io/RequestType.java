@@ -24,4 +24,5 @@ public enum RequestType {
 	SETTING_ROOM,
 	UPDATE_USER,
 	PING,
+	NETWORK_DELAY,
 }

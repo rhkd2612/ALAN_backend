@@ -22,9 +22,11 @@ import com.inha.endgame.core.io.ClientRequest;
 import com.inha.endgame.core.io.ClientResponse;
 import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.core.exception.ExceptionMessageTranslator;
+import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,8 +39,10 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class UnitySocketService {
-
 	private static final Logger LOGGER = LoggerFactory.getLogger("UnitySocketService");
+
+	private static int networkDelay = 0;
+	private static int networkBounce = 0;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final ApplicationEventPublisher publisher;
@@ -47,17 +51,35 @@ public class UnitySocketService {
 	private final UserService userService;
 	private final SessionService sessionService;
 
+	public static int getNetworkDelay() {
+		if(UnitySocketService.networkDelay == 0)
+			return 0;
+
+		return Math.max(0, UnitySocketService.networkDelay + (-UnitySocketService.networkBounce + RandomUtils.nextInt(0, UnitySocketService.networkBounce * 2)));
+	}
+
+	public static void setNetworkDelay(int networkDelay, int networkBounce) {
+		UnitySocketService.networkDelay = networkDelay;
+		UnitySocketService.networkBounce = networkBounce;
+	}
+
 	public void parseMessage(WebSocketSession session, String messageString) throws IOException {
+		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
 		ClientRequest cr = objectMapper.readValue(messageString, ClientRequest.class);
 		publisher.publishEvent(new ClientEvent<>(cr, session));
 	}
 
 	public void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
+		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
 		String json = objectMapper.writeValueAsString(clientResponse);
 		session.sendMessage(new TextMessage(json));
 	}
 
 	public void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
+		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
 		var json = objectMapper.writeValueAsString(clientResponse);
 		var room = roomService.findRoomById(roomId);
 		if(room == null)
