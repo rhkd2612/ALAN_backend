@@ -68,8 +68,8 @@ public class UserEventListener {
         var roomId = request.getRoomId();
 
         try {
-            boolean isExist = roomService.checkUser(roomId, request.getUsername());
-            unitySocketService.sendMessage(session, new CheckUserResponse(isExist));
+            String prevNickname = roomService.checkUser(roomId, request.getUsername());
+            unitySocketService.sendMessage(session, new CheckUserResponse(prevNickname != null, prevNickname));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

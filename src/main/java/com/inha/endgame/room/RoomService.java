@@ -57,12 +57,15 @@ public class RoomService {
         return new ArrayList<>(room.getAllMembers());
     }
 
-    public boolean checkUser(long roomId, String username) {
+    public String checkUser(long roomId, String username) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        return room.getRoomUsers().containsKey(username);
+        if(room.getRoomUsers().containsKey(username))
+            return room.getRoomUsers().get(username).getNickname();
+
+        return null;
     }
 
     public void joinRoom(long roomId, User user) {
