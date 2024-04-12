@@ -1,5 +1,7 @@
 package com.inha.endgame.room;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.NpcState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
@@ -9,8 +11,11 @@ import java.util.*;
 
 @Getter
 public class RoomUserNpc extends RoomUser {
+    @JsonIgnore
     private Date stateUpAt = null;
+    @JsonIgnore
     private NpcState npcState = NpcState.STOP;
+    @JsonIgnore
     private boolean animPlay = false;
 
     public RoomUserNpc(User user) {
@@ -22,7 +27,7 @@ public class RoomUserNpc extends RoomUser {
     }
 
     public synchronized void rollState() {
-        if(this.stateUpAt == null || this.npcState.equals(NpcState.DIE))
+        if(this.stateUpAt == null || !this.getUserState().equals(UserState.NORMAL))
             return;
 
         Date now = new Date();
@@ -50,6 +55,9 @@ public class RoomUserNpc extends RoomUser {
     }
 
     public rVector3D getNextPos(int frameCount) {
+        if(!this.getUserState().equals(UserState.NORMAL))
+            return this.getPos();
+
         rVector3D result = this.getPos().add(this.getPos().normalize(this.getRot(), this.getVelocity(), frameCount));
 
         if(result.getX() < Room.minX || result.getX() > Room.maxX)

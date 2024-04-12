@@ -1,7 +1,7 @@
 package com.inha.endgame.room;
 
 public enum RoomUserType {
-    BOSS,
+    COP,
     USER,
     NPC,
 }

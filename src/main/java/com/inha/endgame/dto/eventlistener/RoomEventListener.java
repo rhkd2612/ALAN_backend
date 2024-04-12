@@ -2,11 +2,11 @@ package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
-import com.inha.endgame.dto.request.SettingRoomRequest;
-import com.inha.endgame.dto.request.UpdateUserRequest;
-import com.inha.endgame.dto.request.StartRoomRequest;
-import com.inha.endgame.dto.response.PlayRoomInfoResponse;
+import com.inha.endgame.dto.request.*;
+import com.inha.endgame.dto.response.AimResponse;
 import com.inha.endgame.dto.response.SettingRoomResponse;
+import com.inha.endgame.dto.response.ShotResponse;
+import com.inha.endgame.dto.response.StunResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.RoomUser;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class RoomEventListener {
     }
 
     @EventListener
-    public void onChangeUserRequest(ClientEvent<UpdateUserRequest> event) {
+    public void onUpdateUserRequest(ClientEvent<UpdateUserRequest> event) {
         var session = event.getSession();
         var request = event.getClientRequest();
         var roomId = request.getRoomId();
@@ -47,6 +47,49 @@ public class RoomEventListener {
 
         try {
             roomService.updateUser(roomId, roomUser);
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onAimRequest(ClientEvent<AimRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            roomService.updateAim(roomId, request.getAimState(), request.getAimPos());
+            unitySocketService.sendMessageRoom(roomId, new AimResponse(request.getAimPos(), request.getAimAt(), request.getAimState()));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onStunRequest(ClientEvent<StunRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            var copUser = roomService.stun(roomId, request.getTargetUsername());
+            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getReleaseStunAt()));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onShotRequest(ClientEvent<ShotRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            var targetUser = roomService.shot(roomId);
+            var aliveUserCount = roomService.getAliveUserCount(roomId);
+            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

@@ -25,4 +25,7 @@ public enum RequestType {
 	UPDATE_USER,
 	PING,
 	NETWORK_DELAY,
+	AIM,
+	STUN,
+	SHOT,
 }

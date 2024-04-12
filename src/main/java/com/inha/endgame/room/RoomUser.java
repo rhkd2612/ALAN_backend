@@ -1,5 +1,6 @@
 package com.inha.endgame.room;
 
+import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class RoomUser implements Serializable {
     private int anim;
     private int color;
     private RoomUserType roomUserType;
+    private UserState userState = UserState.NORMAL;
 
     public RoomUser(User user) {
         this.username = user.getUsername();
@@ -56,6 +58,48 @@ public class RoomUser implements Serializable {
         }
 
         return npcs;
+    }
+
+    public void updateUser(RoomUser roomUser) {
+        if(!this.userState.equals(UserState.STUN)) {
+            this.pos = roomUser.getPos();
+            this.velocity = roomUser.getVelocity();
+        } else {
+            this.velocity = 0;
+        }
+
+        this.rot = roomUser.getRot();
+        this.anim = roomUser.getAnim();
+        this.color = roomUser.getColor();
+    }
+
+    public void stunned() {
+        if(this.userState.equals(UserState.DIE))
+            return;
+
+        this.userState = UserState.STUN;
+        this.velocity = 0;
+    }
+
+    public void releaseStun() {
+        if(this.userState.equals(UserState.DIE))
+            return;
+        this.userState = UserState.NORMAL;
+    }
+
+    public void die() {
+        this.userState = UserState.DIE;
+        this.velocity = 0;
+    }
+
+    public void beCop() {
+        this.roomUserType = RoomUserType.COP;
+    }
+
+    public void beCrime() {
+        this.roomUserType = RoomUserType.USER;
+
+        // 아이템 지급 등
     }
 
     public void setAnim(int anim) {

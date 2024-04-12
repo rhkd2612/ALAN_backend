@@ -32,10 +32,14 @@ public class rVector3D implements Serializable {
         this.z = z;
     }
 
-
     public double magnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
+
+    public double distance(rVector3D target) {
+        return Math.sqrt(Math.pow(this.x - target.x, 2) + Math.pow(this.z - target.z, 2));
+    }
+
 
     public rVector3D add(rVector3D other) {
         return new rVector3D(this.getX() + other.getX(), this.getY() + other.getY(), this.getZ() + other.getZ());

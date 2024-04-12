@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
-import com.inha.endgame.dto.request.CheckUserRequest;
+import com.inha.endgame.user.UserState;
+import com.inha.endgame.user.AimState;
 import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,76 @@ public class RoomService {
         return null;
     }
 
+    public int getAliveUserCount(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        List<RoomUser> aliveUser = room.getRoomUsers().values().stream()
+                .filter(user -> user.getRoomUserType().equals(RoomUserType.USER))
+                .filter(user -> !user.getUserState().equals(UserState.DIE))
+                .collect(Collectors.toList());
+
+        return aliveUser.size();
+    }
+
+    public synchronized void updateAim(long roomId, AimState aimState, rVector3D targetPos) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+        if(aimState.equals(AimState.END))
+            copUser.endAimingAndStun();
+        else
+            copUser.aiming(aimState, targetPos);
+    }
+
+    public synchronized RoomUserCop stun(long roomId, String targetUsername) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+        var targetUser = room.getAllMembersMap().get(targetUsername);
+
+        copUser.stun(targetUser);
+        targetUser.stunned();
+
+        return copUser;
+    }
+
+    public synchronized void releaseStun(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+        if(copUser.getTargetUsername() == null)
+            return;
+
+        var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
+        if(!targetUser.getUserState().equals(UserState.DIE))
+            targetUser.releaseStun();
+
+        copUser.endAimingAndStun();
+    }
+
+    public synchronized RoomUser shot(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+        var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
+
+        copUser.checkShot(targetUser);
+        targetUser.die();
+        copUser.endAimingAndStun();
+
+        return targetUser;
+    }
+
     public void joinRoom(long roomId, User user) {
         Room room = mapRoom.get(roomId);
         if(room == null)
@@ -109,8 +181,10 @@ public class RoomService {
         if(!room.getCurState().equals(RoomState.PLAY))
             throw new IllegalArgumentException("방이 진행 중이지 않습니다.");
 
-        if(room.getRoomUsers().containsKey(roomUser.getUsername())) {
-            room.getRoomUsers().put(roomUser.getUsername(), roomUser);
+        var username = roomUser.getUsername();
+        if(room.getRoomUsers().containsKey(username)) {
+            var prevUser = room.getRoomUsers().get(username);
+            prevUser.updateUser(roomUser);
         }
     }
 
@@ -126,7 +200,19 @@ public class RoomService {
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        // TODO  첫 MVP에는 보스가 없다
+        var roomUsers = new ArrayList<>(room.getRoomUsers().values());
+        var copNum = 0; // FIXME RandomUtils.nextInt(0, roomUsers.size());
+        var cop = roomUsers.get(copNum);
+        var copUsername = cop.getUsername();
+        cop.beCop();
+
+        roomUsers.forEach(roomUser -> {
+            if(!roomUser.getUsername().equals(copUsername))
+                roomUser.beCrime();
+        });
+
+        room.setCopUsername(copUsername);
+        room.getRoomUsers().put(copUsername, new RoomUserCop(cop));
     }
 
     public void exitRoom(long roomId, User user) {

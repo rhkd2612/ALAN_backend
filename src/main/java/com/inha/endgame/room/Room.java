@@ -4,10 +4,7 @@ package com.inha.endgame.room;
 import com.inha.endgame.room.event.AnimEvent;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
@@ -15,6 +12,7 @@ public class Room {
     private final long roomId;
     private final Map<String, RoomUser> roomUsers;
     private final Map<String, RoomUser> roomNpcs;
+    private String copUsername;
     private AnimEvent event;
 
     private RoomState curState;
@@ -45,6 +43,10 @@ public class Room {
         Room.maxZ = maxZ;
     }
 
+    public void setCopUsername(String copUsername) {
+        this.copUsername = copUsername;
+    }
+
     public List<RoomUser> getAllMembers() {
         List<RoomUser> result = new ArrayList<>();
 
@@ -52,6 +54,19 @@ public class Room {
         result.addAll(this.roomNpcs.values());
 
         return result;
+    }
+
+    public Map<String, RoomUser> getAllMembersMap() {
+        Map<String,RoomUser> result = new HashMap<>();
+
+        result.putAll(this.roomUsers);
+        result.putAll(this.roomNpcs);
+
+        return result;
+    }
+
+    public RoomUserCop getCop() {
+        return (RoomUserCop)(this.roomUsers.get(this.copUsername));
     }
 
     public void setEvent(AnimEvent event) {

@@ -1,15 +1,13 @@
 package com.inha.endgame.room.state.action;
 
+import com.inha.endgame.user.UserState;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.EventInfoResponse;
 import com.inha.endgame.dto.response.PlayRoomInfoResponse;
 import com.inha.endgame.dto.response.StartRoomResponse;
-import com.inha.endgame.room.Room;
-import com.inha.endgame.room.RoomState;
-import com.inha.endgame.room.RoomUserNpc;
+import com.inha.endgame.room.*;
 import com.inha.endgame.room.event.AnimEvent;
 import com.inha.endgame.user.NpcState;
-import jdk.jfr.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequiredArgsConstructor
 public class RoomPlayStateAction implements RoomStateAction {
     private final UnitySocketService unitySocketService;
+    private final RoomService roomService;
 
     @Override
     public void onEnter(Room room) {
@@ -38,6 +37,12 @@ public class RoomPlayStateAction implements RoomStateAction {
     public void onUpdate(Room room) {
         // 변경 정보 전달
         try {
+            int aliveUserCount = roomService.getAliveUserCount(room.getRoomId());
+            if(aliveUserCount == 0) {
+                room.setNextState(RoomState.END);
+                return;
+            }
+
             var animEvent = room.getEvent();
             var now = new Date();
 
@@ -45,6 +50,29 @@ public class RoomPlayStateAction implements RoomStateAction {
             var nextAnimTimeAt = animEvent.getNextAnimAt().getTime();
 
             var animPlay = new AtomicBoolean(false);
+
+            // 경찰 먼저 실행
+            RoomUserCop cop = room.getCop();
+            switch(cop.getCopAttackState()) {
+                case AIM: {
+                    long aimOffTime = cop.getAvailAimAt().getTime() + RoomUserCop.MAX_AIM_TIME;
+                    if(now.after(new Date(aimOffTime)))
+                        cop.endAimingAndStun();
+
+                    break;
+                }
+                case STUN: {
+                    if(now.after(cop.getReleaseStunAt()))
+                        roomService.releaseStun(room.getRoomId());
+                    break;
+                }
+                case NONE: {
+
+                }
+            }
+
+            if(cop.getTargetUsername() == null)
+                room.getAllMembers().forEach(RoomUser::releaseStun);
 
             // 지났다면 애니메이션 실행
             if (now.after(new Date(nextAnimTimeAt))) {
@@ -59,7 +87,7 @@ public class RoomPlayStateAction implements RoomStateAction {
                 if(npc instanceof RoomUserNpc) {
                     // npc 상태 변경 체크
                     RoomUserNpc roomUserNpc = (RoomUserNpc) npc;
-                    if(roomUserNpc.getNpcState().equals(NpcState.DIE))
+                    if(roomUserNpc.getUserState().equals(UserState.DIE))
                         return;
 
                     if(roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))

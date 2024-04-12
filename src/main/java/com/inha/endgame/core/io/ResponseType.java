@@ -26,4 +26,7 @@ public enum ResponseType {
 	EVENT_INFO,
 	ERROR,
 	PING,
+	AIM,
+	STUN,
+	SHOT,
 }

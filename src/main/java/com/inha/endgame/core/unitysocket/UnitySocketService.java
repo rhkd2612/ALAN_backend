@@ -105,6 +105,7 @@ public class UnitySocketService {
 	public void sendErrorMessage(WebSocketSession session, Exception e) {
 		try {
 			String errMessage = exceptionMessageTranslator.translate(e);
+			LOGGER.error(errMessage);
 			this.sendMessage(session, new ErrorResponse(errMessage));
 		} catch (IOException ex) {
 			LOGGER.warn("error 생성 실패");

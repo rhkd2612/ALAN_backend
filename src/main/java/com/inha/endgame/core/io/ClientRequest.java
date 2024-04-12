@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = UpdateUserRequest.class, name = "UPDATE_USER"),
 		@Type(value = PingRequest.class, name = "PING"),
 		@Type(value = NetworkDelayRequest.class, name = "NETWORK_DELAY"),
+		@Type(value = AimRequest.class, name = "AIM"),
+		@Type(value = StunRequest.class, name = "STUN"),
+		@Type(value = ShotRequest.class, name = "SHOT"),
 })
 public interface ClientRequest {
 	RequestType getType();
