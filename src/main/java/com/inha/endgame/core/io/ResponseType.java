@@ -29,4 +29,5 @@ public enum ResponseType {
 	AIM,
 	STUN,
 	SHOT,
+	SELECT_JOB,
 }

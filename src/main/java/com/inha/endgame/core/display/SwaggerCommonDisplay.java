@@ -57,6 +57,11 @@ public class SwaggerCommonDisplay {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
+    @GetMapping("/SELECT_JOB")
+    void test(SelectJobResponse SelectJobResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
     @GetMapping("/AIM")
     void test(AimRequest AimRequest, AimResponse AimResponse) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
