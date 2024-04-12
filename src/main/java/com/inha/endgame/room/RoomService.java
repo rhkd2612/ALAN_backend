@@ -5,6 +5,7 @@ import com.inha.endgame.user.AimState;
 import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -201,7 +202,7 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var roomUsers = new ArrayList<>(room.getRoomUsers().values());
-        var copNum = 0; // FIXME RandomUtils.nextInt(0, roomUsers.size());
+        var copNum = RandomUtils.nextInt(0, roomUsers.size());
         var cop = roomUsers.get(copNum);
         var copUsername = cop.getUsername();
         cop.beCop();
