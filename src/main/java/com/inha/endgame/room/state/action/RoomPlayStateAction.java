@@ -37,11 +37,12 @@ public class RoomPlayStateAction implements RoomStateAction {
     public void onUpdate(Room room) {
         // 변경 정보 전달
         try {
-            int aliveUserCount = roomService.getAliveUserCount(room.getRoomId());
-            if(aliveUserCount == 0) {
-                room.setNextState(RoomState.END);
-                return;
-            }
+            // TODO TEST에 용이하기 위해 일단 클리어하지 않게 처리
+//            int aliveUserCount = roomService.getAliveUserCount(room.getRoomId());
+//            if(aliveUserCount == 0) {
+//                room.setNextState(RoomState.END);
+//                return;
+//            }
 
             var animEvent = room.getEvent();
             var now = new Date();
