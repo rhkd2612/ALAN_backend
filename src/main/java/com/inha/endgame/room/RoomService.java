@@ -92,8 +92,13 @@ public class RoomService {
         var copUser = room.getCop();
         if(aimState.equals(AimState.END))
             copUser.endAimingAndStun();
-        else
-            copUser.aiming(aimState, targetPos);
+        else {
+            try {
+                copUser.aiming(targetPos);
+            } catch(IllegalStateException e) {
+                System.out.println("hello");
+            }
+        }
     }
 
     public synchronized RoomUserCop stun(long roomId, String targetUsername) {

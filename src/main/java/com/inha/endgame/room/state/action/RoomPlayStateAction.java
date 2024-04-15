@@ -56,10 +56,6 @@ public class RoomPlayStateAction implements RoomStateAction {
             RoomUserCop cop = room.getCop();
             switch(cop.getCopAttackState()) {
                 case AIM: {
-                    long aimOffTime = cop.getAvailAimAt().getTime() + RoomUserCop.MAX_AIM_TIME;
-                    if(now.after(new Date(aimOffTime)))
-                        cop.endAimingAndStun();
-
                     break;
                 }
                 case STUN: {

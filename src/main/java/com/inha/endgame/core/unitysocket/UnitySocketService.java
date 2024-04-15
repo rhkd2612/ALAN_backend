@@ -70,14 +70,14 @@ public class UnitySocketService {
 		publisher.publishEvent(new ClientEvent<>(cr, session));
 	}
 
-	public void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
+	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
 		String json = objectMapper.writeValueAsString(clientResponse);
 		session.sendMessage(new TextMessage(json));
 	}
 
-	public void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
+	public synchronized void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
 		var json = objectMapper.writeValueAsString(clientResponse);
@@ -102,7 +102,7 @@ public class UnitySocketService {
 		});
 	}
 
-	public void sendErrorMessage(WebSocketSession session, Exception e) {
+	public synchronized void sendErrorMessage(WebSocketSession session, Exception e) {
 		try {
 			String errMessage = exceptionMessageTranslator.translate(e);
 			LOGGER.error(errMessage);

@@ -12,8 +12,6 @@ import java.util.Date;
 @Getter
 public class RoomUserCop extends RoomUser {
     @JsonIgnore
-    private Date availAimAt = new Date();
-    @JsonIgnore
     private Date availShotAt = new Date();
     @JsonIgnore
     private Date releaseStunAt = new Date();
@@ -38,22 +36,16 @@ public class RoomUserCop extends RoomUser {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType());
     }
 
-    public synchronized void aiming(AimState aimState, rVector3D targetPos) {
-        Date now = new Date();
-        if(aimState.equals(AimState.START) && now.before(this.availAimAt))
-            throw new IllegalStateException("아직 사용할 수 없습니다.");
-
-        this.availAimAt = new Date(now.getTime() + MAX_AIM_TIME);
-        this.copAttackState = CopAttackState.AIM;
+    public synchronized void aiming(rVector3D targetPos) {
+        if(!this.copAttackState.equals(CopAttackState.STUN))
+            this.copAttackState = CopAttackState.AIM;
         this.targetAimPos = targetPos;
     }
 
     public synchronized void endAimingAndStun() {
         Date now = new Date();
-        this.availAimAt = new Date(now.getTime() + MAX_AIM_TIME);
         this.copAttackState = CopAttackState.NONE;
         this.releaseStunAt = now;
-        this.availShotAt = availAimAt;
         this.targetAimPos = null;
         this.targetUsername = null;
     }
