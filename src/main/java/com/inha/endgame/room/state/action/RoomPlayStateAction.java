@@ -59,12 +59,10 @@ public class RoomPlayStateAction implements RoomStateAction {
                     break;
                 }
                 case STUN: {
-                    if(now.after(cop.getReleaseStunAt()))
-                        roomService.releaseStun(room.getRoomId());
                     break;
                 }
                 case NONE: {
-
+                    break;
                 }
             }
 

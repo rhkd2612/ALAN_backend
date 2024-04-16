@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.NpcState;
 import com.inha.endgame.user.User;
@@ -35,13 +36,38 @@ public class RoomUserNpc extends RoomUser {
             this.animPlay = false;
             stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(1000, 10000));
 
-            // 추후 ANIM 추가
-            var nextBehavior = RandomUtils.nextInt(0, 2);
+            var nextBehavior = RandomUtils.nextInt(0, 3);
             if(nextBehavior == 1) {
+                // 이동
                 this.npcState = NpcState.MOVE;
                 this.setRot(new rVector3D(0, RandomUtils.nextInt(0, 360), 0));
-                this.setVelocity(1);
+
+                var velocity = JsonReader._int(JsonReader.model("movement", "stat_npc", "moveSpeed")) / 10000; // TODO Float으로 변경
+                this.setVelocity(velocity);
+
                 this.setAnim(1);
+            } else if (nextBehavior == 2) {
+                // 자동 애니메이션
+                this.npcState = NpcState.ANIM;
+
+                List<Object> motions = JsonReader.models("motion");
+                var minMotionNum = 987654321;
+                var motionCount = 0;
+                var maxAnimTime = 0;
+
+                for(var i = 0; i < motions.size(); i++) {
+                    var json = (LinkedHashMap) motions.get(i);
+                    var screenMotion = JsonReader._bool(json.get("screenMotion"));
+
+                    if(screenMotion) {
+                        motionCount++;
+                        minMotionNum = Math.min(minMotionNum, JsonReader._int(json.get("motionNo")));
+                        maxAnimTime = Math.max(maxAnimTime, JsonReader._int(json.get("motionTime")));
+                    }
+                }
+
+                if(motionCount > 0)
+                    this.setAnim(RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount - 1));
             } else {
                 this.npcState = NpcState.STOP;
                 this.setVelocity(0);
@@ -60,9 +86,9 @@ public class RoomUserNpc extends RoomUser {
 
         rVector3D result = this.getPos().add(this.getPos().normalize(this.getRot(), this.getVelocity(), frameCount));
 
-        if(result.getX() < Room.minX || result.getX() > Room.maxX)
+        if(result.getX() < RoomService.minX || result.getX() > RoomService.maxX)
             result.setX(this.getPos().getX());
-        if(result.getZ() < Room.minZ || result.getZ() > Room.maxZ)
+        if(result.getZ() < RoomService.minZ || result.getZ() > RoomService.maxZ)
             result.setZ(this.getPos().getZ());
 
         return result;

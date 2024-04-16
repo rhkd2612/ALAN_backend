@@ -12,8 +12,12 @@ public class SettingRoomRequest implements ClientRequest {
 	private RequestType type;
 	private long roomId;
 	private int npcCount;
+	@Deprecated
 	private float npcMinSpawnX;
+	@Deprecated
 	private float npcMaxSpawnX;
+	@Deprecated
 	private float npcMinSpawnZ;
+	@Deprecated
 	private float npcMaxSpawnZ;
 }

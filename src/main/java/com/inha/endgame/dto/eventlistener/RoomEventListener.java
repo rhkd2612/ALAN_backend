@@ -74,7 +74,7 @@ public class RoomEventListener {
 
         try {
             var copUser = roomService.stun(roomId, request.getTargetUsername());
-            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getReleaseStunAt()));
+            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getStunAvailAt()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
@@ -103,7 +103,7 @@ public class RoomEventListener {
         int npcCount = request.getNpcCount();
 
         try {
-            roomService.setNpc(roomId, npcCount, request.getNpcMinSpawnX(), request.getNpcMaxSpawnX(), request.getNpcMinSpawnZ(), request.getNpcMaxSpawnZ());
+            roomService.setNpc(roomId, npcCount);
             List<RoomUser> npcs = roomService.findAllRoomNpcsById(roomId);
             unitySocketService.sendMessageRoom(roomId, new SettingRoomResponse(npcs));
         } catch (Exception e) {

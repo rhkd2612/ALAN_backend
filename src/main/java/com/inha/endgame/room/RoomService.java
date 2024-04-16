@@ -19,17 +19,21 @@ public class RoomService {
     private final Map<Long, Room> mapRoom = new ConcurrentHashMap<>();
     private final UserService userService;
 
-    public Collection<Room> getAllRoom() {
-        return Collections.unmodifiableCollection(mapRoom.values());
-    }
+    public static float minX;
+    public static float minZ;
+    public static float maxX;
+    public static float maxZ;
 
     @PostConstruct
     void init() {
-        // TEST용
         for(int i = 0; i < 5; i++) {
             Room room = new Room(i);
             mapRoom.put(room.getRoomId(), room);
         }
+    }
+
+    public Collection<Room> getAllRoom() {
+        return Collections.unmodifiableCollection(mapRoom.values());
     }
 
     public Room findRoomById(long roomId) {
@@ -167,15 +171,13 @@ public class RoomService {
         room.start();
     }
 
-    public void setNpc(long roomId, int npcCount, float npcMinX, float npcMaxX, float npcMinZ, float npcMaxZ) {
+    public void setNpc(long roomId, int npcCount) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         if(npcCount == 0)
             throw new IllegalArgumentException("1이상의 npc 수가 필요합니다.");
-
-        Room.setRoomMapSize(npcMinX, npcMinZ, npcMaxX, npcMaxZ);
         room.setRoomNpc(npcCount);
     }
 

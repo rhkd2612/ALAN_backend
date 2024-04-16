@@ -1,5 +1,7 @@
 @echo off
 
+chcp 65001
+
 echo Step 1: create jar
 
 call gradlew.bat

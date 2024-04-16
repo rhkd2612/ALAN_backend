@@ -21,12 +21,6 @@ public class Room {
     private final Date createAt;
     private Date readyAt;
 
-    public static float minX;
-    public static float minZ;
-    public static float maxX;
-    public static float maxZ;
-
-
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -34,13 +28,6 @@ public class Room {
         this.roomNpcs = new ConcurrentHashMap<>();
         this.curState = null;
         this.nextState = RoomState.NONE;
-    }
-
-    public static void setRoomMapSize(float minX, float minZ, float maxX, float maxZ) {
-        Room.minX = minX;
-        Room.minZ = minZ;
-        Room.maxX = maxX;
-        Room.maxZ = maxZ;
     }
 
     public void setCopUsername(String copUsername) {

@@ -13,12 +13,12 @@ public class StunResponse implements ClientResponse {
     private final ResponseType type;
     private final String targetUsername;
     private final Date availShotAt;
-    private final Date stunReleaseAt;
+    private final Date nextStunAvailAt;
 
-    public StunResponse(String targetUsername, Date availShotAt, Date stunReleaseAt) {
+    public StunResponse(String targetUsername, Date availShotAt, Date nextStunAvailAt) {
         this.type = ResponseType.STUN;
         this.targetUsername = targetUsername;
         this.availShotAt = availShotAt;
-        this.stunReleaseAt = stunReleaseAt;
+        this.nextStunAvailAt = nextStunAvailAt;
     }
 }

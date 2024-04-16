@@ -1,5 +1,6 @@
 package com.inha.endgame.room;
 
+import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
@@ -45,13 +46,27 @@ public class RoomUser implements Serializable {
     }
 
     public static List<RoomUser> createNpc(int npcCount) {
+        var fileName = "map";
+        var key = "map_plain";
+
+        RoomService.minX = JsonReader._int(JsonReader.model(fileName, key,"mapXmin"));
+        RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key,"mapXmax"));
+        RoomService.minZ = JsonReader._int(JsonReader.model(fileName, key,"mapZmin"));
+        RoomService.maxZ = JsonReader._int(JsonReader.model(fileName, key,"mapZmax"));
+
+        // TODO inner 관련된거 추가?
+        var npcSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posXmin"));
+        var npcSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posXmax"));
+        var npcSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posZmin"));
+        var npcSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posZmax"));
+
         ArrayList<RoomUser> npcs = new ArrayList<>();
 
         for(int i = 0; i < npcCount; i++) {
             var username = UUID.randomUUID().toString();
             var nickname = "NPC_" + i;
 
-            var pos = new rVector3D(Room.minX + (float)(Math.random() * (Room.maxX - Room.minX)), 0, Room.minZ + (float)(Math.random() * (Room.maxZ - Room.minZ)));
+            var pos = new rVector3D(npcSpawnMinX + (float)(Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float)(Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
             var rot = new rVector3D(0, 0, 0);
 
             npcs.add(new RoomUserNpc(username, nickname, pos, rot, RoomUserType.NPC));
@@ -94,10 +109,27 @@ public class RoomUser implements Serializable {
 
     public void beCop() {
         this.roomUserType = RoomUserType.COP;
+
+        var copSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posXmin"));
+        var copSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posXmax"));
+        var copSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posZmin"));
+        var copSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posZmax"));
+
+        var pos = new rVector3D(copSpawnMinX + (float)(Math.random() * (copSpawnMaxX - copSpawnMinX)), 0, copSpawnMinZ + (float)(Math.random() * (copSpawnMaxZ - copSpawnMinZ)));
+        this.pos = pos;
     }
 
     public void beCrime() {
         this.roomUserType = RoomUserType.USER;
+
+        // TODO inner 관련된거 추가?
+        var crimeSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmin"));
+        var crimeSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmax"));
+        var crimeSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posZmin"));
+        var crimeSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posZmax"));
+
+        var pos = new rVector3D(crimeSpawnMinX + (float)(Math.random() * (crimeSpawnMaxX - crimeSpawnMinX)), 0, crimeSpawnMinZ + (float)(Math.random() * (crimeSpawnMaxZ - crimeSpawnMinZ)));
+        this.pos = pos;
 
         // 아이템 지급 등
     }

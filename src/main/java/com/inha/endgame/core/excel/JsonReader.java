@@ -1,29 +1,66 @@
 package com.inha.endgame.core.excel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inha.endgame.GameApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
 public class JsonReader {
+    private ExcelParser excelParser;
     private static Map<String, Map<String, Object>> jsons = new ConcurrentHashMap<>();
 
-    public JsonReader() {
-        //readJsonFilesInFolder("/data");
-        log.info("success");
+    public JsonReader(ExcelParser excelParser) throws IOException {
+        this.excelParser = excelParser;
+
+        String projectDir = System.getProperty("user.dir");
+
+        while (!projectDir.endsWith("backend")) {
+            projectDir = projectDir.substring(0, projectDir.length() - 1);
+        }
+
+        File curDir = new File(projectDir);
+        File modelDir = new File(curDir.getParent() + "/model");
+
+        this.excelParser.convertExcelToJson(modelDir.getAbsolutePath(), ".xlsx");
+
+        readJsonFilesInFolder(modelDir.getAbsolutePath());
     }
 
-    public static Object getModel(String fileName, String key) {
-        return jsons.get(fileName).get(key);
+    public static Integer _int(Object value) {
+        return (Integer)value;
+    }
+
+    public static Integer _time(Object value) {
+        return (Integer)value * 1000;
+    }
+
+    public static Float _flt(Object value) {
+        return (Float)value / 10000.0f;
+    }
+
+    public static String _str(Object value) {
+        return (String)value;
+    }
+
+    public static Boolean _bool(Object value) {
+        return (Boolean)value;
+    }
+
+    public static Object model(String fileName, String key, String column) {
+        var json = (LinkedHashMap)jsons.get(fileName).get(key);
+        return json.get(column);
+    }
+
+    public static List<Object> models(String fileName) {
+        return new ArrayList<>(jsons.get(fileName).values());
     }
 
     private static void readJsonFilesInFolder(String folderPath) {

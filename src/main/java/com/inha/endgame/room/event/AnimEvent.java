@@ -1,9 +1,12 @@
 package com.inha.endgame.room.event;
 
+import com.inha.endgame.core.excel.JsonReader;
 import lombok.Getter;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Getter
 public class AnimEvent {
@@ -16,12 +19,32 @@ public class AnimEvent {
     }
 
     public synchronized void resetAnimEvent() {
-        this.animNum = RandomUtils.nextInt(3, 5);
-        this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(10000, 30000));
-        isAnnounce = false;
+        List<Object> motions = JsonReader.models("motion");
+        var minMotionNum = 987654321;
+        var motionCount = 0;
+        var maxAnimTime = 0;
+
+        for(var i = 0; i < motions.size(); i++) {
+            var json = (LinkedHashMap) motions.get(i);
+            var screenMotion = JsonReader._bool(json.get("screenMotion"));
+
+            if(screenMotion) {
+                motionCount++;
+                minMotionNum = Math.min(minMotionNum, JsonReader._int(json.get("motionNo")));
+                maxAnimTime = Math.max(maxAnimTime, JsonReader._int(json.get("motionTime")));
+            }
+        }
+
+        var minMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycle"));
+        if(motionCount > 0) {
+            this.animNum = RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount - 1);
+            this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(minMotionCycleTime, minMotionCycleTime * 3));
+        }
+
+        this.isAnnounce = false;
     }
 
-    public void setAnnounce(boolean announce) {
-        isAnnounce = announce;
+    public void setAnnounce(boolean isAnnounce) {
+        this.isAnnounce = isAnnounce;
     }
 }
