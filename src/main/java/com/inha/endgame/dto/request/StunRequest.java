@@ -2,6 +2,7 @@ package com.inha.endgame.dto.request;
 
 import com.inha.endgame.core.io.ClientRequest;
 import com.inha.endgame.core.io.RequestType;
+import com.inha.endgame.user.StunState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -13,5 +14,6 @@ public class StunRequest implements ClientRequest {
     private RequestType type;
     private String targetUsername;
     private Date targetingAt;
+    private StunState stunState;
     private int roomId;
 }

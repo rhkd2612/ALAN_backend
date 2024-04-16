@@ -7,6 +7,7 @@ import com.inha.endgame.user.AimState;
 import com.inha.endgame.user.CopAttackState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 public class RoomUserCop extends RoomUser {
     @JsonIgnore
     private Date availShotAt = new Date();
-    @JsonIgnore
+    @JsonIgnore @Setter
     private Date stunAvailAt = new Date();
     @JsonIgnore
     private rVector3D targetAimPos = null;

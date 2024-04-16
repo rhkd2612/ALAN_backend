@@ -9,6 +9,8 @@ import com.inha.endgame.dto.response.ShotResponse;
 import com.inha.endgame.dto.response.StunResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.RoomUser;
+import com.inha.endgame.room.RoomUserCop;
+import com.inha.endgame.user.StunState;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +75,13 @@ public class RoomEventListener {
         var roomId = request.getRoomId();
 
         try {
-            var copUser = roomService.stun(roomId, request.getTargetUsername());
-            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getStunAvailAt()));
+            RoomUserCop copUser;
+            if(request.getStunState().equals(StunState.END))
+                copUser = roomService.releaseStun(roomId);
+            else
+                copUser = roomService.stun(roomId, request.getTargetUsername());
+
+            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getStunAvailAt(), request.getStunState()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

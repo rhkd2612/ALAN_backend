@@ -2,6 +2,7 @@ package com.inha.endgame.dto.response;
 
 import com.inha.endgame.core.io.ClientResponse;
 import com.inha.endgame.core.io.ResponseType;
+import com.inha.endgame.user.StunState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -14,11 +15,13 @@ public class StunResponse implements ClientResponse {
     private final String targetUsername;
     private final Date availShotAt;
     private final Date nextStunAvailAt;
+    private final StunState stunState;
 
-    public StunResponse(String targetUsername, Date availShotAt, Date nextStunAvailAt) {
+    public StunResponse(String targetUsername, Date availShotAt, Date nextStunAvailAt, StunState stunState) {
         this.type = ResponseType.STUN;
         this.targetUsername = targetUsername;
         this.availShotAt = availShotAt;
         this.nextStunAvailAt = nextStunAvailAt;
+        this.stunState = stunState;
     }
 }

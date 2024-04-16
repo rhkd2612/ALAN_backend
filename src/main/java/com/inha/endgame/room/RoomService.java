@@ -1,9 +1,7 @@
 package com.inha.endgame.room;
 
-import com.inha.endgame.user.UserState;
-import com.inha.endgame.user.AimState;
-import com.inha.endgame.user.User;
-import com.inha.endgame.user.UserService;
+import com.inha.endgame.core.excel.JsonReader;
+import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
@@ -119,20 +117,25 @@ public class RoomService {
         return copUser;
     }
 
-    public synchronized void releaseStun(long roomId) {
+    public synchronized RoomUserCop releaseStun(long roomId) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var copUser = room.getCop();
         if(copUser.getTargetUsername() == null)
-            return;
+            return copUser;
 
         var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
         if(!targetUser.getUserState().equals(UserState.DIE))
             targetUser.releaseStun();
 
+        var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
+        copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
+
         copUser.endAimingAndStun();
+
+        return copUser;
     }
 
     public synchronized RoomUser shot(long roomId) {
