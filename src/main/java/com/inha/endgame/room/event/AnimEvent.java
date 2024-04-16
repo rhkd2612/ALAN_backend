@@ -35,10 +35,11 @@ public class AnimEvent {
             }
         }
 
-        var minMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycle"));
+        var minMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycleMin"));
+        var maxMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycleMax"));
         if(motionCount > 0) {
             this.animNum = RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount - 1);
-            this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(minMotionCycleTime, minMotionCycleTime * 3));
+            this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(minMotionCycleTime, maxMotionCycleTime));
         }
 
         this.isAnnounce = false;

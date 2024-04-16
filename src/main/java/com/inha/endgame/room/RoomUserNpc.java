@@ -42,7 +42,7 @@ public class RoomUserNpc extends RoomUser {
                 this.npcState = NpcState.MOVE;
                 this.setRot(new rVector3D(0, RandomUtils.nextInt(0, 360), 0));
 
-                var velocity = JsonReader._int(JsonReader.model("movement", "stat_npc", "moveSpeed")) / 10000; // TODO Float으로 변경
+                var velocity = JsonReader._flt(JsonReader.model("movement", "stat_npc", "moveSpeed"));
                 this.setVelocity(velocity);
 
                 this.setAnim(1);
