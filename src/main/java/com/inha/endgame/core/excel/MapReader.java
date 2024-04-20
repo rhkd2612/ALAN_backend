@@ -19,7 +19,7 @@ public class MapReader {
         this.excelParser = excelParser;
 
         File curDir = this.excelParser.getProjectDirectory();
-        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/Client/example.xlsx", 100);
+        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/Client/Stage.xlsx", 100);
     }
 
     public boolean check(rVector3D nextPos) {
