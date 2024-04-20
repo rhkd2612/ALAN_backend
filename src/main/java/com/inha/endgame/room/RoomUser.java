@@ -75,9 +75,10 @@ public class RoomUser implements Serializable {
         return npcs;
     }
 
-    public void updateUser(RoomUser roomUser) {
+    public void updateUser(RoomUser roomUser, boolean canMove) {
         if(!this.userState.equals(UserState.STUN)) {
-            this.pos = roomUser.getPos();
+            if(canMove)
+                this.pos = roomUser.getPos();
             this.velocity = roomUser.getVelocity();
         } else {
             this.velocity = 0;

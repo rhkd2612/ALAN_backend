@@ -1,5 +1,6 @@
 package com.inha.endgame.room.state.action;
 
+import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.EventInfoResponse;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequiredArgsConstructor
 public class RoomPlayStateAction implements RoomStateAction {
     private final UnitySocketService unitySocketService;
-    private final RoomService roomService;
+    private final MapReader mapReader;
 
     @Override
     public void onEnter(Room room) {
@@ -99,7 +100,9 @@ public class RoomPlayStateAction implements RoomStateAction {
                         // TODO 추후 Anim 추가
                         if (roomUserNpc.getNpcState().equals(NpcState.MOVE)) {
                             // frameCount는 1초에 계산하는 횟수
-                            roomUserNpc.setPos(roomUserNpc.getNextPos(10));
+                            rVector3D nextPos = roomUserNpc.getNextPos(10);
+                            if(mapReader.check(nextPos))
+                                roomUserNpc.setPos(nextPos);
                         }
                     }
                 }
