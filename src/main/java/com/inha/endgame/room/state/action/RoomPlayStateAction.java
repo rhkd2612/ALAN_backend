@@ -79,16 +79,16 @@ public class RoomPlayStateAction implements RoomStateAction {
             }
 
             room.getRoomNpcs().values().forEach(npc -> {
-                if(npc instanceof RoomUserNpc) {
+                if (npc instanceof RoomUserNpc) {
                     // npc 상태 변경 체크
                     RoomUserNpc roomUserNpc = (RoomUserNpc) npc;
-                    if(roomUserNpc.getUserState().equals(UserState.DIE))
+                    if (roomUserNpc.getUserState().equals(UserState.DIE))
                         return;
 
-                    if(roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))
+                    if (roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))
                         return;
 
-                    if(animPlay.get()) {
+                    if (animPlay.get()) {
                         // 5초간 실행?
                         roomUserNpc.startAnim(nextAnim, new Date(nextAnimTimeAt + 5000));
                     } else {

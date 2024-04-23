@@ -3,7 +3,6 @@ package com.inha.endgame.room;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.user.UserState;
-import com.inha.endgame.user.AimState;
 import com.inha.endgame.user.CopAttackState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
@@ -37,15 +36,20 @@ public class RoomUserCop extends RoomUser {
     }
 
     public synchronized void aiming(rVector3D targetPos) {
-        if(!this.copAttackState.equals(CopAttackState.STUN))
+        if(!this.copAttackState.equals(CopAttackState.STUN)) {
             this.copAttackState = CopAttackState.AIM;
+        }
+
         this.targetAimPos = targetPos;
     }
 
     public synchronized void endAimingAndStun() {
-        this.copAttackState = CopAttackState.NONE;
+        if(!this.copAttackState.equals(CopAttackState.STUN)) {
+            this.copAttackState = CopAttackState.NONE;
+            this.targetUsername = null;
+        }
+
         this.targetAimPos = null;
-        this.targetUsername = null;
     }
 
     public synchronized void stun(RoomUser targetUser) {
@@ -63,7 +67,6 @@ public class RoomUserCop extends RoomUser {
         if(targetUser.getPos().distance(this.getPos()) > aimRange)
             throw new IllegalStateException("거리가 너무 멀어 검문할 수 없습니다.");
 
-
         this.targetUsername = targetUser.getUsername();
         this.copAttackState = CopAttackState.STUN;
 
@@ -79,7 +82,7 @@ public class RoomUserCop extends RoomUser {
         if(now.before(this.availShotAt))
             throw new IllegalStateException("아직 사격할 수 없습니다.");
 
-        if(!this.targetUsername.equals(targetUser.getUsername()))
+        if(this.targetUsername == null || !this.targetUsername.equals(targetUser.getUsername()))
             throw new IllegalStateException("타겟이 없습니다.");
 
         if(!this.copAttackState.equals(CopAttackState.STUN) && targetUser.getUserState().equals(UserState.STUN))

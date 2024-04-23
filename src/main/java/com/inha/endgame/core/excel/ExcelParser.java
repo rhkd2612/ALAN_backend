@@ -85,7 +85,7 @@ public class ExcelParser {
                     throw new IllegalStateException(i + 1 + "라인 " + j + 1 + "번째가 null입니다.(null을 허용하지 않음)");
                 } else {
                     var columnName = columns.get(j);
-                    if (type.equals("int")) {
+                    if (type.equals("int") || type.equals("float")) {
                         jsonObject.put(columnName, new BigInteger(value.replaceAll("\\.\\d+$", "")));
                     } else if (type.equals("bool")) {
                         jsonObject.put(columnName, value.equals("TRUE"));

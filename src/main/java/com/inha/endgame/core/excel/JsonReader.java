@@ -43,7 +43,7 @@ public class JsonReader {
     }
 
     public static Float _flt(Object value) {
-        return (Float)value / 10000.0f;
+        return ((Number)value).floatValue() / 10000.0f;
     }
 
     public static String _str(Object value) {

@@ -47,7 +47,7 @@ public class RoomUser implements Serializable {
 
     public static List<RoomUser> createNpc(int npcCount) {
         var fileName = "map";
-        var key = "map_plain";
+        var key = "map_size";
 
         RoomService.minX = JsonReader._int(JsonReader.model(fileName, key,"mapXmin"));
         RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key,"mapXmax"));

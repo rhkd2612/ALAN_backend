@@ -34,6 +34,7 @@ public class RoomUserNpc extends RoomUser {
         Date now = new Date();
         if(now.after(stateUpAt)) {
             this.animPlay = false;
+
             stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(1000, 10000));
 
             var nextBehavior = RandomUtils.nextInt(0, 3);
@@ -48,6 +49,7 @@ public class RoomUserNpc extends RoomUser {
                 this.setAnim(1);
             } else if (nextBehavior == 2) {
                 // 자동 애니메이션
+                this.animPlay = true;
                 this.npcState = NpcState.ANIM;
 
                 List<Object> motions = JsonReader.models("motion");

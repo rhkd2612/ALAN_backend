@@ -150,6 +150,9 @@ public class RoomService {
         targetUser.die();
         copUser.endAimingAndStun();
 
+        var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
+        copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
+
         return targetUser;
     }
 
