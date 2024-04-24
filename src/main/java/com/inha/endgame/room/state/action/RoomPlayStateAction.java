@@ -1,5 +1,6 @@
 package com.inha.endgame.room.state.action;
 
+import com.inha.endgame.user.CopAttackState;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.EventInfoResponse;
@@ -59,12 +60,17 @@ public class RoomPlayStateAction implements RoomStateAction {
                     break;
                 }
                 case STUN: {
+                    boolean isStun = room.getAllMembers().stream().anyMatch(member -> member.getUserState().equals(UserState.STUN));
+                    if(!isStun)
+                        cop.setCopAttackState(CopAttackState.NONE);
                     break;
                 }
                 case NONE: {
                     break;
                 }
             }
+
+            System.out.println(cop.getCopAttackState());
 
             if(cop.getTargetUsername() == null)
                 room.getAllMembers().forEach(RoomUser::releaseStun);

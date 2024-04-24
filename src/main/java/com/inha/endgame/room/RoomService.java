@@ -86,6 +86,14 @@ public class RoomService {
         return aliveUser.size();
     }
 
+    public RoomUserCop getCop(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return room.getCop();
+    }
+
     public synchronized void updateAim(long roomId, AimState aimState, rVector3D targetPos) {
         Room room = mapRoom.get(roomId);
         if(room == null)
@@ -147,6 +155,7 @@ public class RoomService {
         var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
 
         copUser.checkShot(targetUser);
+
         targetUser.die();
         copUser.endAimingAndStun();
 

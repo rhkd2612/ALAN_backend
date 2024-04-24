@@ -37,8 +37,8 @@ public class RoomUserNpc extends RoomUser {
 
             stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(1000, 10000));
 
-            var nextBehavior = RandomUtils.nextInt(0, 3);
-            if(nextBehavior == 1) {
+            var nextBehavior = RandomUtils.nextInt(0, 10);
+            if(nextBehavior <= 7) {
                 // 이동
                 this.npcState = NpcState.MOVE;
                 this.setRot(new rVector3D(0, RandomUtils.nextInt(0, 360), 0));
@@ -47,7 +47,7 @@ public class RoomUserNpc extends RoomUser {
                 this.setVelocity(velocity);
 
                 this.setAnim(1);
-            } else if (nextBehavior == 2) {
+            } else if (nextBehavior <= 8) {
                 // 자동 애니메이션
                 this.animPlay = true;
                 this.npcState = NpcState.ANIM;

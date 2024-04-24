@@ -13,14 +13,14 @@ import java.util.Date;
 @Getter
 public class RoomUserCop extends RoomUser {
     @JsonIgnore
-    private Date availShotAt = new Date();
+    private Date shotAvailAt = new Date();
     @JsonIgnore @Setter
     private Date stunAvailAt = new Date();
     @JsonIgnore
     private rVector3D targetAimPos = null;
     @JsonIgnore
     private String targetUsername = null;
-    @JsonIgnore
+    @JsonIgnore @Setter
     private CopAttackState copAttackState = CopAttackState.NONE;
 
     public RoomUserCop(User user) {
@@ -74,12 +74,12 @@ public class RoomUserCop extends RoomUser {
         this.stunAvailAt = new Date(now.getTime() + nextStunCoolTime);
 
         var reloadTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "ReloadTime"));
-        this.availShotAt = new Date(now.getTime() + reloadTime);
+        this.shotAvailAt = new Date(now.getTime() + reloadTime);
     }
 
     public void checkShot(RoomUser targetUser) {
         Date now = new Date();
-        if(now.before(this.availShotAt))
+        if(now.before(this.shotAvailAt))
             throw new IllegalStateException("아직 사격할 수 없습니다.");
 
         if(this.targetUsername == null || !this.targetUsername.equals(targetUser.getUsername()))
@@ -87,5 +87,7 @@ public class RoomUserCop extends RoomUser {
 
         if(!this.copAttackState.equals(CopAttackState.STUN) && targetUser.getUserState().equals(UserState.STUN))
             throw new IllegalStateException("검문 상태에서만 사용할 수 있습니다.");
+
+        this.copAttackState = CopAttackState.SHOT;
     }
 }
