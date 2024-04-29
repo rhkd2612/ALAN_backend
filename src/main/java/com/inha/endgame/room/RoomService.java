@@ -196,6 +196,22 @@ public class RoomService {
         room.setRoomNpc(npcCount);
     }
 
+    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, boolean isClear) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var crime = (RoomUserCrime)room.getRoomUsers().get(username);
+        if(!isClear)
+            crime.playMission(missionPhase, missionPos);
+        else {
+            boolean isEnd = crime.clearMission(missionPhase);
+            if(isEnd) {
+                // TODO 게임 종료 처리
+            }
+        }
+    }
+
     public void updateUser(long roomId, RoomUser roomUser) {
         Room room = mapRoom.get(roomId);
         if(room == null)

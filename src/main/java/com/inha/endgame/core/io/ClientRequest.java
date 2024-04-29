@@ -6,11 +6,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo( //
-		use = JsonTypeInfo.Id.NAME, //
-		include = JsonTypeInfo.As.PROPERTY, //
-		property = "type", //
-		// defaultImpl = Event.class, //
+@JsonTypeInfo(
+		use = JsonTypeInfo.Id.NAME,
+		include = JsonTypeInfo.As.PROPERTY,
+		property = "type",
 		visible = true)
 @JsonSubTypes({
 		@Type(value = TestRequest.class, name = "TEST"),
@@ -24,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = AimRequest.class, name = "AIM"),
 		@Type(value = StunRequest.class, name = "STUN"),
 		@Type(value = ShotRequest.class, name = "SHOT"),
+		@Type(value = PlayMissionRequest.class, name = "PLAY_MISSION"),
 })
 public interface ClientRequest {
 	RequestType getType();
