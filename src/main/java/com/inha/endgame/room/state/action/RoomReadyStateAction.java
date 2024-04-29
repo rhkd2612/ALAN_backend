@@ -36,7 +36,7 @@ public class RoomReadyStateAction implements RoomStateAction {
                 var userSession = sessionService.findSessionBySessionId(user.getSessionId());
                 var roomUser = room.getRoomUsers().get(user.getUsername());
                 try {
-                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos()));
+                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos(), roomUser.getCrimeType()));
                 } catch (Exception e) {}
             });
         } catch (Exception e) {

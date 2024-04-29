@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
+import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.User;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class RoomUser implements Serializable {
     private int color;
     private RoomUserType roomUserType;
     private UserState userState = UserState.NORMAL;
+    private CrimeType crimeType = CrimeType.NONE;
 
     public RoomUser(User user) {
         this.username = user.getUsername();
@@ -122,6 +124,7 @@ public class RoomUser implements Serializable {
 
     public void beCrime() {
         this.roomUserType = RoomUserType.USER;
+        this.crimeType = CrimeType.SPY; // 일단 한개이므로..
 
         // TODO inner 관련된거 추가?
         var crimeSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmin"));

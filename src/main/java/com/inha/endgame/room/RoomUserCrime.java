@@ -10,8 +10,6 @@ import java.util.Date;
 @Getter
 public class RoomUserCrime extends RoomUser {
     @JsonIgnore
-    private CrimeType crimeType = CrimeType.SPY;
-    @JsonIgnore
     private int clearMissionPhase = 0;
     private static final int MAX_PHASE = 3;
 
@@ -30,7 +28,7 @@ public class RoomUserCrime extends RoomUser {
     public void playMission(int missionPhase, rVector3D missionPos) {
         // TODO원래 위치 검사도 해야한다 ㅇㅇ.. #4-12 합쳐지면 그때 처리
         if(missionPhase == this.clearMissionPhase + 1) {
-            switch (this.crimeType) {
+            switch (this.getCrimeType()) {
                 case SPY:
                     break;
                 case BOOMER:
@@ -41,7 +39,7 @@ public class RoomUserCrime extends RoomUser {
 
     public boolean clearMission(int missionPhase) {
         if(missionPhase == this.clearMissionPhase + 1) {
-            switch (this.crimeType) {
+            switch (this.getCrimeType()) {
                 case SPY:
                     break;
                 case BOOMER:
