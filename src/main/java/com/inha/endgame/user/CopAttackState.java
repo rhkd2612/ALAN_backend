@@ -4,4 +4,5 @@ public enum CopAttackState {
     NONE,
     AIM,
     STUN,
+    SHOT,
 }

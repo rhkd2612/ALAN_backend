@@ -1,6 +1,7 @@
 package com.inha.endgame.room.state.action;
 
 import com.inha.endgame.core.excel.MapReader;
+import com.inha.endgame.user.CopAttackState;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.EventInfoResponse;
@@ -60,12 +61,17 @@ public class RoomPlayStateAction implements RoomStateAction {
                     break;
                 }
                 case STUN: {
+                    boolean isStun = room.getAllMembers().stream().anyMatch(member -> member.getUserState().equals(UserState.STUN));
+                    if(!isStun)
+                        cop.setCopAttackState(CopAttackState.NONE);
                     break;
                 }
                 case NONE: {
                     break;
                 }
             }
+
+            System.out.println(cop.getCopAttackState());
 
             if(cop.getTargetUsername() == null)
                 room.getAllMembers().forEach(RoomUser::releaseStun);
@@ -80,16 +86,16 @@ public class RoomPlayStateAction implements RoomStateAction {
             }
 
             room.getRoomNpcs().values().forEach(npc -> {
-                if(npc instanceof RoomUserNpc) {
+                if (npc instanceof RoomUserNpc) {
                     // npc 상태 변경 체크
                     RoomUserNpc roomUserNpc = (RoomUserNpc) npc;
-                    if(roomUserNpc.getUserState().equals(UserState.DIE))
+                    if (roomUserNpc.getUserState().equals(UserState.DIE))
                         return;
 
-                    if(roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))
+                    if (roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))
                         return;
 
-                    if(animPlay.get()) {
+                    if (animPlay.get()) {
                         // 5초간 실행?
                         roomUserNpc.startAnim(nextAnim, new Date(nextAnimTimeAt + 5000));
                     } else {

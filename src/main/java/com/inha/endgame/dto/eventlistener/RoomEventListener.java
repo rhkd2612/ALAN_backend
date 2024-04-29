@@ -81,7 +81,7 @@ public class RoomEventListener {
             else
                 copUser = roomService.stun(roomId, request.getTargetUsername());
 
-            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getAvailShotAt(), copUser.getStunAvailAt(), request.getStunState()));
+            unitySocketService.sendMessageRoom(roomId, new StunResponse(copUser.getTargetUsername(), copUser.getShotAvailAt(), copUser.getStunAvailAt(), request.getStunState()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
@@ -96,7 +96,9 @@ public class RoomEventListener {
         try {
             var targetUser = roomService.shot(roomId);
             var aliveUserCount = roomService.getAliveUserCount(roomId);
-            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount));
+            RoomUserCop cop = roomService.getCop(roomId);
+
+            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
