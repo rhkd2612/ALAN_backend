@@ -246,8 +246,10 @@ public class RoomService {
         cop.beCop();
 
         roomUsers.forEach(roomUser -> {
-            if(!roomUser.getUsername().equals(copUsername))
+            if(!roomUser.getUsername().equals(copUsername)) {
                 roomUser.beCrime();
+                room.getRoomUsers().put(roomUser.getUsername(), new RoomUserCrime(roomUser));
+            }
         });
 
         room.setCopUsername(copUsername);

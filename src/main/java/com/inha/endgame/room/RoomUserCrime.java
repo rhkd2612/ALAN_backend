@@ -23,8 +23,8 @@ public class RoomUserCrime extends RoomUser {
         super(user);
     }
 
-    public RoomUserCrime(String username, String nickname, rVector3D pos, rVector3D rot, RoomUserType roomUserType) {
-        super(username, nickname, pos, rot, roomUserType);
+    public RoomUserCrime(RoomUser roomUser) {
+        super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType());
     }
 
     public void playMission(int missionPhase, rVector3D missionPos) {
