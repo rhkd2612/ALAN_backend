@@ -3,10 +3,7 @@ package com.inha.endgame.dto.eventlistener;
 import com.inha.endgame.core.io.ClientEvent;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.request.*;
-import com.inha.endgame.dto.response.AimResponse;
-import com.inha.endgame.dto.response.SettingRoomResponse;
-import com.inha.endgame.dto.response.ShotResponse;
-import com.inha.endgame.dto.response.StunResponse;
+import com.inha.endgame.dto.response.*;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.RoomUser;
 import com.inha.endgame.room.RoomUserCop;
@@ -98,7 +95,7 @@ public class RoomEventListener {
             var aliveUserCount = roomService.getAliveUserCount(roomId);
             RoomUserCop cop = roomService.getCop(roomId);
 
-            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt()));
+            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt(), targetUser.getCrimeType()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
@@ -115,6 +112,20 @@ public class RoomEventListener {
             roomService.setNpc(roomId, npcCount);
             List<RoomUser> npcs = roomService.findAllRoomNpcsById(roomId);
             unitySocketService.sendMessageRoom(roomId, new SettingRoomResponse(npcs));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onPlayMissionRoomRequest(ClientEvent<PlayMissionRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            roomService.playMission(roomId, request.getUsername(), request.getMissionPhase(), request.getMissionPos(), request.isClear());
+            unitySocketService.sendMessageRoom(roomId, new PlayMissionResponse(request));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

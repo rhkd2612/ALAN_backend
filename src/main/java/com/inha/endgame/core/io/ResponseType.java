@@ -30,4 +30,5 @@ public enum ResponseType {
 	STUN,
 	SHOT,
 	SELECT_JOB,
+	PLAY_MISSION,
 }
