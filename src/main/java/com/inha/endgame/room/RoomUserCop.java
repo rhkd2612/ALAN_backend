@@ -27,12 +27,8 @@ public class RoomUserCop extends RoomUser {
         super(user);
     }
 
-    public RoomUserCop(String username, String nickname, rVector3D pos, rVector3D rot, RoomUserType roomUserType) {
-        super(username, nickname, pos, rot, roomUserType);
-    }
-
     public RoomUserCop(RoomUser roomUser) {
-        super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType());
+        super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
     }
 
     public synchronized void aiming(rVector3D targetPos) {

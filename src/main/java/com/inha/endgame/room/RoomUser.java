@@ -41,10 +41,19 @@ public class RoomUser implements Serializable {
         this.nickname = nickname;
         this.pos = pos;
         this.rot = rot;
+        this.roomUserType = roomUserType;
+    }
+
+    public RoomUser(String username, String nickname, rVector3D pos, rVector3D rot, RoomUserType roomUserType, CrimeType crimeType) {
+        this.username = username;
+        this.nickname = nickname;
+        this.pos = pos;
+        this.rot = rot;
         this.velocity = 1;
         this.anim = 0;
         this.color = RandomUtils.nextInt() % 3;
         this.roomUserType = roomUserType;
+        this.crimeType = crimeType;
     }
 
     public static List<RoomUser> createNpc(int npcCount) {

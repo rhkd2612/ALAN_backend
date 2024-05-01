@@ -22,7 +22,7 @@ public class RoomUserCrime extends RoomUser {
     }
 
     public RoomUserCrime(RoomUser roomUser) {
-        super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType());
+        super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
     }
 
     public void playMission(int missionPhase, rVector3D missionPos) {
