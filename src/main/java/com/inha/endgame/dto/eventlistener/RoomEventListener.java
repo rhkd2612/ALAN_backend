@@ -95,7 +95,7 @@ public class RoomEventListener {
             var aliveUserCount = roomService.getAliveUserCount(roomId);
             RoomUserCop cop = roomService.getCop(roomId);
 
-            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt()));
+            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt(), targetUser.getCrimeType()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

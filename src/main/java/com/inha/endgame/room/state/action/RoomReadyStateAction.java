@@ -4,10 +4,7 @@ import com.inha.endgame.core.unitysocket.SessionService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.SelectJobResponse;
 import com.inha.endgame.dto.response.StartRoomResponse;
-import com.inha.endgame.room.Room;
-import com.inha.endgame.room.RoomService;
-import com.inha.endgame.room.RoomState;
-import com.inha.endgame.room.RoomUserNpc;
+import com.inha.endgame.room.*;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -31,12 +29,13 @@ public class RoomReadyStateAction implements RoomStateAction {
         try {
             unitySocketService.sendMessageRoom(room.getRoomId(), new StartRoomResponse(RoomState.READY, room.getPlayAt()));
             roomService.selectJob(room.getRoomId());
+            var roomUsers = roomService.findAllRoomUsersById(room.getRoomId());
 
             userService.getAllUser().forEach(user -> {
                 var userSession = sessionService.findSessionBySessionId(user.getSessionId());
                 var roomUser = room.getRoomUsers().get(user.getUsername());
                 try {
-                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos(), roomUser.getCrimeType()));
+                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos(), roomUser.getCrimeType(), roomUsers));
                 } catch (Exception e) {}
             });
         } catch (Exception e) {
