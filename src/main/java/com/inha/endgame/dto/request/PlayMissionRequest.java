@@ -7,7 +7,6 @@ import com.inha.endgame.user.CrimeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-
 @Getter
 public class PlayMissionRequest implements ClientRequest {
 	@Schema(description = "PLAY_MISSION", defaultValue = "PLAY_MISSION")
@@ -17,5 +16,5 @@ public class PlayMissionRequest implements ClientRequest {
 	private rVector3D missionPos;
 	private CrimeType crimeType;
 	private String username;
-	private boolean isClear;
+	private boolean clear;
 }
