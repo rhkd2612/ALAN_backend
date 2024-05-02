@@ -5,7 +5,11 @@ public enum Tile {
     WALL(1, false),
     BUILDING(2, false),
     SPAWN(3, true),
-    MISSION(4, true);
+    MISSION(4, true),
+    MISSION_SPY(5, true),
+    MISSION_THIEF(6, true),
+    MISSION_BOOMER(7, true),
+    COP_SPAWN(8, true);
 
     final int tileNum;
     final boolean canMove;
@@ -30,6 +34,15 @@ public enum Tile {
             return SPAWN;
         else if (num.equals("4") || num.equals("4.0"))
             return MISSION;
+        else if (num.equals("5") || num.equals("5.0"))
+            return MISSION_SPY;
+        else if (num.equals("6") || num.equals("6.0"))
+            return MISSION_THIEF;
+        else if (num.equals("7") || num.equals("7.0"))
+            return MISSION_BOOMER;
+        else if (num.equals("8") || num.equals("8.0"))
+            return COP_SPAWN;
+
 
         throw new IllegalArgumentException("정의되지 않은 맵 값이 사용");
     }
