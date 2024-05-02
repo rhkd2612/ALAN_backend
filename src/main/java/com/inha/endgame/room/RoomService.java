@@ -196,13 +196,13 @@ public class RoomService {
         room.setRoomNpc(npcCount);
     }
 
-    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, boolean isClear) {
+    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, MissionState missionState) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var crime = (RoomUserCrime)room.getRoomUsers().get(username);
-        if(!isClear)
+        if(missionState.equals(MissionState.START))
             crime.playMission(missionPhase, missionPos);
         else {
             boolean isEnd = crime.clearMission(missionPhase);

@@ -4,6 +4,7 @@ import com.inha.endgame.core.io.ClientRequest;
 import com.inha.endgame.core.io.RequestType;
 import com.inha.endgame.room.rVector3D;
 import com.inha.endgame.user.CrimeType;
+import com.inha.endgame.user.MissionState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -16,5 +17,5 @@ public class PlayMissionRequest implements ClientRequest {
 	private rVector3D missionPos;
 	private CrimeType crimeType;
 	private String username;
-	private boolean clear;
+	private MissionState missionState;
 }
