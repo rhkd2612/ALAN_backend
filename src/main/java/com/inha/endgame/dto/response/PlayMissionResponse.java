@@ -20,7 +20,7 @@ public class PlayMissionResponse implements ClientResponse {
     private final rVector3D missionPos;
     private final CrimeType crimeType;
     private final String username;
-    private final boolean isClear;
+    private final boolean clear;
 
     public PlayMissionResponse(PlayMissionRequest request) {
         this.type = ResponseType.PLAY_MISSION;
@@ -29,6 +29,6 @@ public class PlayMissionResponse implements ClientResponse {
         this.missionPos = request.getMissionPos();
         this.crimeType = request.getCrimeType();
         this.username = request.getUsername();
-        this.isClear = request.isClear();
+        this.clear = request.isClear();
     }
 }
