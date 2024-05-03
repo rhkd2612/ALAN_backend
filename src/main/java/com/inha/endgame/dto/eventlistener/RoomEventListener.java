@@ -132,4 +132,18 @@ public class RoomEventListener {
             unitySocketService.sendErrorMessage(session, e);
         }
     }
+
+    @EventListener
+    public void onUseItemRequest(ClientEvent<UseItemRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            roomService.useItem(roomId, request.getUsername());
+            unitySocketService.sendMessageRoom(roomId, new UseItemResponse(request.getItemPos()));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
 }

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = StunRequest.class, name = "STUN"),
 		@Type(value = ShotRequest.class, name = "SHOT"),
 		@Type(value = PlayMissionRequest.class, name = "PLAY_MISSION"),
+		@Type(value = UseItemRequest.class, name = "USE_ITEM"),
 })
 public interface ClientRequest {
 	RequestType getType();

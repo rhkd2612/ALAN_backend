@@ -212,6 +212,22 @@ public class RoomService {
         }
     }
 
+    public void useItem(long roomId, String username) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(!room.getCurState().equals(RoomState.PLAY))
+            throw new IllegalArgumentException("방이 진행 중이지 않습니다.");
+
+        var crime = (RoomUserCrime) room.getRoomUsers().get(username);
+        crime.useItem();
+
+        RoomUserCop cop = room.getCop();
+        if(username.equals(cop.getTargetUsername()))
+            releaseStun(roomId);
+    }
+
     public void updateUser(long roomId, RoomUser roomUser) {
         Room room = mapRoom.get(roomId);
         if(room == null)
