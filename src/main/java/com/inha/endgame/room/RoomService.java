@@ -198,13 +198,13 @@ public class RoomService {
         room.setRoomNpc(npcCount);
     }
 
-    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, boolean isClear) {
+    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, MissionState missionState) {
         Room room = mapRoom.get(roomId);
         if(room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var crime = (RoomUserCrime)room.getRoomUsers().get(username);
-        if(!isClear)
+        if(missionState.equals(MissionState.START))
             crime.playMission(missionPhase, missionPos);
         else {
             boolean isEnd = crime.clearMission(missionPhase);
@@ -212,6 +212,22 @@ public class RoomService {
                 // TODO 게임 종료 처리
             }
         }
+    }
+
+    public void useItem(long roomId, String username) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(!room.getCurState().equals(RoomState.PLAY))
+            throw new IllegalArgumentException("방이 진행 중이지 않습니다.");
+
+        var crime = (RoomUserCrime) room.getRoomUsers().get(username);
+        crime.useItem();
+
+        RoomUserCop cop = room.getCop();
+        if(username.equals(cop.getTargetUsername()))
+            releaseStun(roomId);
     }
 
     public void updateUser(long roomId, RoomUser roomUser) {

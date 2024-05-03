@@ -7,6 +7,7 @@ import com.inha.endgame.dto.response.*;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.RoomUser;
 import com.inha.endgame.room.RoomUserCop;
+import com.inha.endgame.user.MissionState;
 import com.inha.endgame.user.StunState;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -124,8 +125,23 @@ public class RoomEventListener {
         var roomId = request.getRoomId();
 
         try {
-            roomService.playMission(roomId, request.getUsername(), request.getMissionPhase(), request.getMissionPos(), request.isClear());
+            if(!request.getMissionState().equals(MissionState.FAIL))
+                roomService.playMission(roomId, request.getUsername(), request.getMissionPhase(), request.getMissionPos(), request.getMissionState());
             unitySocketService.sendMessageRoom(roomId, new PlayMissionResponse(request));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onUseItemRequest(ClientEvent<UseItemRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            roomService.useItem(roomId, request.getUsername());
+            unitySocketService.sendMessageRoom(roomId, new UseItemResponse(request.getItemPos()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

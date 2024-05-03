@@ -29,4 +29,5 @@ public enum RequestType {
 	STUN,
 	SHOT,
 	PLAY_MISSION,
+	USE_ITEM,
 }

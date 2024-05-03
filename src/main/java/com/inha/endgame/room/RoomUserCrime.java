@@ -17,6 +17,8 @@ public class RoomUserCrime extends RoomUser {
     private Date secondMissionClearAt;
     private Date thirdMissionClearAt;
 
+    private int remainItemCount = 10;
+
     public RoomUserCrime(User user) {
         super(user);
     }
@@ -35,6 +37,13 @@ public class RoomUserCrime extends RoomUser {
                     break;
             }
         }
+    }
+
+    public synchronized void useItem() {
+        if(this.remainItemCount < 1)
+            throw new IllegalStateException("아이템 개수 부족");
+
+        this.remainItemCount--;
     }
 
     public boolean clearMission(int missionPhase) {
