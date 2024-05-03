@@ -225,7 +225,7 @@ public class RoomService {
         var username = roomUser.getUsername();
         if(room.getRoomUsers().containsKey(username)) {
             var prevUser = room.getRoomUsers().get(username);
-            prevUser.updateUser(roomUser, mapReader.check(roomUser.getPos()));
+            prevUser.updateUser(roomUser);
         }
     }
 

@@ -23,7 +23,7 @@ public class MapReader {
     }
 
     public boolean check(rVector3D nextPos) {
-        Tile targetTile = gameMap.get((int) Math.floor(nextPos.getX())).get((int) Math.floor(nextPos.getZ()));
+        Tile targetTile = gameMap.get(100 - (int) Math.floor(nextPos.getX())).get(100 - (int) Math.floor(nextPos.getZ()));
         return targetTile.isCanMove();
     }
 }
