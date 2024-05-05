@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
+import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.user.User;
@@ -121,28 +122,14 @@ public class RoomUser implements Serializable {
 
     public void beCop() {
         this.roomUserType = RoomUserType.COP;
-
-        var copSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posXmin"));
-        var copSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posXmax"));
-        var copSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posZmin"));
-        var copSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_cop","posZmax"));
-
-        var pos = new rVector3D(copSpawnMinX + (float)(Math.random() * (copSpawnMaxX - copSpawnMinX)), 0, copSpawnMinZ + (float)(Math.random() * (copSpawnMaxZ - copSpawnMinZ)));
-        this.pos = pos;
+        this.pos = MapReader.getCopSpawnPos();
     }
 
     public void beCrime(CrimeType crimeType) {
         this.roomUserType = RoomUserType.USER;
         this.crimeType = crimeType;
 
-        // TODO inner 관련된거 추가?
-        var crimeSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmin"));
-        var crimeSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmax"));
-        var crimeSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posZmin"));
-        var crimeSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posZmax"));
-
-        var pos = new rVector3D(crimeSpawnMinX + (float)(Math.random() * (crimeSpawnMaxX - crimeSpawnMinX)), 0, crimeSpawnMinZ + (float)(Math.random() * (crimeSpawnMaxZ - crimeSpawnMinZ)));
-        this.pos = pos;
+        this.pos = MapReader.getRandomCrimePos();
     }
 
     public void setAnim(int anim) {
