@@ -164,6 +164,9 @@ public class RoomService {
         RoomUserCrimeAssassin assassin = room.getAssassin();
         if(assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername())) {
             assassin.killTarget(copUser.getTargetUsername());
+            if(assassin.getTargetUsernames().isEmpty()) {
+                // 어쌔신 승리
+            }
         }
 
         var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
