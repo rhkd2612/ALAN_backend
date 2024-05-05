@@ -2,6 +2,7 @@ package com.inha.endgame.core.excel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.inha.endgame.room.Tile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
@@ -48,7 +49,12 @@ public class ExcelParser {
         return result.toString();
     }
 
-    private List<List<String>> readExcel(File file) throws IOException {
+    public List<List<Tile>> convertExcelToMap(String folderPath, int maxSize) throws IOException{
+        File mapFile = new File(folderPath);
+        return readExcelMap(mapFile, maxSize);
+    }
+
+    public List<List<String>> readExcel(File file) throws IOException {
         List<List<String>> excelData = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -56,9 +62,8 @@ public class ExcelParser {
             for (Row row : sheet) {
                 List<String> rowData = new ArrayList<>();
                 for (Cell cell : row) {
-                    if(!cell.toString().equals("")) {
+                    if(!cell.toString().equals(""))
                         rowData.add(cell.toString());
-                    }
                 }
 
                 if(!rowData.isEmpty())
@@ -66,6 +71,45 @@ public class ExcelParser {
             }
         }
         return excelData;
+    }
+
+    public List<List<Tile>> readExcelMap(File file, int maxSize) throws IOException {
+        List<List<Tile>> excelData = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            int rowNum = 0;
+            for (Row row : sheet) {
+                if(++rowNum > maxSize)
+                    break;
+
+                List<Tile> rowData = new ArrayList<>();
+                int cellCount = 0;
+                for (Cell cell : row) {
+                    if(++cellCount > maxSize)
+                        break;
+
+                    if(!cell.toString().equals(""))
+                        rowData.add(Tile.toTile(cell.toString()));
+                    else
+                        rowData.add(Tile.GROUND);
+                }
+
+                if(!rowData.isEmpty())
+                    excelData.add(rowData);
+            }
+        }
+        return excelData;
+    }
+
+    public File getProjectDirectory() {
+        String projectDir = System.getProperty("user.dir");
+
+        while (!projectDir.endsWith("backend")) {
+            projectDir = projectDir.substring(0, projectDir.length() - 1);
+        }
+
+        return new File(projectDir);
     }
 
     private String convertToJson(List<List<String>> excelData) {

@@ -1,13 +1,11 @@
 package com.inha.endgame.core.excel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.endgame.GameApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,13 +18,7 @@ public class JsonReader {
     public JsonReader(ExcelParser excelParser) throws IOException {
         this.excelParser = excelParser;
 
-        String projectDir = System.getProperty("user.dir");
-
-        while (!projectDir.endsWith("backend")) {
-            projectDir = projectDir.substring(0, projectDir.length() - 1);
-        }
-
-        File curDir = new File(projectDir);
+        File curDir = this.excelParser.getProjectDirectory();
         File modelDir = new File(curDir.getParent() + "/model");
 
         this.excelParser.convertExcelToJson(modelDir.getAbsolutePath(), ".xlsx");

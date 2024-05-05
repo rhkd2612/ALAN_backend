@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
+import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class RoomService {
     private final Map<Long, Room> mapRoom = new ConcurrentHashMap<>();
     private final UserService userService;
+    private final MapReader mapReader;
 
     public static float minX;
     public static float minZ;
