@@ -32,4 +32,5 @@ public enum ResponseType {
 	SELECT_JOB,
 	PLAY_MISSION,
 	USE_ITEM,
+	ASSASSIN_KILL,
 }

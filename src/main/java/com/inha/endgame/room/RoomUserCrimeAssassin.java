@@ -25,6 +25,10 @@ public class RoomUserCrimeAssassin extends RoomUserCrime {
         targetUsernames.add(targetUsername);
     }
 
+    public int killTarget(String username) {
+        targetUsernames.remove(username);
+        return targetUsernames.size();
+    }
 
     @Override
     public void playMission(int missionPhase, rVector3D missionPos) {

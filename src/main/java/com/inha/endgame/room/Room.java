@@ -15,6 +15,10 @@ public class Room {
     private final Map<String, RoomUser> roomUsers;
     private final Map<String, RoomUser> roomNpcs;
     private String copUsername;
+    private String spyUsername;
+    private String boomerUsername;
+    private String assassinUsername;
+
     private AnimEvent event;
 
     private RoomState curState;
@@ -60,6 +64,18 @@ public class Room {
         this.copUsername = copUsername;
     }
 
+    public void setSpyUsername(String spyUsername) {
+        this.spyUsername = spyUsername;
+    }
+
+    public void setBoomerUsername(String boomerUsername) {
+        this.boomerUsername = boomerUsername;
+    }
+
+    public void setAssassinUsername(String assassinUsername) {
+        this.assassinUsername = assassinUsername;
+    }
+
     public List<RoomUser> getAllMembers() {
         List<RoomUser> result = new ArrayList<>();
 
@@ -80,6 +96,24 @@ public class Room {
 
     public RoomUserCop getCop() {
         return (RoomUserCop)(this.roomUsers.get(this.copUsername));
+    }
+
+    public RoomUserCrimeSpy getSpy() {
+        if(this.spyUsername == null)
+            return null;
+        return (RoomUserCrimeSpy) (this.roomUsers.get(this.spyUsername));
+    }
+
+    public RoomUserCrimeBoomer getBoomer() {
+        if(this.boomerUsername == null)
+            return null;
+        return (RoomUserCrimeBoomer) (this.roomUsers.get(this.boomerUsername));
+    }
+
+    public RoomUserCrimeAssassin getAssassin() {
+        if(this.assassinUsername == null)
+            return null;
+        return (RoomUserCrimeAssassin) (this.roomUsers.get(this.assassinUsername));
     }
 
     public void setEvent(AnimEvent event) {

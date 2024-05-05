@@ -30,4 +30,5 @@ public enum RequestType {
 	SHOT,
 	PLAY_MISSION,
 	USE_ITEM,
+	ASSASSIN_KILL,
 }

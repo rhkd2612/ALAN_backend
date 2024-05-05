@@ -146,4 +146,18 @@ public class RoomEventListener {
             unitySocketService.sendErrorMessage(session, e);
         }
     }
+
+    @EventListener
+    public void onAssassinKillRequest(ClientEvent<AssassinKillRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            roomService.assassinKill(roomId, request.getTargetUsername());
+            unitySocketService.sendMessageRoom(roomId, new AssassinKillResponse(request.getTargetUsername()));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
 }

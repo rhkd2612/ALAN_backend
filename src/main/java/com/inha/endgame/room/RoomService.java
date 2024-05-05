@@ -161,10 +161,39 @@ public class RoomService {
         targetUser.die();
         copUser.endAimingAndStun();
 
+        RoomUserCrimeAssassin assassin = room.getAssassin();
+        if(assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername())) {
+            assassin.killTarget(copUser.getTargetUsername());
+        }
+
         var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
         copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
 
         return targetUser;
+    }
+
+    public synchronized void assassinKill(long roomId, String targetUsername) {
+        Room room = mapRoom.get(roomId);
+        if(room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        RoomUserCrimeAssassin assassin = room.getAssassin();
+        if(assassin == null)
+            throw new IllegalArgumentException("암살자가 없습니다.");
+
+        RoomUser targetNpc = room.getRoomNpcs().get(targetUsername);
+        if(targetNpc == null)
+            throw new IllegalArgumentException("NPC만 타겟으로 지정할 수 있습니다.");
+
+        if(!assassin.getTargetUsernames().contains(targetUsername))
+            throw new IllegalArgumentException("타겟이 아닙니다.");
+
+        targetNpc.die();
+        assassin.killTarget(targetUsername);
+
+        if(assassin.getTargetUsernames().isEmpty()) {
+            // 어쌔신 승리
+        }
     }
 
     public void joinRoom(long roomId, User user) {
@@ -278,6 +307,26 @@ public class RoomService {
                             return;
                         assassin.addTarget(npc);
                     });
+                }
+
+                switch(randomCrimeType) {
+                    case SPY:
+                        room.setSpyUsername(roomUser.getUsername());
+                        break;
+                    case BOOMER:
+                        room.setBoomerUsername(roomUser.getUsername());
+                        break;
+                    case ASSASSIN:
+                        room.setAssassinUsername(roomUser.getUsername());
+
+                        int targetCount = 3;
+                        room.getRoomNpcs().keySet().forEach(npc -> {
+                            RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
+                            if(assassin.getTargetUsernames().size() >= targetCount)
+                                return;
+                            assassin.addTarget(npc);
+                        });
+                        break;
                 }
 
                 room.getRoomUsers().put(roomUser.getUsername(), crimeUser);
