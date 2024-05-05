@@ -11,6 +11,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class SelectJobResponse implements ClientResponse {
@@ -20,13 +21,18 @@ public class SelectJobResponse implements ClientResponse {
     private final rVector3D pos;
     private final CrimeType crimeType;
 
-    private final List<RoomUser> roomUsers = new ArrayList<>();;
+    private final List<RoomUser> roomUsers = new ArrayList<>();
 
-    public SelectJobResponse(RoomUserType roomUserType, rVector3D pos, CrimeType crimeType, List<RoomUser> roomUsers) {
+    private final Map<Integer, rVector3D> missionInfo;
+    private final List<String> targetInfo;
+
+    public SelectJobResponse(RoomUserType roomUserType, rVector3D pos, CrimeType crimeType, List<RoomUser> roomUsers, Map<Integer, rVector3D> missionInfo, List<String> targetInfo) {
         this.type = ResponseType.SELECT_JOB;
         this.roomUserType = roomUserType;
         this.pos = pos;
         this.crimeType = crimeType;
         this.roomUsers.addAll(roomUsers);
+        this.missionInfo = missionInfo;
+        this.targetInfo = targetInfo;
     }
 }

@@ -156,4 +156,8 @@ public class RoomUser implements Serializable {
                 ", pos=" + pos +
                 '}';
     }
+
+    public boolean isCrime(){
+        return !this.crimeType.equals(CrimeType.NONE);
+    }
 }

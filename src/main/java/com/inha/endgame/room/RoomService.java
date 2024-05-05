@@ -269,6 +269,17 @@ public class RoomService {
                 roomUser.beCrime(randomCrimeType);
 
                 RoomUserCrime crimeUser = RoomUserCrime.createCrime(roomUser, randomCrimeType);
+
+                if(randomCrimeType == CrimeType.ASSASSIN) {
+                    int targetCount = 3;
+                    room.getRoomNpcs().keySet().forEach(npc -> {
+                        RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
+                        if(assassin.getTargetUsernames().size() >= targetCount)
+                            return;
+                        assassin.addTarget(npc);
+                    });
+                }
+
                 room.getRoomUsers().put(roomUser.getUsername(), crimeUser);
             }
         });

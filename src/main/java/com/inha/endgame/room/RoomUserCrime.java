@@ -1,19 +1,23 @@
 package com.inha.endgame.room;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.User;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public abstract class RoomUserCrime extends RoomUser {
     @JsonIgnore
     protected int clearMissionPhase = 0;
     @JsonIgnore
-    protected static final int MAX_MISSION_PHASE = 3;
-    protected static final int MAX_COMMON_MISSION_PHASE = 2;
+    public static final int MAX_MISSION_PHASE = 3;
+    @JsonIgnore
+    public static final int MAX_COMMON_MISSION_PHASE = 2;
 
     @JsonIgnore
     protected Date firstMissionClearAt;
@@ -27,12 +31,17 @@ public abstract class RoomUserCrime extends RoomUser {
     @JsonIgnore
     protected int remainItemCount = 10;
 
+    @JsonIgnore
+    protected Map<Integer, rVector3D> missionPos;
+
     public RoomUserCrime(User user) {
         super(user);
     }
 
     public RoomUserCrime(RoomUser roomUser) {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
+
+        this.missionPos = MapReader.getRandomCrimeMissionPos(this.getCrimeType());
     }
 
     public static RoomUserCrime createCrime(RoomUser roomUser, CrimeType crimeType) {

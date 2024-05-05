@@ -6,6 +6,8 @@ import com.inha.endgame.user.User;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class RoomUserCrimeSpy extends RoomUserCrime {

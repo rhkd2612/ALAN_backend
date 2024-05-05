@@ -5,14 +5,17 @@ import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.response.SelectJobResponse;
 import com.inha.endgame.dto.response.StartRoomResponse;
 import com.inha.endgame.room.*;
+import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -35,7 +38,20 @@ public class RoomReadyStateAction implements RoomStateAction {
                 var userSession = sessionService.findSessionBySessionId(user.getSessionId());
                 var roomUser = room.getRoomUsers().get(user.getUsername());
                 try {
-                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos(), roomUser.getCrimeType(), roomUsers));
+                    Map<Integer, rVector3D> missionInfo = null;
+                    List<String> targetInfo = null;
+
+                    if(roomUser.isCrime()) {
+                        var crime = (RoomUserCrime)roomUser;
+                        missionInfo = crime.getMissionPos();
+
+                        if (roomUser.getCrimeType().equals(CrimeType.ASSASSIN)) {
+                            var assassin = (RoomUserCrimeAssassin) roomUser;
+                            targetInfo = assassin.getTargetInfo();
+                        }
+                    }
+
+                    unitySocketService.sendMessage(userSession, new SelectJobResponse(roomUser.getRoomUserType(), roomUser.getPos(), roomUser.getCrimeType(), roomUsers, missionInfo, targetInfo));
                 } catch (Exception e) {}
             });
         } catch (Exception e) {
