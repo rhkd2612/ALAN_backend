@@ -70,8 +70,6 @@ public class RoomPlayStateAction implements RoomStateAction {
                 }
             }
 
-            System.out.println(cop.getCopAttackState());
-
             if(cop.getTargetUsername() == null)
                 room.getAllMembers().forEach(RoomUser::releaseStun);
 

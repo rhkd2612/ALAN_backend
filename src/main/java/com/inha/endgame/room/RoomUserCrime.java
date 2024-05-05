@@ -8,16 +8,24 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public class RoomUserCrime extends RoomUser {
+public abstract class RoomUserCrime extends RoomUser {
     @JsonIgnore
-    private int clearMissionPhase = 0;
-    private static final int MAX_PHASE = 3;
+    protected int clearMissionPhase = 0;
+    @JsonIgnore
+    protected static final int MAX_MISSION_PHASE = 3;
+    protected static final int MAX_COMMON_MISSION_PHASE = 2;
 
-    private Date firstMissionClearAt;
-    private Date secondMissionClearAt;
-    private Date thirdMissionClearAt;
+    @JsonIgnore
+    protected Date firstMissionClearAt;
 
-    private int remainItemCount = 10;
+    @JsonIgnore
+    protected Date secondMissionClearAt;
+
+    @JsonIgnore
+    protected Date thirdMissionClearAt;
+
+    @JsonIgnore
+    protected int remainItemCount = 10;
 
     public RoomUserCrime(User user) {
         super(user);
@@ -27,14 +35,24 @@ public class RoomUserCrime extends RoomUser {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
     }
 
+    public static RoomUserCrime createCrime(RoomUser roomUser, CrimeType crimeType) {
+        switch(crimeType) {
+            case SPY:
+                return new RoomUserCrimeSpy(roomUser);
+            case BOOMER:
+                return new RoomUserCrimeBoomer(roomUser);
+            case ASSASSIN:
+                return new RoomUserCrimeAssassin(roomUser);
+        }
+
+        throw new IllegalStateException("범죄자 인원 초과");
+    }
+
     public void playMission(int missionPhase, rVector3D missionPos) {
-        // TODO원래 위치 검사도 해야한다 ㅇㅇ.. #4-12 합쳐지면 그때 처리
         if(missionPhase == this.clearMissionPhase + 1) {
-            switch (this.getCrimeType()) {
-                case SPY:
-                    break;
-                case BOOMER:
-                    break;
+            // 공통 미션 처리는 여기서
+            if(missionPhase <= MAX_COMMON_MISSION_PHASE) {
+
             }
         }
     }
@@ -48,13 +66,6 @@ public class RoomUserCrime extends RoomUser {
 
     public boolean clearMission(int missionPhase) {
         if(missionPhase == this.clearMissionPhase + 1) {
-            switch (this.getCrimeType()) {
-                case SPY:
-                    break;
-                case BOOMER:
-                    break;
-            }
-
             this.clearMissionPhase++;
 
             switch(this.clearMissionPhase) {
@@ -70,10 +81,12 @@ public class RoomUserCrime extends RoomUser {
             }
 
             // 우승~
-            if(this.clearMissionPhase == MAX_PHASE)
+            if(this.clearMissionPhase == MAX_MISSION_PHASE)
                 return true;
         }
 
         return false;
     }
+
+    public abstract CrimeType getCrimeType();
 }

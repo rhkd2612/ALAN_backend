@@ -131,9 +131,9 @@ public class RoomUser implements Serializable {
         this.pos = pos;
     }
 
-    public void beCrime() {
+    public void beCrime(CrimeType crimeType) {
         this.roomUserType = RoomUserType.USER;
-        this.crimeType = CrimeType.SPY; // 일단 한개이므로..
+        this.crimeType = crimeType;
 
         // TODO inner 관련된거 추가?
         var crimeSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_criminal_outer","posXmin"));
@@ -143,8 +143,6 @@ public class RoomUser implements Serializable {
 
         var pos = new rVector3D(crimeSpawnMinX + (float)(Math.random() * (crimeSpawnMaxX - crimeSpawnMinX)), 0, crimeSpawnMinZ + (float)(Math.random() * (crimeSpawnMaxZ - crimeSpawnMinZ)));
         this.pos = pos;
-
-        // 아이템 지급 등
     }
 
     public void setAnim(int anim) {

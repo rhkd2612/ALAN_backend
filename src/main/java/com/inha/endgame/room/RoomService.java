@@ -263,8 +263,11 @@ public class RoomService {
 
         roomUsers.forEach(roomUser -> {
             if(!roomUser.getUsername().equals(copUsername)) {
-                roomUser.beCrime();
-                room.getRoomUsers().put(roomUser.getUsername(), new RoomUserCrime(roomUser));
+                CrimeType randomCrimeType = room.getRandomCrimeType();
+                roomUser.beCrime(randomCrimeType);
+
+                RoomUserCrime crimeUser = RoomUserCrime.createCrime(roomUser, randomCrimeType);
+                room.getRoomUsers().put(roomUser.getUsername(), crimeUser);
             }
         });
 

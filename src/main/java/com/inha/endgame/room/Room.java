@@ -2,7 +2,9 @@ package com.inha.endgame.room;
 
 
 import com.inha.endgame.room.event.AnimEvent;
+import com.inha.endgame.user.CrimeType;
 import lombok.Getter;
+import org.apache.commons.lang3.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,9 @@ public class Room {
     private final Date createAt;
     private Date readyAt;
 
+    private final List<CrimeType> remainCrimeTypes = new ArrayList<>();
+    private int crimeCount = 0;
+
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -28,6 +33,27 @@ public class Room {
         this.roomNpcs = new ConcurrentHashMap<>();
         this.curState = null;
         this.nextState = RoomState.NONE;
+
+        for(var type : CrimeType.values()) {
+            if(!type.equals(CrimeType.NONE))
+                this.remainCrimeTypes.add(type);
+        }
+    }
+
+    public CrimeType getRandomCrimeType() {
+        if(this.crimeCount == this.remainCrimeTypes.size())
+            return CrimeType.NONE;
+
+        var r = RandomUtils.nextInt(0, remainCrimeTypes.size() - this.crimeCount);
+        var crimeType = remainCrimeTypes.get(r);
+
+        var temp = remainCrimeTypes.get(remainCrimeTypes.size() - this.crimeCount - 1);
+        remainCrimeTypes.set(remainCrimeTypes.size() - this.crimeCount - 1, crimeType);
+        remainCrimeTypes.set(r, temp);
+
+        this.crimeCount++;
+
+        return crimeType;
     }
 
     public void setCopUsername(String copUsername) {
