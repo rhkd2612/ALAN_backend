@@ -57,10 +57,11 @@ public class MapReader {
         int intx = 100 - (int) Math.floor(x);
         int intz = 100 - (int) Math.floor(z);
 
-        intx = Math.min(0, intx);
-        intx = Math.max(99, intx);
-        intz = Math.min(0, intz);
-        intz = Math.max(99, intx);
+        intx = Math.max(0, intx);
+        intx = Math.min(99, intx);
+
+        intz = Math.max(0, intz);
+        intz = Math.min(99, intz);
 
         return gameMap.get(intx).get(intz);
     }
