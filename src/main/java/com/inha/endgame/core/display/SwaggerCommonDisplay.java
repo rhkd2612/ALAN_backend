@@ -18,6 +18,18 @@ public class SwaggerCommonDisplay {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
+    @GetMapping("/CREATE_ROOM")
+    void test(CreateRoomRequest CreateRoomRequest,
+              CreateRoomResponse CreateRoomResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
+    @GetMapping("/ROOM_LIST")
+    void test(RoomListRequest RoomListRequest,
+              RoomListResponse RoomListResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
     @GetMapping("/CHECK_USER")
     void test(CheckUserRequest CheckUserRequest,
               CheckUserResponse CheckUserResponse) throws IllegalAccessException {

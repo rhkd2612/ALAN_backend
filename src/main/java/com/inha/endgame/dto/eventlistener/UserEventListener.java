@@ -1,14 +1,10 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
-import com.inha.endgame.dto.request.AddUserRequest;
-import com.inha.endgame.dto.request.CheckUserRequest;
-import com.inha.endgame.dto.request.PingRequest;
-import com.inha.endgame.dto.request.StartRoomRequest;
-import com.inha.endgame.dto.response.AddUserResponse;
-import com.inha.endgame.dto.response.CheckUserResponse;
-import com.inha.endgame.dto.response.PingResponse;
-import com.inha.endgame.dto.response.SettingRoomResponse;
+import com.inha.endgame.dto.RoomDto;
+import com.inha.endgame.dto.request.*;
+import com.inha.endgame.dto.response.*;
+import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.room.RoomUser;
@@ -22,6 +18,7 @@ import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +30,36 @@ public class UserEventListener {
     private final UnitySocketService unitySocketService;
     private final UserService userService;
     private final RoomService roomService;
+
+    @EventListener
+    public void onCreateRoomRequest(ClientEvent<CreateRoomRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+
+        try {
+            Room newRoom = roomService.createRoom();
+            unitySocketService.sendMessage(session, new CreateRoomResponse(newRoom.getRoomId()));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onRoomListRequest(ClientEvent<RoomListRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+
+        try {
+            List<RoomDto> result = new ArrayList<>();
+            roomService.getAllRoom().forEach(room -> {
+                result.add(new RoomDto(room));
+            });
+
+            unitySocketService.sendMessage(session, new RoomListResponse(result));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
 
     @EventListener
     public void onAddUserRequest(ClientEvent<AddUserRequest> event) throws IOException, NoSuchAlgorithmException {

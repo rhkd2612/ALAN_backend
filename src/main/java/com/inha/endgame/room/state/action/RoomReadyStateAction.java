@@ -10,9 +10,7 @@ import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketSession;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +39,7 @@ public class RoomReadyStateAction implements RoomStateAction {
                     Map<Integer, rVector3D> missionInfo = null;
                     List<String> targetInfo = null;
 
-                    if(roomUser.isCrime()) {
+                    if(roomUser.checkCrimeUser()) {
                         var crime = (RoomUserCrime)roomUser;
                         missionInfo = crime.getMissionPos();
 

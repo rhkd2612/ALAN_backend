@@ -30,6 +30,8 @@ public class Room {
     private final List<CrimeType> remainCrimeTypes = new ArrayList<>();
     private int crimeCount = 0;
 
+    private String hostNickname; // 방장
+
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -136,6 +138,9 @@ public class Room {
         if(this.roomUsers.containsKey(user.getUsername())) {
             return;
         }
+
+        if(this.roomUsers.isEmpty())
+            this.hostNickname = user.getNickname();
 
         this.roomUsers.put(user.getUsername(), user);
     }
