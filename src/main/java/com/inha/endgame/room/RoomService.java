@@ -257,10 +257,6 @@ public class RoomService {
 
         var crime = (RoomUserCrime) room.getRoomUsers().get(username);
         crime.useItem();
-
-        RoomUserCop cop = room.getCop();
-        if (username.equals(cop.getTargetUsername()))
-            releaseStun(roomId);
     }
 
     public void updateUser(long roomId, RoomUser roomUser) {
