@@ -289,8 +289,7 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var roomUsers = new ArrayList<>(room.getRoomUsers().values());
-        var copNum = RandomUtils.nextInt(0, roomUsers.size());
-        var cop = roomUsers.get(copNum);
+        var cop = roomUsers.stream().filter(roomUser -> roomUser.getNickname().equals(room.getHostNickname())).findAny().orElseThrow();
         var copUsername = cop.getUsername();
         cop.beCop();
 
