@@ -92,7 +92,9 @@ public class RoomUser implements Serializable {
 
         this.userState = UserState.STUN;
         this.velocity = 0;
-        this.anim = RandomUtils.nextInt(3, 4);
+
+        if(this.roomUserType.equals(RoomUserType.NPC))
+            this.anim = RandomUtils.nextInt(3, 4);
     }
 
     public void releaseStun() {
