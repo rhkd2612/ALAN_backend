@@ -57,28 +57,14 @@ public class RoomUser implements Serializable {
         this.crimeType = crimeType;
     }
 
-    public static List<RoomUser> createNpc(int npcCount) {
-        var fileName = "map";
-        var key = "map_size";
-
-        RoomService.minX = JsonReader._int(JsonReader.model(fileName, key,"mapXmin"));
-        RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key,"mapXmax"));
-        RoomService.minZ = JsonReader._int(JsonReader.model(fileName, key,"mapZmin"));
-        RoomService.maxZ = JsonReader._int(JsonReader.model(fileName, key,"mapZmax"));
-
-        // TODO inner 관련된거 추가?
-        var npcSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posXmin"));
-        var npcSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posXmax"));
-        var npcSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posZmin"));
-        var npcSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer","posZmax"));
-
+    public static List<RoomUser> createNpc(int npcCount, List<rVector3D> randomNpcPos) {
         ArrayList<RoomUser> npcs = new ArrayList<>();
 
         for(int i = 0; i < npcCount; i++) {
             var username = UUID.randomUUID().toString();
             var nickname = "NPC_" + i;
 
-            var pos = new rVector3D(npcSpawnMinX + (float)(Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float)(Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
+            var pos = randomNpcPos.get(i);
             var rot = new rVector3D(0, 0, 0);
 
             npcs.add(new RoomUserNpc(username, nickname, pos, rot, RoomUserType.NPC));
@@ -146,6 +132,10 @@ public class RoomUser implements Serializable {
 
     public void setVelocity(float velocity) {
         this.velocity = velocity;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     @Override

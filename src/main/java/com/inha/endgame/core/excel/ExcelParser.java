@@ -39,6 +39,9 @@ public class ExcelParser {
 
         if (files != null) {
             for (File file : files) {
+                if(file.getName().equals("Stage.xlsx"))
+                    continue;
+
                 result.append("try to convert file : ").append(file.getName()).append("\n");
                 List<List<String>> excelData = readExcel(file);
                 String json = convertToJson(excelData);

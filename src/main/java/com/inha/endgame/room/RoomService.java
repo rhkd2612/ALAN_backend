@@ -228,7 +228,9 @@ public class RoomService {
 
         if (npcCount == 0)
             throw new IllegalArgumentException("1이상의 npc 수가 필요합니다.");
-        room.setRoomNpc(npcCount);
+
+        List<rVector3D> randomNpcPos = mapReader.getRandomNpcPos(npcCount);
+        room.setRoomNpc(npcCount, randomNpcPos);
     }
 
     public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, MissionState missionState) {

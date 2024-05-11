@@ -29,7 +29,7 @@ public abstract class RoomUserCrime extends RoomUser {
     protected Date thirdMissionClearAt;
 
     @JsonIgnore
-    protected int remainItemCount = 10;
+    protected int remainItemCount = 3;
 
     @JsonIgnore
     protected Map<Integer, rVector3D> missionPos;

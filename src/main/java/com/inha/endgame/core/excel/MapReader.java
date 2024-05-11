@@ -1,8 +1,6 @@
 package com.inha.endgame.core.excel;
 
-import com.inha.endgame.room.RoomUserCrime;
-import com.inha.endgame.room.Tile;
-import com.inha.endgame.room.rVector3D;
+import com.inha.endgame.room.*;
 import com.inha.endgame.user.CrimeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
@@ -10,10 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
@@ -32,7 +27,7 @@ public class MapReader {
         this.excelParser = excelParser;
 
         File curDir = this.excelParser.getProjectDirectory();
-        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/Client/Stage.xlsx", 100);
+        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 100);
 
         for(int i = 0; i < this.gameMap.size(); i++) {
             for(int j = 0; j < this.gameMap.get(i).size(); j++) {
@@ -78,6 +73,32 @@ public class MapReader {
     public static rVector3D getRandomCrimePos() {
         int r = RandomUtils.nextInt(0, crimeSpawnPoses.size());
         return crimeSpawnPoses.get(r);
+    }
+
+    public List<rVector3D> getRandomNpcPos(int count) {
+        List<rVector3D> npcPos = new ArrayList<>();
+
+        var fileName = "map";
+        var key = "map_size";
+
+        RoomService.minX = JsonReader._int(JsonReader.model(fileName, key, "mapXmin"));
+        RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key, "mapXmax"));
+        RoomService.minZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmin"));
+        RoomService.maxZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmax"));
+
+        var npcSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmin"));
+        var npcSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmax"));
+        var npcSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmin"));
+        var npcSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmax"));
+
+        for (int i = 0; i < count; i++) {
+            var pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
+            while(!check(pos))
+                pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
+            npcPos.add(pos);
+        }
+
+        return npcPos;
     }
 
     public static Map<Integer, rVector3D> getRandomCrimeMissionPos(CrimeType crimeType) {

@@ -122,13 +122,13 @@ public class Room {
         this.event = event;
     }
 
-    public void setRoomNpc(int npcCount) {
+    public void setRoomNpc(int npcCount, List<rVector3D> randomNpcPos) {
         if(this.curState != RoomState.NONE)
             throw new IllegalStateException("NONE 상태일 때만 세팅 가능합니다.");
 
         this.roomNpcs.clear();
 
-        List<RoomUser> npcs = RoomUser.createNpc(npcCount);
+        List<RoomUser> npcs = RoomUser.createNpc(npcCount, randomNpcPos);
         npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
     }
 

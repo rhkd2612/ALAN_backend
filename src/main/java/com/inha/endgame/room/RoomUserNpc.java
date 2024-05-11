@@ -25,6 +25,7 @@ public class RoomUserNpc extends RoomUser {
 
     public RoomUserNpc(String username, String nickname, rVector3D pos, rVector3D rot, RoomUserType roomUserType) {
         super(username, nickname, pos, rot, roomUserType);
+        this.setColor(RandomUtils.nextInt() % 3);
     }
 
     public synchronized void rollState() {
