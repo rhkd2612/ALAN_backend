@@ -86,7 +86,7 @@ public class UnitySocketService {
 			throw new IllegalArgumentException("존재하지 않는 방에 대한 요청");
 
 		room.getRoomUsers().keySet().forEach(username -> {
-			var user = userService.getUser(username);
+			var user = userService.getUser(roomId, username);
 			if(user == null)
 				return;
 

@@ -32,7 +32,7 @@ public class RoomReadyStateAction implements RoomStateAction {
             roomService.selectJob(room.getRoomId());
             var roomUsers = roomService.findAllRoomUsersById(room.getRoomId());
 
-            userService.getAllUser().forEach(user -> {
+            userService.getAllUser(room.getRoomId()).forEach(user -> {
                 var userSession = sessionService.findSessionBySessionId(user.getSessionId());
                 var roomUser = room.getRoomUsers().get(user.getUsername());
                 try {

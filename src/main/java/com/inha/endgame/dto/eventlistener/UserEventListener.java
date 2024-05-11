@@ -66,7 +66,7 @@ public class UserEventListener {
         var session = event.getSession();
         var request = event.getClientRequest();
         var roomId = request.getRoomId();
-        var newUser = userService.addUser(session, request.getUsername(), request.getNickname());
+        var newUser = userService.addUser(session, roomId, request.getUsername(), request.getNickname());
 
         try {
             session.sendMessage(new TextMessage(newUser.getUsername()));

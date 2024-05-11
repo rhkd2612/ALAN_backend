@@ -1,15 +1,10 @@
 package com.inha.endgame.user;
 
-import com.inha.endgame.dto.request.AddUserRequest;
 import com.inha.endgame.core.unitysocket.SessionService;
-import com.inha.endgame.dto.request.CheckUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -18,28 +13,31 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-	private final Map<String, User> mapUser = new ConcurrentHashMap<>(); // FIXME 필요에 따라 DB로 이관
+	private final Map<Long, Map<String, User>> mapUser = new ConcurrentHashMap<>();
 	private final SessionService sessionService;
 
-	public User getUser(String username) {
-		return mapUser.get(username);
+	public User getUser(long roomId, String username) {
+		return mapUser.get(roomId).get(username);
 	}
 
-	public Collection<User> getAllUser() {
-		return Collections.unmodifiableCollection(mapUser.values());
+	public Collection<User> getAllUser(long roomId) {
+		return Collections.unmodifiableCollection(mapUser.get(roomId).values());
 	}
 
-	public synchronized User addUser(WebSocketSession session, String username, String nickname) {
+	public synchronized User addUser(WebSocketSession session, long roomId, String username, String nickname) {
+		if(!mapUser.containsKey(roomId))
+			mapUser.put(roomId, new ConcurrentHashMap<>());
+
 		var sessionId = session.getId();
-		if(mapUser.containsKey(username)) {
-			var prevUser = mapUser.get(username);
+		if(mapUser.get(roomId).containsKey(username)) {
+			var prevUser = mapUser.get(roomId).get(username);
 			if(!prevUser.getSessionId().equals(sessionId))
 				sessionService.changeSession(prevUser.getSessionId(), session);
 			return prevUser;
 		}
 
 		var newUser = new User(sessionId, username, nickname);
-		mapUser.put(username, newUser);
+		mapUser.get(roomId).put(username, newUser);
 
 		sessionService.addSession(session, newUser);
 		return newUser;
@@ -49,8 +47,8 @@ public class UserService {
 		user.syncRoom();
 	}
 
-	public void logout(User user) {
-		mapUser.remove(user.getUsername());
+	public void logout(long roomId, User user) {
+		mapUser.get(roomId).remove(user.getUsername());
 		sessionService.kickSession(user.getSessionId());
 	}
 }

@@ -343,6 +343,6 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         room.kick(user.toRoomUser());
-        userService.logout(user);
+        userService.logout(roomId, user);
     }
 }
