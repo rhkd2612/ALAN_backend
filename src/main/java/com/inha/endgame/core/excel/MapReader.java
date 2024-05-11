@@ -49,8 +49,8 @@ public class MapReader {
     }
 
     public Tile getTile(float x, float z) {
-        int intx = 100 - (int) Math.floor(x);
-        int intz = 100 - (int) Math.floor(z);
+        int intx = 100 - (int) Math.round(x);
+        int intz = 100 - (int) Math.round(z);
 
         intx = Math.max(0, intx);
         intx = Math.min(99, intx);
@@ -61,9 +61,55 @@ public class MapReader {
         return gameMap.get(intx).get(intz);
     }
 
-    public boolean check(rVector3D nextPos) {
+    public List<Tile> getRouteTiles(rVector3D startPos, rVector3D predictPos) {
+        List<Tile> result = new ArrayList<>();
+
+        float dx = predictPos.getX() - startPos.getX();
+        float dz = predictPos.getZ() - startPos.getZ();
+
+        float stepX = dx / 10;
+        float stepZ = dz / 10;
+
+        float currentX = startPos.getX();
+        float currentZ = startPos.getZ();
+
+        for (int i = 1; i <= 10; i++) {
+            result.add(getTile(currentX, currentZ));
+
+            // 다음 위치로 이동
+            currentX += stepX;
+            currentZ += stepZ;
+        }
+
+        result.add(getTile(predictPos.getX(), predictPos.getZ()));
+
+        return result;
+    }
+
+    public boolean check(rVector3D nextPos, int safeRange) {
         Tile targetTile = getTile(nextPos.getX(), nextPos.getZ());
+
+        int[] dx = {0, -1, 0, 1, -1, 1, 1, -1};
+        int[] dz = {-1, 0, 1, 0, 1, -1, 1, -1};
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 1; j <= safeRange; j++) {
+                Tile predictTile = getTile(nextPos.getX() + dx[i] * j, nextPos.getZ() + dz[i] * j);
+                if (!predictTile.isCanMove())
+                    return false;
+            }
+        }
+
         return targetTile.isCanMove();
+    }
+
+    public boolean check(rVector3D startPos, rVector3D predictPos) {
+        var targetTiles = getRouteTiles(startPos, predictPos);
+        for(var targetTile : targetTiles) {
+            if(!targetTile.isCanMove())
+                return false;
+        }
+        return true;
     }
 
     public static rVector3D getCopSpawnPos() {
@@ -93,7 +139,7 @@ public class MapReader {
 
         for (int i = 0; i < count; i++) {
             var pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
-            while(!check(pos))
+            while(!check(pos, 2))
                 pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
             npcPos.add(pos);
         }

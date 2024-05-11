@@ -98,15 +98,19 @@ public class RoomPlayStateAction implements RoomStateAction {
                         roomUserNpc.startAnim(nextAnim, new Date(nextAnimTimeAt + 5000));
                     } else {
                         // 상태 변경 시도
-                        roomUserNpc.rollState();
+                        roomUserNpc.rollState(false);
 
                         // 이후 동작 실행
                         // TODO 추후 Anim 추가
                         if (roomUserNpc.getNpcState().equals(NpcState.MOVE)) {
                             // frameCount는 1초에 계산하는 횟수
                             rVector3D nextPos = roomUserNpc.getNextPos(10);
-                            if(mapReader.check(nextPos))
+                            rVector3D predictPos = roomUserNpc.getNextPos(1);
+                            if(mapReader.check(nextPos, 2) && mapReader.check(nextPos, predictPos))
                                 roomUserNpc.setPos(nextPos);
+                            else {
+                                roomUserNpc.rollState(true);
+                            }
                         }
                     }
                 }

@@ -28,15 +28,15 @@ public class RoomUserNpc extends RoomUser {
         this.setColor(RandomUtils.nextInt() % 3);
     }
 
-    public synchronized void rollState() {
+    public synchronized void rollState(boolean force) {
         if(this.stateUpAt == null || !this.getUserState().equals(UserState.NORMAL))
             return;
 
         Date now = new Date();
-        if(now.after(stateUpAt)) {
+        if(force || now.after(stateUpAt)) {
             this.animPlay = false;
 
-            stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(1000, 10000));
+            stateUpAt = new Date(now.getTime() + RandomUtils.nextInt(500, 10000));
 
             var nextBehavior = RandomUtils.nextInt(0, 10);
             if(nextBehavior <= 7) {
