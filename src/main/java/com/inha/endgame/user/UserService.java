@@ -31,9 +31,12 @@ public class UserService {
 		var sessionId = session.getId();
 		if(mapUser.get(roomId).containsKey(username)) {
 			var prevUser = mapUser.get(roomId).get(username);
-			if(!prevUser.getSessionId().equals(sessionId))
-				sessionService.changeSession(prevUser.getSessionId(), session);
-			return prevUser;
+			var prevUserSessionId = prevUser.getSessionId();
+
+			if(!prevUserSessionId.equals(sessionId) && sessionService.validatePrevSessionId(prevUserSessionId)) {
+				sessionService.changeSession(prevUserSessionId, session);
+				return prevUser;
+			}
 		}
 
 		var newUser = new User(sessionId, username, nickname);

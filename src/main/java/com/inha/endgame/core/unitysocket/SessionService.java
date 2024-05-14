@@ -1,6 +1,8 @@
 package com.inha.endgame.core.unitysocket;
 
 import com.inha.endgame.user.User;
+import com.inha.endgame.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -42,12 +44,18 @@ public class SessionService {
         connectSession.remove(sessionId);
     }
 
+    public boolean validatePrevSessionId(String prevSessionId) {
+        User user = connectUser.get(prevSessionId);
+        return user != null;
+    }
+
     public void changeSession(String prevSessionId, WebSocketSession nextSession) {
         User user = connectUser.get(prevSessionId);
         if(user != null) {
             this.kickSession(prevSessionId);
             user.setSessionId(nextSession.getId());
-        }
+        } else
+            throw new IllegalStateException("유저 validation error");
 
         this.addSession(nextSession, user);
     }

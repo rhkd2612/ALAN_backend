@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Common")
 public class SwaggerCommonDisplay {
     @GetMapping("/TEST")
-    void test(TestRequest testRequest,
-              TestResponse testResponse) throws IllegalAccessException {
+    void test(TestRequest testRequest) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 

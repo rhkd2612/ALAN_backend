@@ -23,12 +23,7 @@ import lombok.Getter;
 
 
 @Getter
-@Schema(description = "세 수를 더하는 요청")
 public class TestRequest implements ClientRequest {
 	@Schema(description = "TEST", defaultValue = "TEST")
 	protected RequestType type = RequestType.TEST;
-	private String userId;
-	private int a;
-	private int b;
-	private int c;
 }

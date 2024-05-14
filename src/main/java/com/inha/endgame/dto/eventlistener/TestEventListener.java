@@ -1,9 +1,9 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.core.unitysocket.SessionService;
 import com.inha.endgame.dto.request.NetworkDelayRequest;
 import com.inha.endgame.dto.request.TestRequest;
-import com.inha.endgame.dto.response.TestResponse;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,16 +19,15 @@ public class TestEventListener {
     private static final Logger LOGGER = LoggerFactory.getLogger("TestEventListener");
 
     private final UnitySocketService unitySocketService;
+    private final SessionService sessionService;
 
     @EventListener
     public void onTestRequest(ClientEvent<TestRequest> event) {
         var session = event.getSession();
         try {
-            TestRequest request = event.getClientRequest();
-            Integer answer = request.getA() + request.getB() + request.getC();
-            unitySocketService.sendMessage(session, new TestResponse(answer));
-        } catch (IOException e) {
-            unitySocketService.sendErrorMessage(session, e);
+            sessionService.kickSession(session.getId());
+        } catch (Exception e) {
+
         }
     }
 
