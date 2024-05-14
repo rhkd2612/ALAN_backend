@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class RoomUser implements Serializable {
     private RoomUserType roomUserType;
     private UserState userState = UserState.NORMAL;
     private CrimeType crimeType = CrimeType.NONE;
+    private Date lastReportAt = null;
 
     public RoomUser(User user) {
         this.username = user.getUsername();
@@ -71,6 +73,18 @@ public class RoomUser implements Serializable {
         }
 
         return npcs;
+    }
+
+    public Date report() {
+        var coolTime = JsonReader._time(JsonReader.model("report", "report_rule", "ReportCoolTime"));
+        var now = new Date();
+
+        if(this.lastReportAt == null || now.after(new Date(lastReportAt.getTime() + (coolTime * 1000)))) {
+            this.lastReportAt = now;
+            return this.lastReportAt;
+        }
+
+        throw new IllegalStateException("아직 신고할 수 없습니다.");
     }
 
     public void updateUser(RoomUser roomUser) {

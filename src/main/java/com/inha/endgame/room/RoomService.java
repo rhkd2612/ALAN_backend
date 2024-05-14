@@ -2,6 +2,7 @@ package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.core.excel.MapReader;
+import com.inha.endgame.dto.ReportInfo;
 import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
@@ -199,6 +200,33 @@ public class RoomService {
             // 어쌔신 승리
         }
     }
+
+    public ReportInfo reportUser(long roomId, String reportUsername, String targetUsername) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var result = new ReportInfo();
+
+        RoomUser reportUser = room.getRoomUsers().get(reportUsername);
+        Date nextReportAvailAt = reportUser.report();
+
+        result.setReportUsername(reportUsername);
+        result.setNextReportAvailAt(nextReportAvailAt);
+
+        // npc를 지목해도 쿨타임은 돈다
+        if(room.getRoomUsers().containsKey(targetUsername)) {
+            result.setTargetUsername(targetUsername);
+
+            var reportStartAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectActivatingTime"));
+            var reportEndAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectContinuousTime"));
+            result.setHighlightStartAt(new Date(new Date().getTime() + reportStartAt));
+            result.setHighlightEndAt(new Date(new Date().getTime() + reportEndAt));
+        }
+
+        return result;
+    }
+
 
     public void joinRoom(long roomId, User user) {
         Room room = mapRoom.get(roomId);
