@@ -106,6 +106,7 @@ public class RoomUser implements Serializable {
     public void die() {
         this.userState = UserState.DIE;
         this.velocity = 0;
+        this.anim = 0;
     }
 
     public void beCop() {
