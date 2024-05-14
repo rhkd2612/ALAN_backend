@@ -41,7 +41,7 @@ public class Room {
         this.nextState = RoomState.NONE;
 
         for(var type : CrimeType.values()) {
-            if(!type.equals(CrimeType.NONE) && !type.equals(CrimeType.BOOMER))
+            if(!type.equals(CrimeType.NONE))
                 this.remainCrimeTypes.add(type);
         }
     }
