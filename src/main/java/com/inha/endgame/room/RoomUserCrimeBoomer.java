@@ -19,11 +19,16 @@ public class RoomUserCrimeBoomer extends RoomUserCrime {
     }
 
     @Override
+    public void setMaxMissionPhase() {
+        this.maxMissionPhase = 3;
+    }
+
+    @Override
     public void playMission(int missionPhase, rVector3D missionPos) {
         super.playMission(missionPhase, missionPos);
 
         // 최종 미션
-        if(missionPhase == MAX_MISSION_PHASE) {
+        if(missionPhase == this.maxMissionPhase) {
 
         }
     }

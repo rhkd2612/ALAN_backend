@@ -15,19 +15,13 @@ public abstract class RoomUserCrime extends RoomUser {
     @JsonIgnore
     protected int clearMissionPhase = 0;
     @JsonIgnore
-    public static final int MAX_MISSION_PHASE = 3;
-    @JsonIgnore
     public static final int MAX_COMMON_MISSION_PHASE = 2;
 
     @JsonIgnore
-    protected Date firstMissionClearAt;
+    protected List<Date> missionClearAt;
 
     @JsonIgnore
-    protected Date secondMissionClearAt;
-
-    @JsonIgnore
-    protected Date thirdMissionClearAt;
-
+    protected int maxMissionPhase;
     @JsonIgnore
     protected int remainItemCount = 3;
 
@@ -42,7 +36,10 @@ public abstract class RoomUserCrime extends RoomUser {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
 
         this.missionPos = MapReader.getRandomCrimeMissionPos(this.getCrimeType());
+        setMaxMissionPhase();
     }
+
+    public abstract void setMaxMissionPhase();
 
     public static RoomUserCrime createCrime(RoomUser roomUser, CrimeType crimeType) {
         switch(crimeType) {
@@ -76,21 +73,10 @@ public abstract class RoomUserCrime extends RoomUser {
     public boolean clearMission(int missionPhase) {
         if(missionPhase == this.clearMissionPhase + 1) {
             this.clearMissionPhase++;
-
-            switch(this.clearMissionPhase) {
-                case 1:
-                    firstMissionClearAt = new Date();
-                    break;
-                case 2:
-                    secondMissionClearAt = new Date();
-                    break;
-                case 3:
-                    thirdMissionClearAt = new Date();
-                    break;
-            }
+            this.missionClearAt.add(new Date());
 
             // 우승~
-            if(this.clearMissionPhase == MAX_MISSION_PHASE)
+            if(this.clearMissionPhase == this.maxMissionPhase)
                 return true;
         }
 
