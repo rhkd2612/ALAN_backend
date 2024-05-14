@@ -174,4 +174,17 @@ public class RoomEventListener {
             unitySocketService.sendErrorMessage(session, e);
         }
     }
+
+    @EventListener
+    public void onChatRequest(ClientEvent<ChatRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            unitySocketService.sendMessageRoom(roomId, new ChatResponse(request));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
 }

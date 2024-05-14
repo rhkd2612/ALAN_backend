@@ -79,7 +79,7 @@ public class RoomUser implements Serializable {
         var coolTime = JsonReader._time(JsonReader.model("report", "report_rule", "ReportCoolTime"));
         var now = new Date();
 
-        if(this.lastReportAt == null || now.after(new Date(lastReportAt.getTime() + (coolTime * 1000)))) {
+        if(this.lastReportAt == null || now.after(new Date(lastReportAt.getTime() + coolTime))) {
             this.lastReportAt = now;
             return this.lastReportAt;
         }

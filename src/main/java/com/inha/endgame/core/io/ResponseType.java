@@ -36,4 +36,5 @@ public enum ResponseType {
 	USE_ITEM,
 	ASSASSIN_KILL,
 	REPORT_USER,
+	CHAT,
 }

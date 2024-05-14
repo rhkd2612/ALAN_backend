@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = CreateRoomRequest.class, name = "CREATE_ROOM"),
 		@Type(value = RoomListRequest.class, name = "ROOM_LIST"),
 		@Type(value = ReportUserRequest.class, name = "REPORT_USER"),
+		@Type(value = ChatRequest.class, name = "CHAT"),
 })
 public interface ClientRequest {
 	RequestType getType();
