@@ -6,6 +6,7 @@ import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.User;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public abstract class RoomUserCrime extends RoomUser {
     public static final int MAX_COMMON_MISSION_PHASE = 2;
 
     @JsonIgnore
-    protected List<Date> missionClearAt;
+    protected List<Date> missionClearAt = new ArrayList<>();
 
     @JsonIgnore
     protected int maxMissionPhase;
