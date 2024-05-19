@@ -162,7 +162,10 @@ public class MapReader {
 
             missions.put(++missionCount, missionPos);
 
-            if(missionCount >= RoomUserCrime.MAX_COMMON_MISSION_PHASE)
+            if(crimeType.equals(CrimeType.SPY)) {
+                if(missionCount >= 3)
+                    break;
+            } else if(missionCount >= RoomUserCrime.MAX_COMMON_MISSION_PHASE)
                 break;
         }
 
