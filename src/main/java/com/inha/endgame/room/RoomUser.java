@@ -81,7 +81,7 @@ public class RoomUser implements Serializable {
 
         if(this.lastReportAt == null || now.after(new Date(lastReportAt.getTime() + coolTime))) {
             this.lastReportAt = now;
-            return this.lastReportAt;
+            return new Date(lastReportAt.getTime() + coolTime);
         }
 
         throw new IllegalStateException("아직 신고할 수 없습니다.");
