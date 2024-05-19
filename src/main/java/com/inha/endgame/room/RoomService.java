@@ -214,14 +214,19 @@ public class RoomService {
         result.setReportUsername(reportUsername);
         result.setNextReportAvailAt(nextReportAvailAt);
 
-        // npc를 지목해도 쿨타임은 돈다
+        var reportStartAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectActivatingTime"));
+        var reportEndAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectContinuousTime"));
+        result.setHighlightStartAt(new Date(new Date().getTime() + reportStartAt));
+        result.setHighlightEndAt(new Date(new Date().getTime() + reportEndAt));
+
+        // npc를 지목하면 자기 자신에게 패널티가 적용된다
         if(room.getRoomUsers().containsKey(targetUsername)) {
             result.setTargetUsername(targetUsername);
-
-            var reportStartAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectActivatingTime"));
-            var reportEndAt = JsonReader._time(JsonReader.model("report", "report_rule", "EffectContinuousTime"));
-            result.setHighlightStartAt(new Date(new Date().getTime() + reportStartAt));
-            result.setHighlightEndAt(new Date(new Date().getTime() + reportEndAt));
+            result.setReportMessage("다른 범죄자에게 신고 당하여 경찰에게 위치가 공유 됩니다.");
+        }
+        else {
+            result.setTargetUsername(reportUsername);
+            result.setReportMessage("NPC를 허위 신고하여 경찰에게 위치가 공유 됩니다.");
         }
 
         return result;

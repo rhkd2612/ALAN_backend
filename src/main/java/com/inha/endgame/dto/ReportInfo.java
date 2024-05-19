@@ -13,4 +13,5 @@ public class ReportInfo {
     private String targetUsername;
     private Date highlightStartAt;
     private Date highlightEndAt;
+    private String reportMessage;
 }

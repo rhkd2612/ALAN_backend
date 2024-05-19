@@ -18,6 +18,7 @@ public class ReportUserResponse implements ClientResponse {
     private final String targetUsername;
     private final Date highlightStartAt;
     private final Date highlightEndAt;
+    private final String reportMessage;
 
     public ReportUserResponse(ReportInfo reportInfo) {
         this.type = ResponseType.REPORT_USER;
@@ -26,5 +27,6 @@ public class ReportUserResponse implements ClientResponse {
         this.targetUsername = reportInfo.getTargetUsername();
         this.highlightStartAt = reportInfo.getHighlightStartAt();
         this.highlightEndAt = reportInfo.getHighlightEndAt();
+        this.reportMessage = reportInfo.getReportMessage();
     }
 }
