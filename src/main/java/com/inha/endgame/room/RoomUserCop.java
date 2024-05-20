@@ -20,7 +20,7 @@ public class RoomUserCop extends RoomUser {
     private rVector3D targetAimPos = null;
     @JsonIgnore
     private String targetUsername = null;
-    @JsonIgnore @Setter
+    @Setter
     private CopAttackState copAttackState = CopAttackState.NONE;
 
     public RoomUserCop(User user) {
