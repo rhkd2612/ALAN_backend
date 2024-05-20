@@ -113,4 +113,20 @@ public class UserEventListener {
         }
     }
 
+    @EventListener
+    public void onReconnectRequest(ClientEvent<ReconnectRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        userService.reconnect(session, roomId, request.getUsername());
+
+        try {
+            var reconnectUser = roomService.findUserByUsername(roomId, request.getUsername());
+            var reconnectInfo = roomService.getReconnectInfo(roomId, request.getUsername());
+            unitySocketService.sendMessage(session, new ReconnectResponse(reconnectUser, reconnectInfo));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
 }

@@ -2,13 +2,14 @@ package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.core.excel.MapReader;
+import com.inha.endgame.dto.PlayRoomDto;
+import com.inha.endgame.dto.ReconnectInfo;
 import com.inha.endgame.dto.ReportInfo;
+import com.inha.endgame.dto.UseItemInfo;
 import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -40,6 +41,14 @@ public class RoomService {
 
     public Room findRoomById(long roomId) {
         return mapRoom.get(roomId);
+    }
+
+    public RoomUser findUserByUsername(long roomId, String username) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        return room.getRoomUsers().get(username);
     }
 
     public List<RoomUser> findAllRoomUsersById(long roomId) {
@@ -75,6 +84,29 @@ public class RoomService {
             return room.getRoomUsers().get(username).getNickname();
 
         return null;
+    }
+
+    public ReconnectInfo getReconnectInfo(long roomId, String reconnectUsername) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        ReconnectInfo result = new ReconnectInfo();
+        result.setCurrentDateAt(new Date());
+
+        RoomUser reconnectUser = this.findUserByUsername(roomId, reconnectUsername);
+        if(reconnectUser.checkCrimeUser()) {
+            RoomUserCrime crimeUser = (RoomUserCrime) reconnectUser;
+            result.setRemainItemCount(crimeUser.getRemainItemCount());
+            result.setMissionInfo(crimeUser.getMissionPos());
+            result.setCurrentMissionPhase(crimeUser.getClearMissionPhase() + 1);
+        }
+
+        var recentUseItemInfo = room.getRecentUseItemInfo();
+        var recentReportUserInfo = room.getRecentReportUserInfo();
+        result.setPlayRoomDto(new PlayRoomDto(room, recentUseItemInfo, recentReportUserInfo));
+
+        return result;
     }
 
     public int getAliveUserCount(long roomId) {
@@ -229,6 +261,8 @@ public class RoomService {
             result.setReportMessage("NPC를 허위 신고하여 경찰에게 위치가 공유 됩니다.");
         }
 
+        room.recordReportUser(result);
+
         return result;
     }
 
@@ -282,7 +316,7 @@ public class RoomService {
         }
     }
 
-    public void useItem(long roomId, String username) {
+    public void useItem(long roomId, String username, rVector3D useItemPos) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
@@ -292,6 +326,8 @@ public class RoomService {
 
         var crime = (RoomUserCrime) room.getRoomUsers().get(username);
         crime.useItem();
+
+        room.recordUseItem(new UseItemInfo(new Date(), useItemPos, username));
     }
 
     public void updateUser(long roomId, RoomUser roomUser) {

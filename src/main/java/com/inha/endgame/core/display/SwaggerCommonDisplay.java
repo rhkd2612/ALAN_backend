@@ -118,6 +118,11 @@ public class SwaggerCommonDisplay {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
+    @GetMapping("/RECONNECT")
+    void error(ReconnectRequest ReconnectRequest, ReconnectResponse ReconnectResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
     @GetMapping("/PING")
     void error(PingRequest PingRequest, PingResponse PingResponse) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");

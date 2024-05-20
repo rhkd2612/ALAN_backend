@@ -1,6 +1,8 @@
 package com.inha.endgame.room;
 
 
+import com.inha.endgame.dto.ReportInfo;
+import com.inha.endgame.dto.UseItemInfo;
 import com.inha.endgame.room.event.AnimEvent;
 import com.inha.endgame.user.CrimeType;
 import lombok.Getter;
@@ -8,6 +10,8 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Getter
 public class Room {
@@ -31,6 +35,9 @@ public class Room {
     private int crimeCount = 0;
 
     private String hostNickname; // 방장
+
+    private Set<UseItemInfo> recentItemUseAt = new ConcurrentSkipListSet<>();
+    private Set<ReportInfo> recentReportAt = new ConcurrentSkipListSet<>();
 
     public Room(long roomId) {
         this.roomId = roomId;
@@ -170,6 +177,42 @@ public class Room {
         if(this.curState != RoomState.PLAY)
             throw new IllegalStateException("종료할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.END;
+    }
+
+    public synchronized void recordUseItem(UseItemInfo useItemInfo) {
+        this.recentItemUseAt.add(useItemInfo);
+    }
+
+    public synchronized void recordReportUser(ReportInfo reportInfo) {
+        this.recentReportAt.add(reportInfo);
+    }
+
+    public List<rVector3D> getRecentUseItemInfo() {
+        List<rVector3D> result = new ArrayList<>();
+        Date now = new Date();
+        var copySet = new CopyOnWriteArraySet<>(this.recentItemUseAt);
+        for(var iter : copySet) {
+            if(now.after(new Date(iter.getItemUseAt().getTime() + 5000)))
+                this.recentItemUseAt.remove(iter);
+            else
+                result.add(iter.getItemPos());
+        }
+
+        return result;
+    }
+
+    public List<ReportInfo> getRecentReportUserInfo() {
+        List<ReportInfo> result = new ArrayList<>();
+        Date now = new Date();
+        var copySet = new CopyOnWriteArraySet<>(this.recentReportAt);
+        for(var iter : copySet) {
+            if(now.after(new Date(iter.getHighlightEndAt().getTime())))
+                this.recentReportAt.remove(iter);
+            else
+                result.add(iter);
+        }
+
+        return result;
     }
 
     public synchronized void kick(RoomUser user) {

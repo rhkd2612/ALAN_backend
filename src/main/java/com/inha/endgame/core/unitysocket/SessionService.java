@@ -40,7 +40,7 @@ public class SessionService {
             throw new IllegalStateException("세션 종료 실패");
         }
 
-        connectUser.remove(sessionId);
+        // connectUser.remove(sessionId);
         connectSession.remove(sessionId);
     }
 

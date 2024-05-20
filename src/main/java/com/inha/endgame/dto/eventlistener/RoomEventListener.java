@@ -140,7 +140,7 @@ public class RoomEventListener {
         var roomId = request.getRoomId();
 
         try {
-            roomService.useItem(roomId, request.getUsername());
+            roomService.useItem(roomId, request.getUsername(), request.getItemPos());
             unitySocketService.sendMessageRoom(roomId, new UseItemResponse(request.getItemPos()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);

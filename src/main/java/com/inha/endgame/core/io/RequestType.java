@@ -35,4 +35,5 @@ public enum RequestType {
 	ASSASSIN_KILL,
 	REPORT_USER,
 	CHAT,
+	RECONNECT,
 }

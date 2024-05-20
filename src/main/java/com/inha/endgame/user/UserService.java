@@ -29,21 +29,30 @@ public class UserService {
 			mapUser.put(roomId, new ConcurrentHashMap<>());
 
 		var sessionId = session.getId();
-		if(mapUser.get(roomId).containsKey(username)) {
-			var prevUser = mapUser.get(roomId).get(username);
-			var prevUserSessionId = prevUser.getSessionId();
-
-			if(!prevUserSessionId.equals(sessionId) && sessionService.validatePrevSessionId(prevUserSessionId)) {
-				sessionService.changeSession(prevUserSessionId, session);
-				return prevUser;
-			}
-		}
+		if(mapUser.get(roomId).containsKey(username))
+			throw new IllegalArgumentException("이미 있는 유저입니다.");
 
 		var newUser = new User(sessionId, username, nickname);
 		mapUser.get(roomId).put(username, newUser);
 
 		sessionService.addSession(session, newUser);
 		return newUser;
+	}
+
+	public synchronized void reconnect(WebSocketSession session, long roomId, String username) {
+		var sessionId = session.getId();
+
+		if(mapUser.get(roomId).containsKey(username)) {
+			var prevUser = mapUser.get(roomId).get(username);
+			var prevUserSessionId = prevUser.getSessionId();
+
+			if(!prevUserSessionId.equals(sessionId) && sessionService.validatePrevSessionId(prevUserSessionId)) {
+				sessionService.changeSession(prevUserSessionId, session);
+				return;
+			}
+		}
+
+		throw new IllegalArgumentException("재접속할 유저 정보가 없습니다.");
 	}
 
 	public void syncRoom(User user) {
