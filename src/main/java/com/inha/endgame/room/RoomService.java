@@ -100,6 +100,13 @@ public class RoomService {
             result.setRemainItemCount(crimeUser.getRemainItemCount());
             result.setMissionInfo(crimeUser.getMissionPos());
             result.setCurrentMissionPhase(crimeUser.getClearMissionPhase() + 1);
+
+            List<String> targetInfo = null;
+            if (reconnectUser.getCrimeType().equals(CrimeType.ASSASSIN)) {
+                var assassin = (RoomUserCrimeAssassin)reconnectUser;
+                targetInfo = assassin.getTargetInfo();
+            }
+            result.setTargetInfo(targetInfo);
         } else {
             // 경찰인 경우 현재 상태 강제 종료
             RoomUserCop reconnectCop = (RoomUserCop) reconnectUser;

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -16,6 +17,7 @@ public class ReconnectInfo {
     private int remainItemCount;
     // 미션 정보
     private Map<Integer, rVector3D> missionInfo;
+    private List<String> targetInfo;
     // 현재 미션 페이지
     private int currentMissionPhase;
     // 방 정보
