@@ -10,8 +10,6 @@ import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.room.RoomUser;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
@@ -25,8 +23,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserEventListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger("UserEventListener");
-
     private final UnitySocketService unitySocketService;
     private final UserService userService;
     private final RoomService roomService;

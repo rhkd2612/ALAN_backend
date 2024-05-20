@@ -6,7 +6,6 @@ import com.inha.endgame.room.RoomUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-
 @Getter
 public class UpdateUserRequest implements ClientRequest {
 	@Schema(description = "UPDATE_USER", defaultValue = "UPDATE_USER")

@@ -20,11 +20,6 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.ResolvableTypeProvider;
 import org.springframework.web.socket.WebSocketSession;
 
-/**
- * @author L0G1C (David B) <a
- *         href=https://github.com/Binary-L0G1C/java-unity-websocket-connector>
- *         https://github.com/Binary-L0G1C/java-unity-websocket-connector </a>
- */
 public class ClientEvent<T extends ClientRequest> implements ResolvableTypeProvider {
 
 	private final T clientRequest;

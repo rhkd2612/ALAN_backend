@@ -1,12 +1,8 @@
 package com.inha.endgame.room;
 
-import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.User;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.Map;
 
 @Getter
 public class RoomUserCrimeBoomer extends RoomUserCrime {

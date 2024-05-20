@@ -1,8 +1,6 @@
 package com.inha.endgame.core.unitysocket;
 
 import com.inha.endgame.user.User;
-import com.inha.endgame.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -40,7 +38,6 @@ public class SessionService {
             throw new IllegalStateException("세션 종료 실패");
         }
 
-        // connectUser.remove(sessionId);
         connectSession.remove(sessionId);
     }
 

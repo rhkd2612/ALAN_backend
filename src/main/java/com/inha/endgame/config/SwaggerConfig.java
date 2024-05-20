@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Configuration;
                         url = "http://www.apache.org/licenses/LICENSE-2.0"
                 ),
                 contact = @Contact(
-                        name = "dev",
-                        email = "dev@tg360tech.com"
+                        name = "mumomu",
+                        email = "lsb7127@naver.com"
                 )
         ),
         tags = {

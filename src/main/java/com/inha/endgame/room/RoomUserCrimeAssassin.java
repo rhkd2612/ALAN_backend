@@ -5,7 +5,6 @@ import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.User;
 import lombok.Getter;
 
-import javax.persistence.JoinColumn;
 import java.util.*;
 
 @Getter

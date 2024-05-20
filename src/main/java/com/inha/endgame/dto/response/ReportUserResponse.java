@@ -3,7 +3,6 @@ package com.inha.endgame.dto.response;
 import com.inha.endgame.core.io.ClientResponse;
 import com.inha.endgame.core.io.ResponseType;
 import com.inha.endgame.dto.ReportInfo;
-import com.inha.endgame.dto.eventlistener.RoomEventListener;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

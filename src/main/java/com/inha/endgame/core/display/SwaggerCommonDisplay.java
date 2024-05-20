@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *  Req/Res를 클라이언트에 전달하기 위해 Swagger Display용
+ *  Req/Res를 클라이언트에 전달하기 위해 Swagger Display용으로 변형
  */
 @RestController
 @Tag(name = "Common")
