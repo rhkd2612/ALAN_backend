@@ -100,6 +100,20 @@ public class RoomService {
             result.setRemainItemCount(crimeUser.getRemainItemCount());
             result.setMissionInfo(crimeUser.getMissionPos());
             result.setCurrentMissionPhase(crimeUser.getClearMissionPhase() + 1);
+        } else {
+            // 경찰인 경우 현재 상태 강제 종료
+            RoomUserCop reconnectCop = (RoomUserCop) reconnectUser;
+            switch(reconnectCop.getCopAttackState()) {
+                case AIM:
+                    this.updateAim(roomId, AimState.END, new rVector3D(0,0,0));
+                    break;
+                case STUN:
+                    this.releaseStun(roomId);
+                    break;
+                case SHOT:
+                    reconnectCop.setCopAttackState(CopAttackState.NONE);
+                    break;
+            }
         }
 
         var recentUseItemInfo = room.getRecentUseItemInfo();
