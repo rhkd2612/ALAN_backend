@@ -35,10 +35,8 @@ public class Room {
     private int crimeCount = 0;
 
     private String hostNickname; // 방장
-
-    private Set<UseItemInfo> recentItemUseAt = new ConcurrentSkipListSet<>();
-    private Set<ReportInfo> recentReportAt = new ConcurrentSkipListSet<>();
-
+    private Map<String, UseItemInfo> recentItemUseAt = new ConcurrentHashMap<>();
+    private Map<String, ReportInfo> recentReportAt = new ConcurrentHashMap<>();
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -180,18 +178,18 @@ public class Room {
     }
 
     public synchronized void recordUseItem(UseItemInfo useItemInfo) {
-        this.recentItemUseAt.add(useItemInfo);
+        this.recentItemUseAt.put(useItemInfo.getUsername() + new Date().getTime(), useItemInfo);
     }
 
     public synchronized void recordReportUser(ReportInfo reportInfo) {
-        this.recentReportAt.add(reportInfo);
+        this.recentReportAt.put(reportInfo.getReportUsername() + reportInfo.getTargetUsername() + new Date().getTime(), reportInfo);
     }
 
     public List<rVector3D> getRecentUseItemInfo() {
         List<rVector3D> result = new ArrayList<>();
         Date now = new Date();
-        var copySet = new CopyOnWriteArraySet<>(this.recentItemUseAt);
-        for(var iter : copySet) {
+        var copySet = new HashMap<>(this.recentItemUseAt);
+        for(var iter : copySet.values()) {
             if(now.after(new Date(iter.getItemUseAt().getTime() + 5000)))
                 this.recentItemUseAt.remove(iter);
             else
@@ -204,8 +202,8 @@ public class Room {
     public List<ReportInfo> getRecentReportUserInfo() {
         List<ReportInfo> result = new ArrayList<>();
         Date now = new Date();
-        var copySet = new CopyOnWriteArraySet<>(this.recentReportAt);
-        for(var iter : copySet) {
+        var copySet = new HashMap<>(this.recentReportAt);
+        for(var iter : copySet.values()) {
             if(now.after(new Date(iter.getHighlightEndAt().getTime())))
                 this.recentReportAt.remove(iter);
             else

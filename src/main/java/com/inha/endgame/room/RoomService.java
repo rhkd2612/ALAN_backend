@@ -91,6 +91,9 @@ public class RoomService {
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
+        if(room.getCurState().equals(RoomState.NONE))
+            throw new IllegalStateException("진행 중이 아닌 방은 재연결 불가합니다.");
+
         ReconnectInfo result = new ReconnectInfo();
         result.setCurrentDateAt(new Date());
 
