@@ -21,7 +21,7 @@ public class MapReader {
     private static final List<rVector3D> crimeSpawnPoses = new ArrayList<>();
     private static final List<rVector3D> crimeCommonMissionPoses = new ArrayList<>();
     private static final List<rVector3D> crimeSpySpecificMissionPoses = new ArrayList<>();
-    private static final List<rVector3D> crimeBoomerSpecificMissionPoses = new ArrayList<>();
+    private static rVector3D crimeBoomerSpecificMissionPos;
 
     public MapReader(ExcelParser excelParser) throws IOException {
         this.excelParser = excelParser;
@@ -36,14 +36,16 @@ public class MapReader {
 
                 if(currentTile == Tile.COP_SPAWN)
                     copSpawnPos = currentPos;
-                else if(currentTile == Tile.SPAWN)
-                    crimeSpawnPoses.add(currentPos);
+                else if(currentTile == Tile.SPAWN) {
+                    if(this.check(currentPos, 2))
+                        crimeSpawnPoses.add(currentPos);
+                }
                 else if(currentTile == Tile.MISSION)
                     crimeCommonMissionPoses.add(currentPos);
                 else if(currentTile == Tile.MISSION_SPY)
                     crimeSpySpecificMissionPoses.add(currentPos);
                 else if(currentTile == Tile.MISSION_BOOMER)
-                    crimeBoomerSpecificMissionPoses.add(currentPos);
+                    crimeBoomerSpecificMissionPos = currentPos;
             }
         }
     }
@@ -147,12 +149,12 @@ public class MapReader {
         return npcPos;
     }
 
-    public static Map<Integer, rVector3D> getRandomCrimeMissionPos(CrimeType crimeType) {
+    public static List<rVector3D> getRandomCommonMissions(int count) {
         CopyOnWriteArrayList<rVector3D> copyArray = new CopyOnWriteArrayList<>(crimeCommonMissionPoses);
 
-        Map<Integer, rVector3D> missions = new HashMap<>();
+        List<rVector3D> missions = new ArrayList<>();
         int missionCount = 0;
-        while(true) {
+        while(count-- > 0) {
             var r = RandomUtils.nextInt(0, copyArray.size() - missionCount);
             var missionPos = copyArray.get(r);
 
@@ -160,29 +162,29 @@ public class MapReader {
             copyArray.set(copyArray.size() - missionCount - 1, missionPos);
             copyArray.set(r, temp);
 
-            missions.put(++missionCount, missionPos);
-
-            if(crimeType.equals(CrimeType.SPY)) {
-                if(missionCount >= 3)
-                    break;
-            } else if(missionCount >= RoomUserCrime.MAX_COMMON_MISSION_PHASE)
-                break;
+            missions.add(missionPos);
         }
+
+        return missions;
+    }
+
+    public static List<rVector3D> getRandomCrimeMissions(CrimeType crimeType) {
+        List<rVector3D> missions = new ArrayList<>();
 
         switch(crimeType) {
             case SPY: {
                 var r = RandomUtils.nextInt(0, crimeSpySpecificMissionPoses.size());
                 var missionPos = crimeSpySpecificMissionPoses.get(r);
 
-                missions.put(++missionCount, missionPos);
+                missions.add(missionPos);
                 break;
             }
             case BOOMER: {
-                var r = RandomUtils.nextInt(0, crimeBoomerSpecificMissionPoses.size());
-                var missionPos = crimeBoomerSpecificMissionPoses.get(r);
-
-                missions.put(++missionCount, missionPos);
+                missions.add(crimeBoomerSpecificMissionPos);
                 break;
+            }
+            case ASSASSIN: {
+                throw new IllegalArgumentException("어쌔신은 맵에서 받아오지 않는다.");
             }
         }
 

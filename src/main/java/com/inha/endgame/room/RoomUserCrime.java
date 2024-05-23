@@ -36,10 +36,11 @@ public abstract class RoomUserCrime extends RoomUser {
     public RoomUserCrime(RoomUser roomUser) {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
 
-        this.missionPos = MapReader.getRandomCrimeMissionPos(this.getCrimeType());
+        this.missionPos = createRandomMissionPos();
         setMaxMissionPhase();
     }
 
+    public abstract Map<Integer, rVector3D> createRandomMissionPos();
     public abstract void setMaxMissionPhase();
 
     public static RoomUserCrime createCrime(RoomUser roomUser, CrimeType crimeType) {
