@@ -27,6 +27,7 @@ public class GameOverInfo {
 
     private String title;
     private String description;
+    private String condition;
 
     public GameOverInfo(OverJob job, String username, String nickname, List<Date> missionClearAt) {
         this.job = job;
@@ -35,9 +36,10 @@ public class GameOverInfo {
         this.missionClearAt = missionClearAt;
     }
 
-    public void putDetail(OverType overType, String title, String description) {
+    public void putDetail(OverType overType, String title, String description, String condition) {
         this.overType = overType;
         this.title = title;
         this.description = description;
+        this.condition = condition;
     }
 }

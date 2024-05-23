@@ -126,7 +126,7 @@ public class RoomEventListener {
 
         try {
             if(!request.getMissionState().equals(MissionState.FAIL))
-                roomService.playMission(roomId, request.getUsername(), request.getMissionPhase(), request.getMissionPos(), request.getMissionState());
+                roomService.playMission(roomId, request.getUsername(), request.getMissionPhase(), request.getMissionState());
             unitySocketService.sendMessageRoom(roomId, new PlayMissionResponse(request));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);

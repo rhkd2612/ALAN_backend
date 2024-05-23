@@ -219,13 +219,12 @@ public class RoomService {
         targetUser.die();
         copUser.endAimingAndStun();
 
+        if(!targetUser.checkCrimeUser())
+            room.setTrueEnd(false);
+
         RoomUserCrimeAssassin assassin = room.getAssassin();
-        if (assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername())) {
+        if (assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername()))
             assassin.killTarget(copUser.getTargetUsername());
-            if (assassin.getTargetUsernames().isEmpty()) {
-                // 어쌔신 승리
-            }
-        }
 
         var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
         copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
@@ -252,9 +251,7 @@ public class RoomService {
         targetNpc.die();
         assassin.killTarget(targetUsername);
 
-        if (assassin.getTargetUsernames().isEmpty()) {
-            // 어쌔신 승리
-        }
+        room.setTrueEnd(false);
     }
 
     public ReportInfo reportUser(long roomId, String reportUsername, String targetUsername) {
@@ -305,9 +302,8 @@ public class RoomService {
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        // TODO 나중에 추가되어야 함 귀찮으니 일단 주석..
-        // if(room.getRoomUsers().size() < 1)
-        //    throw new IllegalStateException("1인 이상이여야 시작할 수 있습니다.");
+        if(room.getRoomUsers().size() < 1)
+            throw new IllegalStateException("1인 이상이여야 시작할 수 있습니다.");
 
         room.start();
     }
@@ -324,20 +320,14 @@ public class RoomService {
         room.setRoomNpc(npcCount, randomNpcPos);
     }
 
-    public void playMission(long roomId, String username, int missionPhase, rVector3D missionPos, MissionState missionState) {
+    public void playMission(long roomId, String username, int missionPhase, MissionState missionState) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var crime = (RoomUserCrime) room.getRoomUsers().get(username);
-        if (missionState.equals(MissionState.START))
-            crime.playMission(missionPhase, missionPos);
-        else {
-            boolean isEnd = crime.clearMission(missionPhase);
-            if (isEnd) {
-                // TODO 게임 종료 처리
-            }
-        }
+        if (missionState.equals(MissionState.CLEAR))
+            crime.clearMission(missionPhase);
     }
 
     public void useItem(long roomId, String username, rVector3D useItemPos) {

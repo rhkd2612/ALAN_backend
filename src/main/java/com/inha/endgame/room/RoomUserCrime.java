@@ -56,15 +56,6 @@ public abstract class RoomUserCrime extends RoomUser {
         throw new IllegalStateException("범죄자 인원 초과");
     }
 
-    public void playMission(int missionPhase, rVector3D missionPos) {
-        if(missionPhase == this.clearMissionPhase + 1) {
-            // 공통 미션 처리는 여기서
-            if(missionPhase <= MAX_COMMON_MISSION_PHASE) {
-
-            }
-        }
-    }
-
     public synchronized void useItem() {
         if(this.remainItemCount < 1)
             throw new IllegalStateException("아이템 개수 부족");
@@ -72,17 +63,11 @@ public abstract class RoomUserCrime extends RoomUser {
         this.remainItemCount--;
     }
 
-    public boolean clearMission(int missionPhase) {
+    public void clearMission(int missionPhase) {
         if(missionPhase == this.clearMissionPhase + 1) {
             this.clearMissionPhase++;
             this.missionClearAt.add(new Date());
-
-            // 우승~
-            if(this.clearMissionPhase == this.maxMissionPhase)
-                return true;
         }
-
-        return false;
     }
 
     public abstract CrimeType getCrimeType();

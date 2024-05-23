@@ -37,6 +37,9 @@ public class Room {
     private String hostNickname; // 방장
     private Map<String, UseItemInfo> recentItemUseAt = new ConcurrentHashMap<>();
     private Map<String, ReportInfo> recentReportAt = new ConcurrentHashMap<>();
+
+    private boolean isTrueEnd = true;
+
     public Room(long roomId) {
         this.roomId = roomId;
         this.createAt = new Date();
@@ -65,6 +68,10 @@ public class Room {
         this.crimeCount++;
 
         return crimeType;
+    }
+
+    public void setTrueEnd(boolean trueEnd) {
+        isTrueEnd = trueEnd;
     }
 
     public void setCopUsername(String copUsername) {

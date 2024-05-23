@@ -26,6 +26,8 @@ public class RoomUserCop extends RoomUser {
     private CopAttackState copAttackState = CopAttackState.NONE;
     @JsonIgnore
     private List<Date> killUserAt = new ArrayList<>();
+    @JsonIgnore
+    private int npcKillCount = 0;
 
     public RoomUserCop(User user) {
         super(user);
@@ -90,5 +92,8 @@ public class RoomUserCop extends RoomUser {
 
         this.copAttackState = CopAttackState.SHOT;
         this.killUserAt.add(now);
+
+        if(!targetUser.checkCrimeUser())
+            this.npcKillCount++;
     }
 }

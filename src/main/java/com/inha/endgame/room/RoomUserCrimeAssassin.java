@@ -38,18 +38,8 @@ public class RoomUserCrimeAssassin extends RoomUserCrime {
     }
 
     @Override
-    public void playMission(int missionPhase, rVector3D missionPos) {
-        super.playMission(missionPhase, missionPos);
-
-        // 최종 미션
-        if(missionPhase == this.maxMissionPhase) {
-
-        }
-    }
-
-    @Override
-    public boolean clearMission(int missionPhase) {
-        return super.clearMission(missionPhase);
+    public void clearMission(int missionPhase) {
+        super.clearMission(missionPhase);
     }
 
     public List<String> getTargetInfo() {
