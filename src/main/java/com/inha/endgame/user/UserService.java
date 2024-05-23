@@ -21,6 +21,9 @@ public class UserService {
 	}
 
 	public Collection<User> getAllUser(long roomId) {
+		if(mapUser.get(roomId) == null)
+			return Collections.emptyList();
+
 		return Collections.unmodifiableCollection(mapUser.get(roomId).values());
 	}
 

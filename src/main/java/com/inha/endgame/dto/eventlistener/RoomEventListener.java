@@ -1,6 +1,7 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.core.unitysocket.SessionService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.request.*;
 import com.inha.endgame.dto.response.*;
@@ -9,6 +10,7 @@ import com.inha.endgame.room.RoomUser;
 import com.inha.endgame.room.RoomUserCop;
 import com.inha.endgame.user.MissionState;
 import com.inha.endgame.user.StunState;
+import com.inha.endgame.user.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class RoomEventListener {
 
     private final UnitySocketService unitySocketService;
     private final RoomService roomService;
+    private final SessionService sessionService;
 
     @EventListener
     public void onStartRoomRequest(ClientEvent<StartRoomRequest> event) {
@@ -32,7 +35,8 @@ public class RoomEventListener {
         var roomId = request.getRoomId();
 
         try {
-            roomService.startRoom(roomId);
+            User startUser = sessionService.findUserBySessionId(session.getId());
+            roomService.startRoom(roomId, startUser.getNickname());
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

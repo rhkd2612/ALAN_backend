@@ -49,7 +49,8 @@ public class UserEventListener {
         try {
             List<RoomDto> result = new ArrayList<>();
             roomService.getAllRoom().forEach(room -> {
-                result.add(new RoomDto(room));
+                if(room.getHostNickname() != null)
+                    result.add(new RoomDto(room));
             });
 
             unitySocketService.sendMessage(session, new RoomListResponse(result));

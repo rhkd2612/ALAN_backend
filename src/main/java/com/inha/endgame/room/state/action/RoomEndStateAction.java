@@ -33,7 +33,6 @@ public class RoomEndStateAction implements RoomStateAction {
         if(userService.getAllUser(roomId).isEmpty())
             return;
 
-
         Date now = new Date();
         room.getRoomUsers().keySet().forEach(username -> {
             User user = userService.getUser(roomId, username);

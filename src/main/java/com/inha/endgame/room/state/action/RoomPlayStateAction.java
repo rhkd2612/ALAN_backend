@@ -146,7 +146,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         // 1. 경찰 승리 체크
         // 1-1. 안전한? 거리(시간 초과)
         RoomUserCop cop = roomService.getCop(room.getRoomId());
-        if(room.getEndAt().after(now)) {
+        if(room.getEndAt().before(now)) {
             gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.COP, cop.getUsername(), cop.getNickname(), cop.getKillUserAt());
             gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "안전한? 거리", "그들도 시민 속에 살아가고 있습니다. 곧 잡히겠죠..?", "범죄가 일어나지 않음");
             return gameOverInfo;
@@ -178,7 +178,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         // 2. 부머 승리 체크
         var boomer = room.getBoomer();
         if (boomer != null) {
-            if (boomer.getBoomAt().after(now)) {
+            if (boomer.getBoomAt() != null && boomer.getBoomAt().after(now)) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.BOOMER, boomer.getUsername(), boomer.getNickname(), boomer.getMissionClearAt());
                 gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "폭죽 놀이", "여러분의 세금이 하늘에서 터지고 있어요~", "경찰서 파괴");
                 return gameOverInfo;
