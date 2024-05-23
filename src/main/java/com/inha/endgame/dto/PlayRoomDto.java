@@ -40,7 +40,7 @@ public class PlayRoomDto {
         this.boomerUsername = room.getBoomerUsername();
         this.assassinUsername = room.getAssassinUsername();
 
-        this.roomUsers = new ArrayList<>(room.getRoomUsers().values());
+        this.roomUsers = new ArrayList<>(room.getAllMembers());
 
         this.recentItemUseInfo = recentItemUseInfo;
         this.recentReportInfo = recentReportInfo;
