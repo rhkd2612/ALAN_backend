@@ -178,7 +178,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         // 2. 부머 승리 체크
         var boomer = room.getBoomer();
         if (boomer != null) {
-            if (boomer.getBoomAt() != null && boomer.getBoomAt().after(now)) {
+            if (boomer.getBoomAt() != null && boomer.getBoomAt().before(now)) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.BOOMER, boomer.getUsername(), boomer.getNickname(), boomer.getMissionClearAt());
                 gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "폭죽 놀이", "여러분의 세금이 하늘에서 터지고 있어요~", "경찰서 파괴");
                 return gameOverInfo;
