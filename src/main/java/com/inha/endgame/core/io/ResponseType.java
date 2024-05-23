@@ -22,4 +22,5 @@ public enum ResponseType {
 	REPORT_USER,
 	CHAT,
 	RECONNECT,
+	GAME_OVER,
 }

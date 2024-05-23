@@ -8,6 +8,7 @@ import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.room.RoomUser;
+import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -124,5 +125,17 @@ public class UserEventListener {
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }
+    }
+
+    /**
+     *  게임 종료 시 GameOverResponse -> GameOverConfirmRequest(TimeWait) -> confirm이 오지 않을 시 EndUpdate에서 재전송
+     */
+    @EventListener
+    public void onGameOverConfirmRequest(ClientEvent<GameOverConfirmRequest> event) {
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        User user = userService.getUser(roomId, request.getUsername());
+        userService.logout(roomId, user);
     }
 }

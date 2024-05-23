@@ -13,6 +13,7 @@ public class User {
 	private String sessionId;
 	private boolean isNew;
 	private Date enterAt;
+	private Date lastOverPacketSendAt;
 
 	public User(String sessionId, String username, String nickname) {
 		this.sessionId = sessionId;
@@ -30,6 +31,10 @@ public class User {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public void setLastOverPacketSendAt(Date lastOverPacketSendAt) {
+		this.lastOverPacketSendAt = lastOverPacketSendAt;
 	}
 
 	public RoomUser toRoomUser() {

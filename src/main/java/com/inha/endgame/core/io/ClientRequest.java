@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = ReportUserRequest.class, name = "REPORT_USER"),
 		@Type(value = ChatRequest.class, name = "CHAT"),
 		@Type(value = ReconnectRequest.class, name = "RECONNECT"),
+		@Type(value = GameOverConfirmRequest.class, name = "GAME_OVER_CONFIRM"),
 })
 public interface ClientRequest {
 	RequestType getType();

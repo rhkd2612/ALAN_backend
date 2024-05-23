@@ -128,6 +128,11 @@ public class SwaggerCommonDisplay {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
     }
 
+    @GetMapping("/GAME_OVER")
+    void error(GameOverConfirmRequest GameOverConfirmRequest, GameOverResponse GameOverResponse) throws IllegalAccessException {
+        throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");
+    }
+
     @GetMapping("/NETWORK_DELAY")
     void error(NetworkDelayRequest NetworkDelayRequest) throws IllegalAccessException {
         throw new IllegalAccessException("절대 직접 호출하지 않는다. (Swagger용)");

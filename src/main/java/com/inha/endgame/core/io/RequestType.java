@@ -20,4 +20,5 @@ public enum RequestType {
 	REPORT_USER,
 	CHAT,
 	RECONNECT,
+	GAME_OVER_CONFIRM,
 }
