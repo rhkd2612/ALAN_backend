@@ -1,10 +1,12 @@
 package com.inha.endgame.room;
 
+import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.core.excel.MapReader;
 import com.inha.endgame.user.CrimeType;
 import com.inha.endgame.user.User;
 import lombok.Getter;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class RoomUserCrimeBoomer extends RoomUserCrime {
+    private Date boomAt = null;
+
     public RoomUserCrimeBoomer(User user) {
         super(user);
     }
@@ -37,6 +41,13 @@ public class RoomUserCrimeBoomer extends RoomUserCrime {
 
     @Override
     public boolean clearMission(int missionPhase) {
+        Date now = new Date();
+        // 최초 클리어 시 15분 뒤 승리, 이후 미션 클리어 시 3분씩 감소
+        if(missionPhase == 1)
+            this.boomAt = new Date(now.getTime() + (1000 * 60 * JsonReader._int(JsonReader.model("boomerMinigame", "boomer_minigame", "timeToExplosion"))));
+        else
+            this.boomAt = new Date(this.boomAt.getTime() - JsonReader._int(JsonReader.model("boomerMinigame", "boomer_minigame", "reducedTimePerMissionClear")));
+
         return super.clearMission(missionPhase);
     }
 

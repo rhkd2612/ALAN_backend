@@ -8,7 +8,9 @@ import com.inha.endgame.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 public class RoomUserCop extends RoomUser {
@@ -22,6 +24,8 @@ public class RoomUserCop extends RoomUser {
     private String targetUsername = null;
     @Setter
     private CopAttackState copAttackState = CopAttackState.NONE;
+    @JsonIgnore
+    private List<Date> killUserAt = new ArrayList<>();
 
     public RoomUserCop(User user) {
         super(user);
@@ -85,5 +89,6 @@ public class RoomUserCop extends RoomUser {
             throw new IllegalStateException("검문 상태에서만 사용할 수 있습니다.");
 
         this.copAttackState = CopAttackState.SHOT;
+        this.killUserAt.add(now);
     }
 }

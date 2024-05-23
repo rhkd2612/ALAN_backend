@@ -1,6 +1,7 @@
 package com.inha.endgame.room;
 
 
+import com.inha.endgame.dto.GameOverInfo;
 import com.inha.endgame.dto.ReportInfo;
 import com.inha.endgame.dto.UseItemInfo;
 import com.inha.endgame.room.event.AnimEvent;
@@ -10,8 +11,6 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 @Getter
 public class Room {
@@ -30,6 +29,7 @@ public class Room {
 
     private final Date createAt;
     private Date readyAt;
+    private GameOverInfo gameOverInfo = null;
 
     private final List<CrimeType> remainCrimeTypes = new ArrayList<>();
     private int crimeCount = 0;
@@ -81,6 +81,10 @@ public class Room {
 
     public void setAssassinUsername(String assassinUsername) {
         this.assassinUsername = assassinUsername;
+    }
+
+    public void setGameOverInfo(GameOverInfo gameOverInfo) {
+        this.gameOverInfo = gameOverInfo;
     }
 
     public List<RoomUser> getAllMembers() {

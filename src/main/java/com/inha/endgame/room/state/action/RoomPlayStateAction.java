@@ -1,6 +1,7 @@
 package com.inha.endgame.room.state.action;
 
 import com.inha.endgame.core.excel.MapReader;
+import com.inha.endgame.dto.GameOverInfo;
 import com.inha.endgame.user.CopAttackState;
 import com.inha.endgame.user.UserState;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RoomPlayStateAction implements RoomStateAction {
     private final UnitySocketService unitySocketService;
     private final MapReader mapReader;
+    private final RoomService roomService;
 
     @Override
     public void onEnter(Room room) {
@@ -39,12 +41,8 @@ public class RoomPlayStateAction implements RoomStateAction {
     public void onUpdate(Room room) {
         // 변경 정보 전달
         try {
-            // TODO TEST에 용이하기 위해 일단 클리어하지 않게 처리
-//            int aliveUserCount = roomService.getAliveUserCount(room.getRoomId());
-//            if(aliveUserCount == 0) {
-//                room.setNextState(RoomState.END);
-//                return;
-//            }
+            if (isGameOver(room))
+                return;
 
             var animEvent = room.getEvent();
             var now = new Date();
@@ -116,13 +114,89 @@ public class RoomPlayStateAction implements RoomStateAction {
                 }
             });
 
-            unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllMembers()));
+            RoomUserCrimeBoomer boomer = room.getBoomer();
+            Date boomAt = null;
+            if(boomer != null)
+                boomAt = boomer.getBoomAt();
+
+            unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllMembers(), room.getEndAt(), boomAt));
 
             if(animPlay.get())
                 animEvent.resetAnimEvent();
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
+    }
+
+    private boolean isGameOver(Room room) {
+        GameOverInfo gameOverInfo = calculateGameOverInfo(room);
+        if(gameOverInfo != null) {
+            room.setGameOverInfo(gameOverInfo);
+            room.setNextState(RoomState.END);
+            return true;
+        }
+
+        return false;
+    }
+
+    private GameOverInfo calculateGameOverInfo(Room room) {
+        GameOverInfo gameOverInfo = null;
+
+        // 1. 경찰 승리 체크
+
+        // 1-1. 안전한? 거리(시간 초과)
+
+        // 1-2. 범죄자 모두 처치
+        int aliveUserCount = roomService.getAliveUserCount(room.getRoomId());
+        if(aliveUserCount == 0) {
+            RoomUserCop cop = roomService.getCop(room.getRoomId());
+
+            gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.COP, cop.getUsername(), cop.getNickname(), cop.getKillUserAt());
+
+            // 1-2-1 부정경찰(5명 초과한 소시민 처치 승리)
+
+            // 1-2-2 안전한 거리(npc 5명 이내 처치 승리)
+
+            // 1-2-3 저는 커서 경찰 아저씨가 될거에요(npc 0명 이내 처치 승리)
+            // FIXME 분기 추가
+            {
+                gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "test", "test");
+            }
+            return gameOverInfo;
+        }
+
+
+        // 2. 부머 승리 체크
+        var boomer = room.getBoomer();
+        if (boomer != null) {
+            if (boomer.getBoomAt().after(new Date())) {
+                gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.BOOMER, boomer.getUsername(), boomer.getNickname(), boomer.getMissionClearAt());
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "폭죽 놀이", "여러분의 세금이 하늘에서 터지고 있어요~");
+                return gameOverInfo;
+            }
+        }
+
+        // 3. 어쌔신 승리 체크
+        var assassin = room.getAssassin();
+        if (assassin != null) {
+            if(assassin.getTargetUsernames().isEmpty()) {
+                gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.ASSASSIN, assassin.getUsername(), assassin.getNickname(), assassin.getMissionClearAt());
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "안 들키면 암살 맞죠?", "원한을 사지 않게 조심하세요. 경찰은 그를 막을 수 없거든요..");
+                return gameOverInfo;
+            }
+        }
+
+        // 4. 스파이 승리 체크
+        var spy = room.getSpy();
+        if (spy != null) {
+            if(spy.getClearMissionPhase() == spy.getMaxMissionPhase()) {
+                gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.SPY, spy.getUsername(), spy.getNickname(), spy.getMissionClearAt());
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "♚♚히어로즈 오브 더 스☆톰♚♚가입시$$전원 카드팩☜☜", "도시는 그의 놀이터가 아닐까요?");
+                return gameOverInfo;
+            }
+        }
+
+        return null;
     }
 
     @Override

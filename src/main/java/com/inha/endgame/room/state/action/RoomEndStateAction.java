@@ -17,6 +17,7 @@ public class RoomEndStateAction implements RoomStateAction {
     @Override
     public void onEnter(Room room) {
         try {
+            // FIXME 게임 엔드 추가
             unitySocketService.sendMessageRoom(room.getRoomId(), new StartRoomResponse(RoomState.END, null));
         } catch (Exception e) {
             log.warn(e.getMessage());
