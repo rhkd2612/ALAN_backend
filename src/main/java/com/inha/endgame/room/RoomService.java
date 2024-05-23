@@ -302,8 +302,8 @@ public class RoomService {
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        if(room.getRoomUsers().size() < 1)
-            throw new IllegalStateException("1인 이상이여야 시작할 수 있습니다.");
+        if(room.getRoomUsers().size() <= 1)
+            throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
 
         if(!room.getHostNickname().equals(startUserNickname))
             throw new IllegalArgumentException("방장만 시작할 수 있습니다.");
