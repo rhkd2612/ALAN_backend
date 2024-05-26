@@ -38,7 +38,7 @@ public class RoomUserCrimeBoomer extends RoomUserCrime {
         if(missionPhase == 1)
             this.boomAt = new Date(now.getTime() + (1000 * 60 * JsonReader._int(JsonReader.model("boomerMinigame", "boomer_minigame", "timeToExplosion"))));
         else
-            this.boomAt = new Date(this.boomAt.getTime() - JsonReader._int(JsonReader.model("boomerMinigame", "boomer_minigame", "reducedTimePerMissionClear")));
+            this.boomAt = new Date(this.boomAt.getTime() - (1000 * 60 * JsonReader._int(JsonReader.model("boomerMinigame", "boomer_minigame", "reducedTimePerMissionClear"))));
 
         super.clearMission(missionPhase);
     }
