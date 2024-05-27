@@ -34,7 +34,9 @@ public class Room {
     private final List<CrimeType> remainCrimeTypes = new ArrayList<>();
     private int crimeCount = 0;
 
+    private String hostUsername; // 방장
     private String hostNickname; // 방장
+
     private Map<String, UseItemInfo> recentItemUseAt = new ConcurrentHashMap<>();
     private Map<String, ReportInfo> recentReportAt = new ConcurrentHashMap<>();
 
@@ -151,12 +153,13 @@ public class Room {
     public synchronized void join(RoomUser user) {
         if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
-        if(this.roomUsers.containsKey(user.getUsername())) {
+        if(this.roomUsers.containsKey(user.getUsername()))
             return;
-        }
 
-        if(this.roomUsers.isEmpty())
+        if(this.roomUsers.isEmpty()) {
+            this.hostUsername = user.getUsername();
             this.hostNickname = user.getNickname();
+        }
 
         this.roomUsers.put(user.getUsername(), user);
     }
@@ -224,8 +227,8 @@ public class Room {
         return result;
     }
 
-    public synchronized void kick(RoomUser user) {
-        this.roomUsers.remove(user.getUsername());
+    public synchronized void kick(String username) {
+        this.roomUsers.remove(username);
     }
 
     // 일반적으로는 변경하면 안됨

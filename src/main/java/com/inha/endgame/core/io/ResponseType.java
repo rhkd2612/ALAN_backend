@@ -3,6 +3,7 @@ package com.inha.endgame.core.io;
 public enum ResponseType {
 	TEST,
 	CREATE_ROOM,
+	LEAVE_ROOM,
 	ROOM_LIST,
 	ADD_USER,
 	CHECK_USER,

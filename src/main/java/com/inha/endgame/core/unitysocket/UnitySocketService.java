@@ -53,6 +53,15 @@ public class UnitySocketService {
 		publisher.publishEvent(new ClientEvent<>(cr, session));
 	}
 
+	public synchronized void sendMessage(String sessionId, ClientResponse clientResponse) throws IOException {
+		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
+		WebSocketSession session = sessionService.findSessionBySessionId(sessionId);
+
+		String json = objectMapper.writeValueAsString(clientResponse);
+		session.sendMessage(new TextMessage(json));
+	}
+
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 

@@ -297,7 +297,36 @@ public class RoomService {
         userService.syncRoom(user);
     }
 
-    public void startRoom(long roomId, String startUserNickname) {
+    public Map<String, String> leaveRoom(long roomId, String leaveUsername) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        if(!room.getCurState().equals(RoomState.NONE))
+            throw new IllegalArgumentException("현재는 종료할 수 없는 방 입니다.");
+
+        Map<String, String> sessionIds = new HashMap();
+        String hostUsername = room.getHostUsername();
+
+        // 방장이 나가는 경우 모두 퇴장 처리
+        if(hostUsername.equals(leaveUsername)) {
+            for(var username : room.getRoomUsers().keySet()) {
+                try {
+                    sessionIds.put(userService.leaveRoom(roomId, username), username);
+                    room.kick(username);
+                } catch(Exception e) {}
+            }
+
+            mapRoom.remove(room.getRoomId(), room);
+        } else {
+            sessionIds.put(userService.leaveRoom(roomId, leaveUsername), leaveUsername);
+            room.kick(leaveUsername);
+        }
+
+        return sessionIds;
+    }
+
+    public void startRoom(long roomId, String startUserUsername) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
@@ -305,7 +334,7 @@ public class RoomService {
         if(room.getRoomUsers().size() <= 1)
             throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
 
-        if(!room.getHostNickname().equals(startUserNickname))
+        if(!room.getHostUsername().equals(startUserUsername))
             throw new IllegalArgumentException("방장만 시작할 수 있습니다.");
 
         room.start();
@@ -375,7 +404,7 @@ public class RoomService {
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var roomUsers = new ArrayList<>(room.getRoomUsers().values());
-        var cop = roomUsers.stream().filter(roomUser -> roomUser.getNickname().equals(room.getHostNickname())).findAny().orElseThrow();
+        var cop = roomUsers.stream().filter(roomUser -> roomUser.getUsername().equals(room.getHostUsername())).findAny().orElseThrow();
         var copUsername = cop.getUsername();
         cop.beCop();
 
@@ -422,14 +451,5 @@ public class RoomService {
 
         room.setCopUsername(copUsername);
         room.getRoomUsers().put(copUsername, new RoomUserCop(cop));
-    }
-
-    public void exitRoom(long roomId, User user) {
-        Room room = mapRoom.get(roomId);
-        if (room == null)
-            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
-
-        room.kick(user.toRoomUser());
-        userService.logout(roomId, user);
     }
 }

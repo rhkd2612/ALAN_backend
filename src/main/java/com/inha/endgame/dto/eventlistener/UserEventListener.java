@@ -1,12 +1,12 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.RoomDto;
 import com.inha.endgame.dto.request.*;
 import com.inha.endgame.dto.response.*;
 import com.inha.endgame.room.Room;
 import com.inha.endgame.room.RoomService;
-import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.room.RoomUser;
 import com.inha.endgame.user.User;
 import com.inha.endgame.user.UserService;
@@ -15,11 +15,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +59,7 @@ public class UserEventListener {
     }
 
     @EventListener
-    public void onAddUserRequest(ClientEvent<AddUserRequest> event) throws IOException, NoSuchAlgorithmException {
+    public void onAddUserRequest(ClientEvent<AddUserRequest> event) {
         var session = event.getSession();
         var request = event.getClientRequest();
         var roomId = request.getRoomId();
@@ -81,8 +80,9 @@ public class UserEventListener {
             unitySocketService.sendMessage(session, new SettingRoomResponse(npcs));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
-            roomService.exitRoom(roomId, newUser);
-            session.close();
+
+            if(!newUser.isNew())
+                roomService.leaveRoom(roomId, newUser.getUsername());
         }
     }
 
@@ -95,6 +95,30 @@ public class UserEventListener {
         try {
             String prevNickname = roomService.checkUser(roomId, request.getUsername());
             unitySocketService.sendMessage(session, new CheckUserResponse(prevNickname != null, prevNickname));
+        } catch (Exception e) {
+            unitySocketService.sendErrorMessage(session, e);
+        }
+    }
+
+    @EventListener
+    public void onLeaveRoomRequest(ClientEvent<LeaveRoomRequest> event) {
+        var session = event.getSession();
+        var request = event.getClientRequest();
+        var roomId = request.getRoomId();
+
+        try {
+            Map<String, String> leaveUserMap = roomService.leaveRoom(roomId, request.getLeaveUsername());
+            var leaveUsername = new ArrayList<>(leaveUserMap.values());
+
+            // 방을 나갔으므로 세션 기반으로 전송
+            for (String sessionId : leaveUserMap.keySet()) {
+                unitySocketService.sendMessage(sessionId, new LeaveRoomResponse(leaveUsername, true));
+            }
+
+            // 단일 leave는 방 유저들에게는 유저 정보 기반으로 전송 / 방장이 나간 경우에는 방이 사라지므로 보내지 않음
+            if(leaveUserMap.size() == 1) {
+                unitySocketService.sendMessageRoom(roomId, new LeaveRoomResponse(leaveUsername, false));
+            }
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

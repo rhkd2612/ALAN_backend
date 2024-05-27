@@ -58,6 +58,17 @@ public class UserService {
 		throw new IllegalArgumentException("재접속할 유저 정보가 없습니다.");
 	}
 
+	public String leaveRoom(long roomId, String leaveUsername) {
+		User user = mapUser.get(roomId).get(leaveUsername);
+		if(user == null)
+			return null;
+
+		String sessionId = new String(user.getSessionId());
+		mapUser.get(roomId).remove(leaveUsername);
+
+		return sessionId;
+	}
+
 	public void syncRoom(User user) {
 		user.syncRoom();
 	}

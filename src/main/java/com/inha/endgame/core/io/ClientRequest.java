@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = AddUserRequest.class, name = "ADD_USER"),
 		@Type(value = CheckUserRequest.class, name = "CHECK_USER"),
 		@Type(value = StartRoomRequest.class, name = "START_ROOM"),
+		@Type(value = LeaveRoomRequest.class, name = "LEAVE_ROOM"),
 		@Type(value = SettingRoomRequest.class, name = "SETTING_ROOM"),
 		@Type(value = UpdateUserRequest.class, name = "UPDATE_USER"),
 		@Type(value = PingRequest.class, name = "PING"),
