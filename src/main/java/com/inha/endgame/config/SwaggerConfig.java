@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Spring Doc Example API Document",
+                title = "ALAN swagger",
                 description = "API Document",
-                version = "v0.1",
+                version = "v1.0",
                 termsOfService = "http://www.tg360tech.com/terms",
                 license = @License(
                         name = "Apache License Version 2.0",

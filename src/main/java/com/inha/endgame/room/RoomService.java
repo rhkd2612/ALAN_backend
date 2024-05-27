@@ -8,6 +8,7 @@ import com.inha.endgame.dto.ReportInfo;
 import com.inha.endgame.dto.UseItemInfo;
 import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomService {
     private final Map<Long, Room> mapRoom = new ConcurrentHashMap<>();
     private final UserService userService;
@@ -162,13 +164,8 @@ public class RoomService {
         var copUser = room.getCop();
         if (aimState.equals(AimState.END))
             copUser.endAimingAndStun();
-        else {
-            try {
-                copUser.aiming(targetPos);
-            } catch (IllegalStateException e) {
-                System.out.println("hello");
-            }
-        }
+        else
+            copUser.aiming(targetPos);
     }
 
     public synchronized RoomUserCop stun(long roomId, String targetUsername) {

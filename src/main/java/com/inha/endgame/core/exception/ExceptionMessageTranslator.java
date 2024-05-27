@@ -15,7 +15,6 @@ public class ExceptionMessageTranslator {
     }
 
     public String translate(Exception e) {
-        // FIXME 테이블에서 읽어와서 error message를 기획자가 설정한 message로 변경
         if(e == null || e.getMessage() == null)
             return baseError;
 

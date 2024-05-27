@@ -76,7 +76,7 @@ public class JsonReader {
 
                     jsons.put(file.getName().substring(0, file.getName().lastIndexOf('.')), dataMap);
                 } catch (IOException e) {
-                    System.err.println("Error reading JSON file: " + file.getName());
+                    log.error("Error reading JSON file: " + file.getName());
                     e.printStackTrace();
                 }
             }

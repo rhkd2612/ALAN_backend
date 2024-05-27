@@ -37,7 +37,7 @@ public class Room {
     private int crimeCount = 0;
 
     private String hostUsername; // 방장
-    private String hostNickname; // 방장
+    private String hostNickname;
 
     private Map<String, UseItemInfo> recentItemUseAt = new ConcurrentHashMap<>();
     private Map<String, ReportInfo> recentReportAt = new ConcurrentHashMap<>();

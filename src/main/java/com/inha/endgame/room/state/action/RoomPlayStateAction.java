@@ -130,7 +130,6 @@ public class RoomPlayStateAction implements RoomStateAction {
                         roomUserNpc.rollState(false);
 
                         // 이후 동작 실행
-                        // TODO 추후 Anim 추가
                         if (roomUserNpc.getNpcState().equals(NpcState.MOVE)) {
                             // frameCount는 1초에 계산하는 횟수
                             rVector3D nextPos = roomUserNpc.getNextPos(10);
