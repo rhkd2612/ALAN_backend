@@ -39,13 +39,44 @@ public class RoomPlayStateAction implements RoomStateAction {
 
     @Override
     public void onUpdate(Room room) {
-        // 변경 정보 전달
         try {
-            if (isGameOver(room))
+            var now = new Date();
+
+            if (isGameOver(room)) {
+                // 종료 전 대기 시간 동안 npc는 이동한다(자연스럽게 보이기 위해)
+                room.getRoomNpcs().values().forEach(npc -> {
+                    if (npc instanceof RoomUserNpc) {
+                        // npc 상태 변경 체크
+                        RoomUserNpc roomUserNpc = (RoomUserNpc) npc;
+                        if (roomUserNpc.getUserState().equals(UserState.DIE))
+                            return;
+
+                        if (roomUserNpc.isAnimPlay() && roomUserNpc.getStateUpAt().after(now))
+                            return;
+
+                        // 상태 변경 시도
+                        roomUserNpc.rollState(false);
+
+                        // 이후 동작 실행
+                        if (roomUserNpc.getNpcState().equals(NpcState.MOVE)) {
+                            // frameCount는 1초에 계산하는 횟수
+                            rVector3D nextPos = roomUserNpc.getNextPos(10);
+                            rVector3D predictPos = roomUserNpc.getNextPos(1);
+                            if (mapReader.check(nextPos, 2) && mapReader.check(nextPos, predictPos))
+                                roomUserNpc.setPos(nextPos);
+                            else {
+                                roomUserNpc.rollState(true);
+                            }
+                        }
+                    }
+                });
+
+                unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllMembers(), room.getEndAt(), null));
+
                 return;
+            }
 
             var animEvent = room.getEvent();
-            var now = new Date();
 
             var nextAnim = animEvent.getAnimNum();
             var nextAnimTimeAt = animEvent.getNextAnimAt().getTime();
@@ -129,10 +160,14 @@ public class RoomPlayStateAction implements RoomStateAction {
     }
 
     private boolean isGameOver(Room room) {
+        if(room.getGameOverInfo() != null)
+            return true;
+
         GameOverInfo gameOverInfo = calculateGameOverInfo(room);
         if(gameOverInfo != null) {
             room.setGameOverInfo(gameOverInfo);
             room.setNextState(RoomState.END);
+            room.setNextStateAt(new Date(new Date().getTime() + 3000)); // 3초 뒤 종료
             return true;
         }
 

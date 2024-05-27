@@ -27,6 +27,8 @@ public class Room {
     private RoomState curState;
     private RoomState nextState;
 
+    private Date nextStateAt = null;
+
     private final Date createAt;
     private Date readyAt;
     private GameOverInfo gameOverInfo = null;
@@ -94,6 +96,10 @@ public class Room {
 
     public void setGameOverInfo(GameOverInfo gameOverInfo) {
         this.gameOverInfo = gameOverInfo;
+    }
+
+    public void setNextStateAt(Date nextStateAt) {
+        this.nextStateAt = nextStateAt;
     }
 
     public List<RoomUser> getAllMembers() {

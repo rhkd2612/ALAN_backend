@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class StateChangeObserver implements StateChangeListener {
@@ -23,7 +25,7 @@ public class StateChangeObserver implements StateChangeListener {
         var curState = room.getCurState();
         var nextState = room.getNextState();
 
-        if (nextState == null || curState != null && curState == nextState) {
+        if (nextState == null || curState != null && curState == nextState || room.getNextStateAt() != null && room.getNextStateAt().after(new Date())) {
             // 다음 상태가 없다면 Update
             switch (curState) {
                 case NONE: noneAction.onUpdate(room); break;
@@ -33,8 +35,6 @@ public class StateChangeObserver implements StateChangeListener {
             }
             return;
         }
-
-        System.out.println("room: " + room.getRoomId() + ", State changed to: " + nextState + ", from: " + curState);
 
         // 다음 상태가 있다면 change, 첫 init시 cur이 없을 수 있음
         if (curState != null) {
@@ -55,5 +55,6 @@ public class StateChangeObserver implements StateChangeListener {
 
         room.setCurState(nextState);
         room.setNextState(null);
+        room.setNextStateAt(null);
     }
 }
