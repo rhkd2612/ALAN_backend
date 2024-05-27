@@ -71,7 +71,7 @@ public class RoomPlayStateAction implements RoomStateAction {
                     }
                 });
 
-                unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllMembers(), room.getEndAt(), null));
+                unitySocketService.sendMessageRoom(room.getRoomId(), new PlayRoomInfoResponse(room.getAllMembers(), room.getNextStateAt(), null));
 
                 return;
             }
@@ -164,9 +164,12 @@ public class RoomPlayStateAction implements RoomStateAction {
 
         GameOverInfo gameOverInfo = calculateGameOverInfo(room);
         if(gameOverInfo != null) {
+            Date endAt = new Date(new Date().getTime() + 7000);
+
             room.setGameOverInfo(gameOverInfo);
             room.setNextState(RoomState.END);
-            room.setNextStateAt(new Date(new Date().getTime() + 3000)); // 3초 뒤 종료
+
+            room.setNextStateAt(endAt); // 7초 뒤 종료
             return true;
         }
 
