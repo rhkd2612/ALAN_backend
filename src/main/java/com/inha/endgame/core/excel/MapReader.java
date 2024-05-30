@@ -27,12 +27,12 @@ public class MapReader {
         this.excelParser = excelParser;
 
         File curDir = this.excelParser.getProjectDirectory();
-        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 100);
+        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 141, 151);
 
         for(int i = 0; i < this.gameMap.size(); i++) {
             for(int j = 0; j < this.gameMap.get(i).size(); j++) {
                 Tile currentTile = this.gameMap.get(i).get(j);
-                rVector3D currentPos = new rVector3D(100 - i, 0, 100 - j);
+                rVector3D currentPos = new rVector3D(141 - i, 0, 151 - j);
 
                 if(currentTile == Tile.COP_SPAWN)
                     copSpawnPos = currentPos;
@@ -51,14 +51,14 @@ public class MapReader {
     }
 
     public Tile getTile(float x, float z) {
-        int intx = 100 - (int) Math.round(x);
-        int intz = 100 - (int) Math.round(z);
+        int intx = 141 - (int) Math.round(x);
+        int intz = 151 - (int) Math.round(z);
 
         intx = Math.max(0, intx);
-        intx = Math.min(99, intx);
+        intx = Math.min(140, intx);
 
         intz = Math.max(0, intz);
-        intz = Math.min(99, intz);
+        intz = Math.min(150, intz);
 
         return gameMap.get(intx).get(intz);
     }

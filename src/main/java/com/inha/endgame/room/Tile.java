@@ -4,11 +4,11 @@ public enum Tile {
     GROUND(0, true),
     WALL(1, false),
     BUILDING(2, false),
-    SPAWN(3, true),
-    MISSION(4, true),
-    MISSION_SPY(5, true),
-    MISSION_THIEF(6, true),
-    MISSION_BOOMER(7, true),
+    MISSION(3, true),
+    MISSION_SPY(4, true),
+    MISSION_THIEF(5, true),
+    MISSION_BOOMER(6, true),
+    SPAWN(7, true),
     COP_SPAWN(8, true);
 
     final int tileNum;
@@ -31,15 +31,15 @@ public enum Tile {
         else if (num.equals("2") || num.equals("2.0"))
             return BUILDING;
         else if (num.equals("3") || num.equals("3.0"))
-            return SPAWN;
-        else if (num.equals("4") || num.equals("4.0"))
             return MISSION;
-        else if (num.equals("5") || num.equals("5.0"))
+        else if (num.equals("4") || num.equals("4.0"))
             return MISSION_SPY;
-        else if (num.equals("6") || num.equals("6.0"))
+        else if (num.equals("5") || num.equals("5.0"))
             return MISSION_THIEF;
-        else if (num.equals("7") || num.equals("7.0"))
+        else if (num.equals("6") || num.equals("6.0"))
             return MISSION_BOOMER;
+        else if (num.equals("7") || num.equals("7.0"))
+            return SPAWN;
         else if (num.equals("8") || num.equals("8.0"))
             return COP_SPAWN;
 

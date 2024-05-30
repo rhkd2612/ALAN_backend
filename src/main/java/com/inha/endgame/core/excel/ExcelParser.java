@@ -51,9 +51,9 @@ public class ExcelParser {
         return result.toString();
     }
 
-    public List<List<Tile>> convertExcelToMap(String folderPath, int maxSize) throws IOException{
+    public List<List<Tile>> convertExcelToMap(String folderPath, int xSize, int ySize) throws IOException{
         File mapFile = new File(folderPath);
-        return readExcelMap(mapFile, maxSize);
+        return readExcelMap(mapFile, xSize, ySize);
     }
 
     public List<List<String>> readExcel(File file) throws IOException {
@@ -75,20 +75,20 @@ public class ExcelParser {
         return excelData;
     }
 
-    public List<List<Tile>> readExcelMap(File file, int maxSize) throws IOException {
+    public List<List<Tile>> readExcelMap(File file, int xSize, int ySize) throws IOException {
         List<List<Tile>> excelData = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
             Sheet sheet = workbook.getSheetAt(0);
             int rowNum = 0;
             for (Row row : sheet) {
-                if(++rowNum > maxSize)
+                if(++rowNum > xSize)
                     break;
 
                 List<Tile> rowData = new ArrayList<>();
                 int cellCount = 0;
                 for (Cell cell : row) {
-                    if(++cellCount > maxSize)
+                    if(++cellCount > ySize)
                         break;
 
                     if(!cell.toString().equals(""))
