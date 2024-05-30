@@ -27,12 +27,12 @@ public class MapReader {
         this.excelParser = excelParser;
 
         File curDir = this.excelParser.getProjectDirectory();
-        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 141, 151);
+        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 151, 141);
 
         for(int i = 0; i < this.gameMap.size(); i++) {
             for(int j = 0; j < this.gameMap.get(i).size(); j++) {
                 Tile currentTile = this.gameMap.get(i).get(j);
-                rVector3D currentPos = new rVector3D(141 - i, 0, 151 - j);
+                rVector3D currentPos = new rVector3D(i, 0, j);
 
                 if(currentTile == Tile.COP_SPAWN)
                     copSpawnPos = currentPos;
@@ -51,14 +51,14 @@ public class MapReader {
     }
 
     public Tile getTile(float x, float z) {
-        int intx = 141 - (int) Math.round(x);
-        int intz = 151 - (int) Math.round(z);
+        int intx = Math.round(x);
+        int intz = Math.round(z);
 
         intx = Math.max(0, intx);
-        intx = Math.min(140, intx);
+        intx = Math.min(150, intx);
 
         intz = Math.max(0, intz);
-        intz = Math.min(150, intz);
+        intz = Math.min(140, intz);
 
         return gameMap.get(intx).get(intz);
     }
@@ -129,15 +129,15 @@ public class MapReader {
         var fileName = "map";
         var key = "map_size";
 
-        RoomService.minX = JsonReader._int(JsonReader.model(fileName, key, "mapXmin"));
-        RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key, "mapXmax"));
-        RoomService.minZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmin"));
-        RoomService.maxZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmax"));
+        RoomService.minX = 0;
+        RoomService.maxX = 150;
+        RoomService.minZ = 0;
+        RoomService.maxZ = 140;
 
-        var npcSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmin"));
-        var npcSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmax"));
-        var npcSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmin"));
-        var npcSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmax"));
+        var npcSpawnMinX = 0;
+        var npcSpawnMaxX = 150;
+        var npcSpawnMinZ = 0;
+        var npcSpawnMaxZ = 140;
 
         for (int i = 0; i < count; i++) {
             var pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
