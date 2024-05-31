@@ -126,7 +126,7 @@ public class RoomUser implements Serializable {
     public void beCop() {
         this.roomUserType = RoomUserType.COP;
         this.pos = MapReader.getCopSpawnPos();
-        this.rot = new rVector3D(0, -90, 0);
+        this.rot = new rVector3D(0, 0, 0);
     }
 
     public void beCrime(CrimeType crimeType) {
