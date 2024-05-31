@@ -182,7 +182,7 @@ public class Room {
     }
 
     public Date getEndAt() {
-        return new Date(this.readyAt.getTime() + 10000 + 1000 * 60 * 10 );
+        return new Date(this.readyAt.getTime() + 10000 + 1000 * 60 * 20 );
     }
 
     public synchronized void play() {
