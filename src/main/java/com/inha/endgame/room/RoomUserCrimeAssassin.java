@@ -32,7 +32,6 @@ public class RoomUserCrimeAssassin extends RoomUserCrime {
     }
 
     public int killTarget(String username) {
-        this.clearMission(this.getClearMissionPhase() + 1);
         targetUsernames.remove(username);
         return targetUsernames.size();
     }

@@ -213,15 +213,15 @@ public class RoomService {
 
         copUser.checkShot(targetUser);
 
+        RoomUserCrimeAssassin assassin = room.getAssassin();
+        if (assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername()))
+            assassin.killTarget(copUser.getTargetUsername());
+
         targetUser.die();
         copUser.endAimingAndStun();
 
         if(!targetUser.checkCrimeUser())
             room.setTrueEnd(false);
-
-        RoomUserCrimeAssassin assassin = room.getAssassin();
-        if (assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername()))
-            assassin.killTarget(copUser.getTargetUsername());
 
         var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
         copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
@@ -411,17 +411,6 @@ public class RoomService {
                 roomUser.beCrime(randomCrimeType);
 
                 RoomUserCrime crimeUser = RoomUserCrime.createCrime(roomUser, randomCrimeType);
-
-                if (randomCrimeType == CrimeType.ASSASSIN) {
-                    int targetCount = 3;
-                    room.getRoomNpcs().keySet().forEach(npc -> {
-                        RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
-                        if (assassin.getTargetUsernames().size() >= targetCount)
-                            return;
-                        assassin.addTarget(npc);
-                    });
-                }
-
                 switch (randomCrimeType) {
                     case SPY:
                         room.setSpyUsername(roomUser.getUsername());
@@ -433,11 +422,11 @@ public class RoomService {
                         room.setAssassinUsername(roomUser.getUsername());
 
                         int targetCount = 3;
-                        room.getRoomNpcs().keySet().forEach(npc -> {
+                        room.getRoomNpcs().forEach((npcUsername, npc) -> {
                             RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
                             if (assassin.getTargetUsernames().size() >= targetCount)
                                 return;
-                            assassin.addTarget(npc);
+                            assassin.addTarget(npcUsername);
                         });
                         break;
                 }
