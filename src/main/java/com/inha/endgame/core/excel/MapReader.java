@@ -4,6 +4,7 @@ import com.inha.endgame.room.*;
 import com.inha.endgame.user.CrimeType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 @Component
 public class MapReader {
+    private final JsonReader jsonReader;
     private final ExcelParser excelParser;
     private List<List<Tile>> gameMap;
 
@@ -23,11 +25,20 @@ public class MapReader {
     private static final List<rVector3D> crimeSpySpecificMissionPoses = new ArrayList<>();
     private static rVector3D crimeBoomerSpecificMissionPos;
 
-    public MapReader(ExcelParser excelParser) throws IOException {
+    public MapReader(ExcelParser excelParser, JsonReader jsonReader) throws IOException {
         this.excelParser = excelParser;
+        this.jsonReader = jsonReader;
+
+        var fileName = "map";
+        var key = "map_size";
+
+        RoomService.minX = JsonReader._int(JsonReader.model(fileName, key, "mapXmin"));
+        RoomService.maxX = JsonReader._int(JsonReader.model(fileName, key, "mapXmax"));
+        RoomService.minZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmin"));
+        RoomService.maxZ = JsonReader._int(JsonReader.model(fileName, key, "mapZmax"));
 
         File curDir = this.excelParser.getProjectDirectory();
-        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", 151, 141);
+        this.gameMap = this.excelParser.convertExcelToMap(curDir.getParent() + "/model/Stage.xlsx", (int)RoomService.maxX, (int)RoomService.maxZ);
 
         for(int i = 0; i < this.gameMap.size(); i++) {
             for(int j = 0; j < this.gameMap.get(i).size(); j++) {
@@ -126,18 +137,10 @@ public class MapReader {
     public List<rVector3D> getRandomNpcPos(int count) {
         List<rVector3D> npcPos = new ArrayList<>();
 
-        var fileName = "map";
-        var key = "map_size";
-
-        RoomService.minX = 0;
-        RoomService.maxX = 150;
-        RoomService.minZ = 0;
-        RoomService.maxZ = 140;
-
-        var npcSpawnMinX = 0;
-        var npcSpawnMaxX = 150;
-        var npcSpawnMinZ = 0;
-        var npcSpawnMaxZ = 140;
+        var npcSpawnMinX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmin"));
+        var npcSpawnMaxX = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posXmax"));
+        var npcSpawnMinZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmin"));
+        var npcSpawnMaxZ = JsonReader._int(JsonReader.model("spawn", "spawn_npc_outer", "posZmax"));
 
         for (int i = 0; i < count; i++) {
             var pos = new rVector3D(npcSpawnMinX + (float) (Math.random() * (npcSpawnMaxX - npcSpawnMinX)), 0, npcSpawnMinZ + (float) (Math.random() * (npcSpawnMaxZ - npcSpawnMinZ)));
