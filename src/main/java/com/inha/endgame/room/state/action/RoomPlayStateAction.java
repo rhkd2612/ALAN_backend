@@ -185,7 +185,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         RoomUserCop cop = roomService.getCop(room.getRoomId());
         if(room.getEndAt().before(now)) {
             gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.COP, cop.getUsername(), cop.getNickname(), cop.getKillUserAt());
-            gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "안전한? 거리", "그들도 시민 속에 살아가고 있습니다. 곧 잡히겠죠..?", "범죄가 일어나지 않음");
+            gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "안전한? 거리", "그들도 시민 속에 살아가고 있습니다. 곧 잡히겠죠..?", "경찰 승리 : 시간 내에 누구도 목표를 달성하지 못함");
             return gameOverInfo;
         }
 
@@ -196,15 +196,15 @@ public class RoomPlayStateAction implements RoomStateAction {
 
             // 1-2-1 저는 커서 경찰 아저씨가 될거에요(npc 0명 이내 처치 승리)
             if(room.isTrueEnd()) {
-                gameOverInfo.putDetail(GameOverInfo.OverType.TRUE, "매의 눈", "직업을 바꿔도 될 것 같은데요?", "시민 전원 생존");
+                gameOverInfo.putDetail(GameOverInfo.OverType.TRUE, "매의 눈", "직업을 바꿔도 될 것 같은데요?", "경찰 승리 : 실수 없이 모든 범죄자 사살");
             } else {
                 int npcKillCount = cop.getNpcKillCount();
                 if(npcKillCount > 5) {
                     // 1-2-2 부정경찰(5명 초과한 소시민 처치 승리)
-                    gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "부정경찰", "가끔 오해할 수도 있잖아요?", "5명을 초과한 시민 사살 후 승리");
+                    gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "부정경찰", "가끔 오해할 수도 있잖아요?", "무승부 : 5명을 초과한 시민 사살 후 모든 범죄자 검거");
                 } else {
                     // 1-2-3 안전한 거리(npc 5명 이내 처치 승리)
-                    gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "안전한 거리", "행복을 위해 소수의 희생은 괜찮지 않을까요?", "5명 이하의 시민 사살 후 승리");
+                    gameOverInfo.putDetail(GameOverInfo.OverType.NORMAL, "안전한 거리", "행복을 위해 소수의 희생은 괜찮지 않을까요?", "경찰 승리 : 5명 이하의 시민 사살 후 모든 범죄자 검거");
                 }
             }
 
@@ -217,7 +217,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         if (boomer != null) {
             if (boomer.getBoomAt() != null && boomer.getBoomAt().before(now)) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.BOOMER, boomer.getUsername(), boomer.getNickname(), boomer.getMissionClearAt());
-                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "폭죽 놀이", "여러분의 세금이 하늘에서 터지고 있어요~", "경찰서 파괴");
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "폭죽 놀이", "예술은 폭발이라고도 하잖아요~", "폭파범 승리 : 목표 폭발");
                 return gameOverInfo;
             }
         }
@@ -227,7 +227,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         if (assassin != null) {
             if(assassin.getTargetUsernames().isEmpty()) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.ASSASSIN, assassin.getUsername(), assassin.getNickname(), assassin.getMissionClearAt());
-                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "안 들키면 암살 맞죠?", "원한을 사지 않게 조심하세요. 경찰은 그를 막을 수 없거든요..", "청부 살인 성공");
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "안 들키면 암살 맞죠?", "원한을 사지 않게 조심하세요. 경찰은 그를 막을 수 없거든요..", "암살자 승리 : 청부 살인 성공");
                 return gameOverInfo;
             }
         }
@@ -237,7 +237,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         if (spy != null) {
             if(spy.getClearMissionPhase() == spy.getMaxMissionPhase()) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.SPY, spy.getUsername(), spy.getNickname(), spy.getMissionClearAt());
-                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "♚♚히어로즈 오브 더 스☆톰♚♚가입시$$전원 카드팩☜☜", "도시는 그의 놀이터가 아닐까요?", "도시 기밀 유출");
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "♚♚히어로즈 오브 더 스☆톰♚♚가입시$$전원 카드팩☜☜", "도시는 그의 놀이터가 되었습니다..", "스파이 승리 : 도시 기밀 유출");
                 return gameOverInfo;
             }
         }
