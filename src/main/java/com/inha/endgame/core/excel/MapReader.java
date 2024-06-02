@@ -166,6 +166,8 @@ public class MapReader {
             copyArray.set(r, temp);
 
             missions.add(missionPos);
+
+            missionCount++;
         }
 
         return missions;
