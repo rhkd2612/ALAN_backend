@@ -237,7 +237,7 @@ public class RoomPlayStateAction implements RoomStateAction {
         if (spy != null) {
             if(spy.getClearMissionPhase() == spy.getMaxMissionPhase()) {
                 gameOverInfo = new GameOverInfo(GameOverInfo.OverJob.SPY, spy.getUsername(), spy.getNickname(), spy.getMissionClearAt());
-                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "♚♚히어로즈 오브 더 스☆톰♚♚가입시$$전원 카드팩☜☜", "도시는 그의 놀이터가 되었습니다..", "스파이 승리 : 도시 기밀 유출");
+                gameOverInfo.putDetail(GameOverInfo.OverType.BAD, "♣♧히어로즈 오브 더 스☆톰◈♨가입시$$전원 카드팩 증정☜☜", "도시는 그의 놀이터가 되었습니다..", "스파이 승리 : 도시 기밀 유출");
                 return gameOverInfo;
             }
         }
