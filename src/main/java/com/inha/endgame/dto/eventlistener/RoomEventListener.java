@@ -97,10 +97,11 @@ public class RoomEventListener {
 
         try {
             var targetUser = roomService.shot(roomId);
+            var checkAssassinTarget = roomService.checkAssassinTarget(roomId, targetUser.getUsername());
             var aliveUserCount = roomService.getAliveUserCount(roomId);
             RoomUserCop cop = roomService.getCop(roomId);
 
-            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt(), targetUser.getCrimeType()));
+            unitySocketService.sendMessageRoom(roomId, new ShotResponse(targetUser.getUsername(), targetUser.getRoomUserType(), aliveUserCount, cop.getStunAvailAt(), targetUser.getCrimeType(), checkAssassinTarget));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

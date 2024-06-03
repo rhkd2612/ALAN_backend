@@ -213,10 +213,6 @@ public class RoomService {
 
         copUser.checkShot(targetUser);
 
-        RoomUserCrimeAssassin assassin = room.getAssassin();
-        if (assassin != null && assassin.getTargetUsernames().contains(copUser.getTargetUsername()))
-            assassin.killTarget(copUser.getTargetUsername());
-
         targetUser.die();
         copUser.endAimingAndStun();
 
@@ -227,6 +223,20 @@ public class RoomService {
         copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
 
         return targetUser;
+    }
+
+    public boolean checkAssassinTarget(long roomId, String targetUsername) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        RoomUserCrimeAssassin assassin = room.getAssassin();
+        if (assassin != null && assassin.getTargetUsernames().contains(targetUsername)) {
+            assassin.killTarget(targetUsername);
+            return true;
+        }
+
+        return false;
     }
 
     public synchronized void assassinKill(long roomId, String targetUsername) {
