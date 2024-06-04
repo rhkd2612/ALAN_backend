@@ -75,9 +75,11 @@ public class UserEventListener {
             var roomUsers = roomService.findAllRoomUsersById(roomId);
             unitySocketService.sendMessageRoom(roomId, new AddUserResponse(newUser.getNickname(), roomUsers));
 
-            // 새로 들어오면 방 정보 다시 세팅
-            List<RoomUser> npcs = roomService.findAllRoomNpcsById(roomId);
-            unitySocketService.sendMessage(session, new SettingRoomResponse(npcs));
+            // 새로 들어오면 방 정보 다시 세팅(방장 제외)
+            if(roomUsers.size() > 1) {
+                List<RoomUser> npcs = roomService.findAllRoomNpcsById(roomId);
+                unitySocketService.sendMessage(session, new SettingRoomResponse(npcs));
+            }
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
 
