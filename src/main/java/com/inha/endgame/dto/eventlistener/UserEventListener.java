@@ -72,7 +72,7 @@ public class UserEventListener {
                 roomService.joinRoom(roomId, newUser);
             }
 
-            var roomUsers = roomService.findAllRoomUsersById(roomId);
+            var roomUsers = roomService.findAllRoomUsersByRoomIdOrderByCop(roomId);
             unitySocketService.sendMessageRoom(roomId, new AddUserResponse(newUser.getNickname(), roomUsers));
 
             // 새로 들어오면 방 정보 다시 세팅(방장 제외)

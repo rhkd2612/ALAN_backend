@@ -53,12 +53,20 @@ public class RoomService {
         return room.getRoomUsers().get(username);
     }
 
-    public List<RoomUser> findAllRoomUsersById(long roomId) {
+    public List<RoomUser> findAllRoomUsersByRoomIdOrderByCop(long roomId) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        return new ArrayList<>(room.getRoomUsers().values());
+        List<RoomUser> result = new ArrayList<>();
+        result.add(room.getRoomUsers().get(room.getHostUsername()));
+
+        for(var user : room.getRoomUsers().values()) {
+            if(!user.getUsername().equals(room.getHostUsername()))
+                result.add(user);
+        }
+
+        return result;
     }
 
     public List<RoomUser> findAllRoomNpcsById(long roomId) {

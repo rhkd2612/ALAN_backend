@@ -30,7 +30,7 @@ public class RoomReadyStateAction implements RoomStateAction {
         try {
             unitySocketService.sendMessageRoom(room.getRoomId(), new StartRoomResponse(RoomState.READY, room.getPlayAt()));
             roomService.selectJob(room.getRoomId());
-            var roomUsers = roomService.findAllRoomUsersById(room.getRoomId());
+            var roomUsers = roomService.findAllRoomUsersByRoomIdOrderByCop(room.getRoomId());
 
             userService.getAllUser(room.getRoomId()).forEach(user -> {
                 var userSession = sessionService.findSessionBySessionId(user.getSessionId());
