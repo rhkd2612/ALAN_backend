@@ -7,6 +7,7 @@
 | 스파이 | 도시의 시스템을 지배하고 목표를 획득하세요. |
 | 폭파범 | 폭탄을 설치하고 목표를 파괴하세요. |
 | 암살자 | 미션을 깨 암살 수단을 획득하고 목표를 제거하세요. |
+<br>
 
 ## 조작키
 | Key   |  주요역할                                                         |
@@ -21,9 +22,12 @@
 | 1 ~ 5 | (범죄자)애니메이션 |
 | 마우스 우클릭 + 좌클릭 | (경찰)제압 |
 | 마우스 우클릭 + 좌클릭 + 좌클릭| (경찰)사격 |
+<br>
 
 ## Live Demo
-### <a href="">추후 제공 예정</a>
+<a href="https://sangmin2ya.itch.io/act-like-an-npc-alan?secret=6dk5EZoVXKAunUJ96kmuPpsbhjc">
+<img src="https://github.com/rhkd2612/ALAN_backend/assets/26248650/7390d058-d38d-4e29-9c42-bef4e2fb02b5" width="200" height="200">
+</a>
 
 ### 팀 소개
 | 이름   | 파트           | 주요역할                                                         |
@@ -45,6 +49,7 @@
 - #### Java 11 / SpringBoot / WebSocket
 - #### AWS EC2 / Docker / Jenkins
 - #### Git / Git Project / Notion / Figma
+<br>
 
-## ScreenShots
+## ScreenShots & Videos
 추가 예정
