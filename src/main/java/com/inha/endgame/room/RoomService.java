@@ -439,7 +439,7 @@ public class RoomService {
                     case ASSASSIN:
                         room.setAssassinUsername(roomUser.getUsername());
 
-                        int targetCount = 3;
+                        int targetCount = 5;
                         room.getRoomNpcs().forEach((npcUsername, npc) -> {
                             RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
                             if (assassin.getTargetUsernames().size() >= targetCount)
