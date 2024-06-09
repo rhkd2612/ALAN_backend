@@ -31,13 +31,6 @@ public class RoomService {
 
     private static int last_room_id = 0;
 
-    @PostConstruct
-    void test() {
-        for(int i = 0; i < 100; i++) {
-            createRoom();
-        }
-    }
-
     public Room createRoom() {
         Room room = new Room(++last_room_id);
         mapRoom.put(room.getRoomId(), room);
