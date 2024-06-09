@@ -35,5 +35,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = GameOverConfirmRequest.class, name = "GAME_OVER_CONFIRM"),
 })
 public interface ClientRequest {
-	RequestType getType();
+	RequestType getType(); 
 }
