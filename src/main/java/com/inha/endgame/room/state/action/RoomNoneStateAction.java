@@ -20,7 +20,7 @@ public class RoomNoneStateAction implements RoomStateAction {
         // do nothing
         Date now = new Date();
         if(room.getRoomUsers().isEmpty()) {
-            Date closeTime = new Date(room.getCreateAt().getTime() + 60000);
+            Date closeTime = new Date(room.getCreateAt().getTime() + 600000);
             if (now.after(closeTime))
                 room.setNextState(RoomState.END);
         }

@@ -42,6 +42,8 @@ public class Room {
     private Map<String, UseItemInfo> recentItemUseAt = new ConcurrentHashMap<>();
     private Map<String, ReportInfo> recentReportAt = new ConcurrentHashMap<>();
 
+    private boolean isStateChangeProgress = false;
+
     private boolean isTrueEnd = true;
 
     public Room(long roomId) {
@@ -72,6 +74,10 @@ public class Room {
         this.crimeCount++;
 
         return crimeType;
+    }
+
+    public void setStateChangeProgress(boolean isStateChangeProgress) {
+        this.isStateChangeProgress = isStateChangeProgress;
     }
 
     public void setTrueEnd(boolean trueEnd) {
