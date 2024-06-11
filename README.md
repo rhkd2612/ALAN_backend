@@ -56,7 +56,7 @@
 - #### 기반 오픈 소스 : <a href="https://github.com/Binary-L0G1C/java-unity-websocket-connector">https://github.com/Binary-L0G1C/java-unity-websocket-connector)</a>
 - #### Java 11 / SpringBoot / WebSocket
 - #### AWS EC2 / Docker / Jenkins
-- #### Git / Git Project / Notion / Figma
+- #### Git / Git Project / Notion / Figma / JMeter
 <br>
 
 ### Demo Video
