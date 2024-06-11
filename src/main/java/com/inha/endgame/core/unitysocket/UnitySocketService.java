@@ -2,9 +2,7 @@ package com.inha.endgame.core.unitysocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.endgame.core.exception.ExceptionMessageTranslator;
-import com.inha.endgame.core.io.ClientEvent;
-import com.inha.endgame.core.io.ClientRequest;
-import com.inha.endgame.core.io.ClientResponse;
+import com.inha.endgame.core.io.*;
 import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.user.UserService;
@@ -18,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +32,8 @@ public class UnitySocketService {
 	private final RoomService roomService;
 	private final UserService userService;
 	private final SessionService sessionService;
+
+	private final static long LATENCY_TIME = 100;
 
 	public static int getNetworkDelay() {
 		if(UnitySocketService.networkDelay == 0)
@@ -50,11 +51,45 @@ public class UnitySocketService {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
 		ClientRequest cr = objectMapper.readValue(messageString, ClientRequest.class);
+
+		// 딜레이 넷코드 처리
+		if(cr instanceof RoomDelayRequest) {
+			RoomDelayRequest delayRequest = (RoomDelayRequest) cr;
+			Date now = new Date();
+			if(delayRequest.getRequestAt() != null) {
+				Date responseAt = delayRequest.getResponseAt(); // 패킷이 도착해야하는 시간
+
+				// 반드시 보내야하는 패킷이 아닌데 늦게 도착한 경우 무시
+				if (now.after(responseAt) && !delayRequest.isNeedSuccess())
+					return;
+
+				// 늦게 도착한 경우 보정 로직 추가
+				long latency = now.getTime() - delayRequest.getResponseAt().getTime();
+				delayRequest.setResponseAt(new Date(responseAt.getTime() + latency + LATENCY_TIME));
+			}
+		}
+
 		publisher.publishEvent(new ClientEvent<>(cr, session));
 	}
 
+	private void checkDelayResponse(ClientResponse clientResponse, Date responseAt) {
+		if(responseAt == null)
+			return;
+
+		if(clientResponse instanceof RoomDelayResponse) {
+			RoomDelayResponse delayResponse = (RoomDelayResponse) clientResponse;
+			delayResponse.setResponseAt(responseAt);
+		}
+	}
+
 	public synchronized void sendMessage(String sessionId, ClientResponse clientResponse) throws IOException {
+		sendMessage(sessionId, clientResponse, null);
+	}
+
+	public synchronized void sendMessage(String sessionId, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
+		checkDelayResponse(clientResponse, responseAt);
 
 		WebSocketSession session = sessionService.findSessionBySessionId(sessionId);
 
@@ -63,14 +98,26 @@ public class UnitySocketService {
 	}
 
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
+		sendMessage(session, clientResponse, null);
+	}
+
+	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
+		checkDelayResponse(clientResponse, responseAt);
 
 		String json = objectMapper.writeValueAsString(clientResponse);
 		session.sendMessage(new TextMessage(json));
 	}
 
 	public synchronized void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
+		sendMessageRoom(roomId, clientResponse, null);
+	}
+
+	public synchronized void sendMessageRoom(long roomId, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
+
+		checkDelayResponse(clientResponse, responseAt);
 
 		var json = objectMapper.writeValueAsString(clientResponse);
 		var room = roomService.findRoomById(roomId);

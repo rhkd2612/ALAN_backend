@@ -22,6 +22,7 @@ public class StateChangeObserver implements StateChangeListener {
     @EventListener
     public void onStateChange(StateChangeEvent event) {
         var room = event.getRoom();
+
         var curState = room.getCurState();
         var nextState = room.getNextState();
 
@@ -33,6 +34,8 @@ public class StateChangeObserver implements StateChangeListener {
                 case PLAY: playAction.onUpdate(room); break;
                 case END: endAction.onUpdate(room); break;
             }
+
+            room.setStateChangeProgress(false);
             return;
         }
 
@@ -56,5 +59,6 @@ public class StateChangeObserver implements StateChangeListener {
         room.setCurState(nextState);
         room.setNextState(null);
         room.setNextStateAt(null);
+        room.setStateChangeProgress(false);
     }
 }

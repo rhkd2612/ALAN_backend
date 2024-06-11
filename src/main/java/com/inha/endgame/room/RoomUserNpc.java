@@ -70,7 +70,7 @@ public class RoomUserNpc extends RoomUser {
                 }
 
                 if(motionCount > 0)
-                    this.setAnim(RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount - 1));
+                    this.setAnim(RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount));
             } else {
                 this.npcState = NpcState.STOP;
                 this.setVelocity(0);

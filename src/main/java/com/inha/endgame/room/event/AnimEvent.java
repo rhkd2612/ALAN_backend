@@ -38,7 +38,7 @@ public class AnimEvent {
         var minMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycleMin"));
         var maxMotionCycleTime = JsonReader._time(JsonReader.model("screen","screen","screenMotionCycleMax"));
         if(motionCount > 0) {
-            this.animNum = RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount - 1);
+            this.animNum = RandomUtils.nextInt(minMotionNum, minMotionNum + motionCount);
             this.nextAnimAt = new Date(new Date().getTime() + RandomUtils.nextInt(minMotionCycleTime, maxMotionCycleTime));
         }
 

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -31,6 +32,10 @@ public class RoomService {
     private static int last_room_id = 0;
 
     public Room createRoom() {
+        if(this.getAllRoom().size() >= 200) {
+            throw new IllegalStateException("서버가 혼잡합니다.. 잠시 후 시도해주세요.");
+        }
+
         Room room = new Room(++last_room_id);
         mapRoom.put(room.getRoomId(), room);
 
@@ -439,7 +444,7 @@ public class RoomService {
                     case ASSASSIN:
                         room.setAssassinUsername(roomUser.getUsername());
 
-                        int targetCount = 3;
+                        int targetCount = 5;
                         room.getRoomNpcs().forEach((npcUsername, npc) -> {
                             RoomUserCrimeAssassin assassin = (RoomUserCrimeAssassin) crimeUser;
                             if (assassin.getTargetUsernames().size() >= targetCount)
