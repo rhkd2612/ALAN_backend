@@ -1,6 +1,19 @@
 # <span style="color:white">Act</span><span style="color:orange"> Like An NPC</span>
-## 실시간 4인 비대칭 서바이벌 
+## 실시간 4인 비대칭 서바이벌
 경찰 혹은 범죄자가 되어 각자 승리 목표를 찾아 승리하세요!(개인 승리)
+<br>
+
+### 시네마틱 영상 시청
+[![Video Label](http://img.youtube.com/vi/QVOFOZHTSpk/0.jpg)](https://youtu.be/QVOFOZHTSpk)
+
+<br>
+
+### Live Demo
+<a href="https://sangmin2ya.itch.io/act-like-an-npc-alan?secret=6dk5EZoVXKAunUJ96kmuPpsbhjc">
+<img src="https://github.com/rhkd2612/ALAN_backend/assets/26248650/7390d058-d38d-4e29-9c42-bef4e2fb02b5" width="200" height="200">
+</a>
+<br>
+
 | 역할   |  주요목표                                                         |
 |----|---------------------------------------------------------------|
 | 경찰 | 도시의 안전을 위해 모든 범죄자를 잡으세요. |
@@ -9,7 +22,7 @@
 | 암살자 | 미션을 깨 암살 수단을 획득하고 목표를 제거하세요. |
 <br>
 
-## 조작키
+### 조작키
 | Key   |  주요역할                                                         |
 |----|---------------------------------------------------------------|
 | WASD | 걷기 |
@@ -23,11 +36,6 @@
 | 마우스 우클릭 + 좌클릭 | (경찰)제압 |
 | 마우스 우클릭 + 좌클릭 + 좌클릭| (경찰)사격 |
 <br>
-
-## Live Demo
-<a href="https://sangmin2ya.itch.io/act-like-an-npc-alan?secret=6dk5EZoVXKAunUJ96kmuPpsbhjc">
-<img src="https://github.com/rhkd2612/ALAN_backend/assets/26248650/7390d058-d38d-4e29-9c42-bef4e2fb02b5" width="200" height="200">
-</a>
 
 ### 팀 소개
 | 이름   | 파트           | 주요역할                                                         |
@@ -44,12 +52,13 @@
 | 박정환 | 프로젝트 멘토   | LG 유플러스 프론트엔드 개발자                                             |
 <br>
 
-## 사용 기술 및 협업툴
+### 사용 기술 및 협업툴
 - #### 기반 오픈 소스 : <a href="https://github.com/Binary-L0G1C/java-unity-websocket-connector">https://github.com/Binary-L0G1C/java-unity-websocket-connector)</a>
 - #### Java 11 / SpringBoot / WebSocket
 - #### AWS EC2 / Docker / Jenkins
 - #### Git / Git Project / Notion / Figma
 <br>
 
-## ScreenShots & Videos
-추가 예정
+### Demo Video
+[![Video Label](http://img.youtube.com/vi/dG4_L6ttqyI/0.jpg)](https://youtu.be/dG4_L6ttqyI)
+
