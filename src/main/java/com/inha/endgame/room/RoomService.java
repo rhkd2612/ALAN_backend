@@ -32,9 +32,9 @@ public class RoomService {
     private static int last_room_id = 0;
 
     public Room createRoom() {
-        if(this.getAllRoom().size() >= 200) {
-            throw new IllegalStateException("서버가 혼잡합니다.. 잠시 후 시도해주세요.");
-        }
+//        if(this.getAllRoom().size() >= 200) {
+//            throw new IllegalStateException("서버가 혼잡합니다.. 잠시 후 시도해주세요.");
+//        }
 
         Room room = new Room(++last_room_id);
         mapRoom.put(room.getRoomId(), room);
