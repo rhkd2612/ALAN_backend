@@ -25,32 +25,32 @@ public class RoomStateScheduler {
     @Scheduled(fixedRate = 100)
     public void enterFrame() {
         // 10개 이하면 단일 쓰레드로 처리
-        if(roomService.getAllRoom().size() < ROOM_SIZE_PER_THREAD) {
+        //if(roomService.getAllRoom().size() < ROOM_SIZE_PER_THREAD) {
             roomService.getAllRoom().forEach(publisher::publishStateChange);
             return;
-        }
+        //}
 
-        var count = 0;
-        List<Room> taskRoomList = new ArrayList<>();
-        for(var room : roomService.getAllRoom()) {
-            if(room.isStateChangeProgress())
-                continue;
-
-            room.setStateChangeProgress(true);
-
-            count++;
-            taskRoomList.add(room);
-
-            if(count % ROOM_SIZE_PER_THREAD == 0) {
-                threadPoolTaskExecutor.execute(new RoomTask(publisher, new CopyOnWriteArrayList<>(taskRoomList)));
-                taskRoomList.clear();
-            }
-        }
-
-        // 잔여 룸 실행할 쓰레드 지정
-        if(!taskRoomList.isEmpty()) {
-            threadPoolTaskExecutor.execute(new RoomTask(publisher, new CopyOnWriteArrayList<>(taskRoomList)));
-            taskRoomList.clear();
-        }
+//        var count = 0;
+//        List<Room> taskRoomList = new ArrayList<>();
+//        for(var room : roomService.getAllRoom()) {
+//            if(room.isStateChangeProgress())
+//                continue;
+//
+//            room.setStateChangeProgress(true);
+//
+//            count++;
+//            taskRoomList.add(room);
+//
+//            if(count % ROOM_SIZE_PER_THREAD == 0) {
+//                threadPoolTaskExecutor.execute(new RoomTask(publisher, new CopyOnWriteArrayList<>(taskRoomList)));
+//                taskRoomList.clear();
+//            }
+//        }
+//
+//        // 잔여 룸 실행할 쓰레드 지정
+//        if(!taskRoomList.isEmpty()) {
+//            threadPoolTaskExecutor.execute(new RoomTask(publisher, new CopyOnWriteArrayList<>(taskRoomList)));
+//            taskRoomList.clear();
+//        }
     }
 }

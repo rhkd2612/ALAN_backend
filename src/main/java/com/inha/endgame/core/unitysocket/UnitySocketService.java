@@ -93,8 +93,10 @@ public class UnitySocketService {
 
 		WebSocketSession session = sessionService.findSessionBySessionId(sessionId);
 
-		String json = objectMapper.writeValueAsString(clientResponse);
-		session.sendMessage(new TextMessage(json));
+		if(session.isOpen()) {
+			String json = objectMapper.writeValueAsString(clientResponse);
+			session.sendMessage(new TextMessage(json));
+		}
 	}
 
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
@@ -104,10 +106,12 @@ public class UnitySocketService {
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
-		checkDelayResponse(clientResponse, responseAt);
+		if(session.isOpen()) {
+			checkDelayResponse(clientResponse, responseAt);
 
-		String json = objectMapper.writeValueAsString(clientResponse);
-		session.sendMessage(new TextMessage(json));
+			String json = objectMapper.writeValueAsString(clientResponse);
+			session.sendMessage(new TextMessage(json));
+		}
 	}
 
 	public synchronized void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
@@ -130,11 +134,10 @@ public class UnitySocketService {
 				return;
 
 			var session = sessionService.findSessionBySessionId(user.getSessionId());
-			if(session == null || !session.isOpen())
-				return;
-
 			try {
-				session.sendMessage(new TextMessage(json));
+				if(session != null && session.isOpen()) {
+					session.sendMessage(new TextMessage(json));
+				}
 			} catch (IOException e) {
 				LOGGER.warn("전송 오류 : " + session.getId());
 			}

@@ -346,16 +346,13 @@ public class RoomService {
         return sessionIds;
     }
 
-    public void startRoom(long roomId, String startUserUsername) {
+    public void startRoom(long roomId) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         if(room.getRoomUsers().size() <= 1)
             throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
-
-        if(!room.getHostUsername().equals(startUserUsername))
-            throw new IllegalArgumentException("방장만 시작할 수 있습니다.");
 
         room.start();
     }

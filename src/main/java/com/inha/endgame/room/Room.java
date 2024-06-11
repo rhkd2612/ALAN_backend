@@ -177,7 +177,7 @@ public class Room {
     }
 
     public synchronized void start() {
-        if(this.curState != RoomState.NONE)
+        if(this.curState != RoomState.NONE || this.nextState == RoomState.READY)
             throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.READY;
         this.readyAt = new Date();
