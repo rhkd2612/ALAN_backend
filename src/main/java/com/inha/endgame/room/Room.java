@@ -162,7 +162,7 @@ public class Room {
         npcs.forEach(npc -> this.roomNpcs.put(npc.getUsername(), npc));
     }
 
-    public synchronized void join(RoomUser user) {
+    public void join(RoomUser user) {
         if(this.curState == RoomState.END)
             throw new IllegalStateException("종료된 방입니다.");
         if(this.roomUsers.containsKey(user.getUsername()))
@@ -239,7 +239,7 @@ public class Room {
         return result;
     }
 
-    public synchronized void kick(String username) {
+    public void kick(String username) {
         this.roomUsers.remove(username);
     }
 

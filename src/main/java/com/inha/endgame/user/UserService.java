@@ -27,7 +27,7 @@ public class UserService {
 		return Collections.unmodifiableCollection(mapUser.get(roomId).values());
 	}
 
-	public synchronized User addUser(WebSocketSession session, long roomId, String username, String nickname) {
+	public User addUser(WebSocketSession session, long roomId, String username, String nickname) {
 		if(!mapUser.containsKey(roomId))
 			mapUser.put(roomId, new ConcurrentHashMap<>());
 
@@ -36,26 +36,28 @@ public class UserService {
 			throw new IllegalArgumentException("이미 있는 유저입니다.");
 
 		var newUser = new User(sessionId, username, nickname);
-		mapUser.get(roomId).put(username, newUser);
-
-		sessionService.addSession(session, newUser);
+		synchronized (newUser) {
+			mapUser.get(roomId).put(username, newUser);
+			sessionService.addSession(session, newUser);
+		}
 		return newUser;
 	}
 
-	public synchronized void reconnect(WebSocketSession session, long roomId, String username) {
-		var sessionId = session.getId();
+	public void reconnect(WebSocketSession session, long roomId, String username) {
+		synchronized (session) {
+			var sessionId = session.getId();
+			if (mapUser.get(roomId).containsKey(username)) {
+				var prevUser = mapUser.get(roomId).get(username);
+				var prevUserSessionId = prevUser.getSessionId();
 
-		if(mapUser.get(roomId).containsKey(username)) {
-			var prevUser = mapUser.get(roomId).get(username);
-			var prevUserSessionId = prevUser.getSessionId();
-
-			if(!prevUserSessionId.equals(sessionId) && sessionService.validatePrevSessionId(prevUserSessionId)) {
-				sessionService.changeSession(prevUserSessionId, session);
-				return;
+				if (!prevUserSessionId.equals(sessionId) && sessionService.validatePrevSessionId(prevUserSessionId)) {
+					sessionService.changeSession(prevUserSessionId, session);
+					return;
+				}
 			}
-		}
 
-		throw new IllegalArgumentException("재접속할 유저 정보가 없습니다.");
+			throw new IllegalArgumentException("재접속할 유저 정보가 없습니다.");
+		}
 	}
 
 	public String leaveRoom(long roomId, String leaveUsername) {

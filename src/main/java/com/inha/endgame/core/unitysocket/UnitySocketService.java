@@ -5,18 +5,21 @@ import com.inha.endgame.core.exception.ExceptionMessageTranslator;
 import com.inha.endgame.core.io.*;
 import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.room.RoomService;
+import com.inha.endgame.room.thread.ResponseTask;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class UnitySocketService {
 	private final RoomService roomService;
 	private final UserService userService;
 	private final SessionService sessionService;
+	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	private final static long LATENCY_TIME = 100;
 
@@ -133,18 +137,13 @@ public class UnitySocketService {
 			if(user == null)
 				return;
 
+			// 여러명한테 보내는 경우 한 쓰레드로 할 시 타임아웃에 멈출 수 있으므로 비동기로 처리
 			var session = sessionService.findSessionBySessionId(user.getSessionId());
-			try {
-				if(session != null && session.isOpen()) {
-					session.sendMessage(new TextMessage(json));
-				}
-			} catch (IOException e) {
-				LOGGER.warn("전송 오류 : " + session.getId());
-			}
+			threadPoolTaskExecutor.execute(new ResponseTask(session, json));
 		});
 	}
 
-	public synchronized void sendErrorMessage(WebSocketSession session, Exception e) {
+	public void sendErrorMessage(WebSocketSession session, Exception e) {
 		try {
 			String errMessage = exceptionMessageTranslator.translate(e);
 			LOGGER.error(errMessage);
