@@ -46,6 +46,15 @@ public class RoomService {
         return Collections.unmodifiableCollection(mapRoom.values());
     }
 
+    public Collection<Room> getAllPlayRoom() {
+        return Collections.unmodifiableCollection(mapRoom.values().stream().filter(room -> room.getCurState().equals(RoomState.PLAY)).collect(Collectors.toList()));
+    }
+
+    public Collection<Room> getAllNotPlayRoom() {
+        return Collections.unmodifiableCollection(mapRoom.values().stream().filter(room -> !room.getCurState().equals(RoomState.PLAY)).collect(Collectors.toList()));
+    }
+
+
     public Room findRoomById(long roomId) {
         return mapRoom.get(roomId);
     }

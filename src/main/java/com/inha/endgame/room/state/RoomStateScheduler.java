@@ -30,9 +30,12 @@ public class RoomStateScheduler {
             return;
         }
 
+        // 진행 중이지 않은 룸은 한 번에 처리
+        roomService.getAllNotPlayRoom().forEach(publisher::publishStateChange);
+
         var count = 0;
         List<Room> taskRoomList = new ArrayList<>();
-        for(var room : roomService.getAllRoom()) {
+        for(var room : roomService.getAllPlayRoom()) {
             if(room.isStateChangeProgress())
                 continue;
 

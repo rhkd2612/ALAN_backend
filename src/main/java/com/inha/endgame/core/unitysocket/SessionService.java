@@ -29,16 +29,19 @@ public class SessionService {
 
     public void kickSession(String sessionId) {
         WebSocketSession session = connectSession.get(sessionId);
+        if(session == null)
+            return;
+
         try {
-            if (session != null && session.isOpen()) {
+            if (session.isOpen()) {
                 session.sendMessage(new TextMessage("다른 클라이언트의 접속으로 인해 연결이 끊어졌습니다."));
                 session.close();
+
+                connectSession.remove(sessionId);
             }
         } catch (Exception e) {
             throw new IllegalStateException("세션 종료 실패");
         }
-
-        connectSession.remove(sessionId);
     }
 
     public boolean validatePrevSessionId(String prevSessionId) {

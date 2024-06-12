@@ -1,4 +1,4 @@
-package com.inha.endgame.room.thread;
+package com.inha.endgame.core.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
@@ -10,21 +10,32 @@ import java.io.IOException;
 public class ResponseTask implements Runnable {
     private final WebSocketSession session;
     private final String json;
+    private final boolean isResend;
 
     public ResponseTask(WebSocketSession session, String json) {
         this.session = session;
         this.json = json;
+        this.isResend = false;
+    }
+
+    public ResponseTask(WebSocketSession session, String json, boolean isResend) {
+        this.session = session;
+        this.json = json;
+        this.isResend = isResend;
+    }
+
+    public boolean isResend() {
+        return isResend;
     }
 
     @Override
     public void run() {
-        synchronized (session) {
+
+        if (session != null && session.isOpen()) {
             try {
-                if (session != null && session.isOpen()) {
-                    session.sendMessage(new TextMessage(json));
-                }
+                session.sendMessage(new TextMessage(json));
             } catch (IOException e) {
-                log.warn("전송 오류 : " + session.getId());
+                throw new RuntimeException(e);
             }
         }
     }
