@@ -30,7 +30,6 @@ public class ResponseTask implements Runnable {
 
     @Override
     public void run() {
-
         if (session != null && session.isOpen()) {
             try {
                 session.sendMessage(new TextMessage(json));

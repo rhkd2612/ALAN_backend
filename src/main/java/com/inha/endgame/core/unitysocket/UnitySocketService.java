@@ -98,7 +98,7 @@ public class UnitySocketService {
 
 		WebSocketSession session = sessionService.findSessionBySessionId(sessionId);
 
-		if(session.isOpen()) {
+		if(session != null && session.isOpen()) {
 			String json = objectMapper.writeValueAsString(clientResponse);
 			responseQueue.submitTask(new ResponseTask(session, json));
 		}
@@ -111,7 +111,7 @@ public class UnitySocketService {
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
-		if(session.isOpen()) {
+		if(session != null && session.isOpen()) {
 			checkDelayResponse(clientResponse, responseAt);
 
 			String json = objectMapper.writeValueAsString(clientResponse);
@@ -139,7 +139,9 @@ public class UnitySocketService {
 				return;
 
 			var session = sessionService.findSessionBySessionId(user.getSessionId());
-			responseQueue.submitTask(new ResponseTask(session, json));
+			if(session != null && session.isOpen()) {
+				responseQueue.submitTask(new ResponseTask(session, json));
+			}
 		});
 	}
 
