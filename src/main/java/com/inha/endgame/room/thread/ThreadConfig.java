@@ -9,9 +9,9 @@ public class ThreadConfig {
     @Bean
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(100);
+        executor.setCorePoolSize(8);
+        executor.setMaxPoolSize(48);
+        executor.setQueueCapacity(200);
         executor.setThreadNamePrefix("RoomExecutor-");
         executor.initialize();
         return executor;

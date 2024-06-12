@@ -1,6 +1,8 @@
 package com.inha.endgame.core.unitysocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inha.endgame.core.async.ResponseQueue;
+import com.inha.endgame.core.async.ResponseTask;
 import com.inha.endgame.core.exception.ExceptionMessageTranslator;
 import com.inha.endgame.core.io.*;
 import com.inha.endgame.dto.response.ErrorResponse;
@@ -11,8 +13,8 @@ import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -32,6 +34,9 @@ public class UnitySocketService {
 	private final RoomService roomService;
 	private final UserService userService;
 	private final SessionService sessionService;
+	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+	private final ResponseQueue responseQueue;
 
 	private final static long LATENCY_TIME = 100;
 
@@ -93,8 +98,10 @@ public class UnitySocketService {
 
 		WebSocketSession session = sessionService.findSessionBySessionId(sessionId);
 
-		String json = objectMapper.writeValueAsString(clientResponse);
-		session.sendMessage(new TextMessage(json));
+		if(session != null && session.isOpen()) {
+			String json = objectMapper.writeValueAsString(clientResponse);
+			responseQueue.submitTask(new ResponseTask(session, json));
+		}
 	}
 
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse) throws IOException {
@@ -104,10 +111,12 @@ public class UnitySocketService {
 	public synchronized void sendMessage(WebSocketSession session, ClientResponse clientResponse, Date responseAt) throws IOException {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
-		checkDelayResponse(clientResponse, responseAt);
+		if(session != null && session.isOpen()) {
+			checkDelayResponse(clientResponse, responseAt);
 
-		String json = objectMapper.writeValueAsString(clientResponse);
-		session.sendMessage(new TextMessage(json));
+			String json = objectMapper.writeValueAsString(clientResponse);
+			responseQueue.submitTask(new ResponseTask(session, json));
+		}
 	}
 
 	public synchronized void sendMessageRoom(long roomId, ClientResponse clientResponse) throws IOException {
@@ -130,18 +139,13 @@ public class UnitySocketService {
 				return;
 
 			var session = sessionService.findSessionBySessionId(user.getSessionId());
-			if(session == null || !session.isOpen())
-				return;
-
-			try {
-				session.sendMessage(new TextMessage(json));
-			} catch (IOException e) {
-				LOGGER.warn("전송 오류 : " + session.getId());
+			if(session != null && session.isOpen()) {
+				responseQueue.submitTask(new ResponseTask(session, json));
 			}
 		});
 	}
 
-	public synchronized void sendErrorMessage(WebSocketSession session, Exception e) {
+	public void sendErrorMessage(WebSocketSession session, Exception e) {
 		try {
 			String errMessage = exceptionMessageTranslator.translate(e);
 			LOGGER.error(errMessage);

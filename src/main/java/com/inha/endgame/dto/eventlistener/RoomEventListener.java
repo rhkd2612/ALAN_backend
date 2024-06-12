@@ -36,8 +36,7 @@ public class RoomEventListener {
         var roomId = request.getRoomId();
 
         try {
-            User startUser = sessionService.findUserBySessionId(session.getId());
-            roomService.startRoom(roomId, startUser.getUsername());
+            roomService.startRoom(roomId);
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
         }

@@ -32,9 +32,9 @@ public class RoomService {
     private static int last_room_id = 0;
 
     public Room createRoom() {
-        if(this.getAllRoom().size() >= 200) {
-            throw new IllegalStateException("서버가 혼잡합니다.. 잠시 후 시도해주세요.");
-        }
+//        if(this.getAllRoom().size() >= 200) {
+//            throw new IllegalStateException("서버가 혼잡합니다.. 잠시 후 시도해주세요.");
+//        }
 
         Room room = new Room(++last_room_id);
         mapRoom.put(room.getRoomId(), room);
@@ -45,6 +45,15 @@ public class RoomService {
     public Collection<Room> getAllRoom() {
         return Collections.unmodifiableCollection(mapRoom.values());
     }
+
+    public Collection<Room> getAllPlayRoom() {
+        return Collections.unmodifiableCollection(mapRoom.values().stream().filter(room -> room.getCurState() != null && room.getCurState().equals(RoomState.PLAY)).collect(Collectors.toList()));
+    }
+
+    public Collection<Room> getAllNotPlayRoom() {
+        return Collections.unmodifiableCollection(mapRoom.values().stream().filter(room -> room.getCurState() == null || !room.getCurState().equals(RoomState.PLAY)).collect(Collectors.toList()));
+    }
+
 
     public Room findRoomById(long roomId) {
         return mapRoom.get(roomId);
@@ -169,73 +178,82 @@ public class RoomService {
         return room.getCop();
     }
 
-    public synchronized void updateAim(long roomId, AimState aimState, rVector3D targetPos) {
+    public void updateAim(long roomId, AimState aimState, rVector3D targetPos) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var copUser = room.getCop();
-        if (aimState.equals(AimState.END))
+        synchronized (copUser) {
+            if (aimState.equals(AimState.END))
+                copUser.endAimingAndStun();
+            else
+                copUser.aiming(targetPos);
+        }
+    }
+
+    public RoomUserCop stun(long roomId, String targetUsername) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+
+        synchronized (copUser) {
+            var targetUser = room.getAllMembersMap().get(targetUsername);
+            copUser.stun(targetUser);
+            targetUser.stunned();
+        }
+
+        return copUser;
+    }
+
+    public RoomUserCop releaseStun(long roomId) {
+        Room room = mapRoom.get(roomId);
+        if (room == null)
+            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+
+        var copUser = room.getCop();
+
+        synchronized (copUser) {
+            if (copUser.getTargetUsername() == null)
+                return copUser;
+
+            var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
+            if (!targetUser.getUserState().equals(UserState.DIE))
+                targetUser.releaseStun();
+
+            var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
+            copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
             copUser.endAimingAndStun();
-        else
-            copUser.aiming(targetPos);
-    }
-
-    public synchronized RoomUserCop stun(long roomId, String targetUsername) {
-        Room room = mapRoom.get(roomId);
-        if (room == null)
-            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
-
-        var copUser = room.getCop();
-        var targetUser = room.getAllMembersMap().get(targetUsername);
-
-        copUser.stun(targetUser);
-        targetUser.stunned();
+        }
 
         return copUser;
     }
 
-    public synchronized RoomUserCop releaseStun(long roomId) {
+    public RoomUser shot(long roomId) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         var copUser = room.getCop();
-        if (copUser.getTargetUsername() == null)
-            return copUser;
 
-        var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
-        if (!targetUser.getUserState().equals(UserState.DIE))
-            targetUser.releaseStun();
+        synchronized (copUser) {
+            var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
 
-        var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
-        copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
+            copUser.checkShot(targetUser);
 
-        copUser.endAimingAndStun();
+            targetUser.die();
+            copUser.endAimingAndStun();
 
-        return copUser;
-    }
+            if (!targetUser.checkCrimeUser())
+                room.setTrueEnd(false);
 
-    public synchronized RoomUser shot(long roomId) {
-        Room room = mapRoom.get(roomId);
-        if (room == null)
-            throw new IllegalArgumentException("참여할 수 없는 방입니다.");
+            var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
+            copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
 
-        var copUser = room.getCop();
-        var targetUser = room.getAllMembersMap().get(copUser.getTargetUsername());
-
-        copUser.checkShot(targetUser);
-
-        targetUser.die();
-        copUser.endAimingAndStun();
-
-        if(!targetUser.checkCrimeUser())
-            room.setTrueEnd(false);
-
-        var nextStunCoolTime = JsonReader._time(JsonReader.model("shot", "shot_rule", "InspectCoolTime"));
-        copUser.setStunAvailAt(new Date(new Date().getTime() + nextStunCoolTime));
-
-        return targetUser;
+            return targetUser;
+        }
     }
 
     public boolean checkAssassinTarget(long roomId, String targetUsername) {
@@ -252,7 +270,7 @@ public class RoomService {
         return false;
     }
 
-    public synchronized void assassinKill(long roomId, String targetUsername) {
+    public void assassinKill(long roomId, String targetUsername) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
@@ -261,17 +279,19 @@ public class RoomService {
         if (assassin == null)
             throw new IllegalArgumentException("암살자가 없습니다.");
 
-        RoomUser targetNpc = room.getRoomNpcs().get(targetUsername);
-        if (targetNpc == null)
-            throw new IllegalArgumentException("NPC만 타겟으로 지정할 수 있습니다.");
+        synchronized (assassin) {
+            RoomUser targetNpc = room.getRoomNpcs().get(targetUsername);
+            if (targetNpc == null)
+                throw new IllegalArgumentException("NPC만 타겟으로 지정할 수 있습니다.");
 
-        if (!assassin.getTargetUsernames().contains(targetUsername))
-            throw new IllegalArgumentException("타겟이 아닙니다.");
+            if (!assassin.getTargetUsernames().contains(targetUsername))
+                throw new IllegalArgumentException("타겟이 아닙니다.");
 
-        targetNpc.die();
-        assassin.killTarget(targetUsername);
+            targetNpc.die();
+            assassin.killTarget(targetUsername);
 
-        room.setTrueEnd(false);
+            room.setTrueEnd(false);
+        }
     }
 
     public ReportInfo reportUser(long roomId, String reportUsername, String targetUsername) {
@@ -346,16 +366,13 @@ public class RoomService {
         return sessionIds;
     }
 
-    public void startRoom(long roomId, String startUserUsername) {
+    public void startRoom(long roomId) {
         Room room = mapRoom.get(roomId);
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
         if(room.getRoomUsers().size() <= 1)
             throw new IllegalStateException("2인 이상이여야 시작할 수 있습니다.");
-
-        if(!room.getHostUsername().equals(startUserUsername))
-            throw new IllegalArgumentException("방장만 시작할 수 있습니다.");
 
         room.start();
     }
