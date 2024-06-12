@@ -4,7 +4,7 @@
 <br>
 
 ### 시네마틱 영상 시청
-[![Video Label](http://img.youtube.com/vi/QVOFOZHTSpk/0.jpg)](https://youtu.be/QVOFOZHTSpk)
+[![Video Label](http://img.youtube.com/vi/SyDt38fL7M8/0.jpg)](https://youtu.be/SyDt38fL7M8)
 
 <br>
 
