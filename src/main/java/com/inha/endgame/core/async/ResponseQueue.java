@@ -18,7 +18,7 @@ public class ResponseQueue {
     private final ResponseWorker worker;
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);
     private static final int BATCH_SIZE = 10; // 한 번에 쓰레드가 처리하는 양
-    private static final int TIME_OUT = 70; // 최대로 기다리는 시간
+    private static final int TIME_OUT = 20; // 최대로 기다리는 시간
 
     public ResponseQueue(@Lazy ResponseWorker worker) {
         this.worker = worker;
