@@ -2,10 +2,7 @@ package com.inha.endgame.room;
 
 import com.inha.endgame.core.excel.JsonReader;
 import com.inha.endgame.core.excel.MapReader;
-import com.inha.endgame.dto.PlayRoomDto;
-import com.inha.endgame.dto.ReconnectInfo;
-import com.inha.endgame.dto.ReportInfo;
-import com.inha.endgame.dto.UseItemInfo;
+import com.inha.endgame.dto.*;
 import com.inha.endgame.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,44 +98,46 @@ public class RoomService {
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        if(room.getCurState().equals(RoomState.NONE))
-            throw new IllegalStateException("진행 중이 아닌 방은 재연결 불가합니다.");
-
         ReconnectInfo result = new ReconnectInfo();
         result.setCurrentDateAt(new Date());
-
         RoomUser reconnectUser = this.findUserByUsername(roomId, reconnectUsername);
-        if(reconnectUser.checkCrimeUser()) {
-            RoomUserCrime crimeUser = (RoomUserCrime) reconnectUser;
-            result.setRemainItemCount(crimeUser.getRemainItemCount());
-            result.setMissionInfo(crimeUser.getMissionPos());
-            result.setCurrentMissionPhase(crimeUser.getClearMissionPhase() + 1);
 
-            List<String> targetInfo = null;
-            if (reconnectUser.getCrimeType().equals(CrimeType.ASSASSIN)) {
-                var assassin = (RoomUserCrimeAssassin)reconnectUser;
-                targetInfo = assassin.getTargetInfo();
-            }
-            result.setTargetInfo(targetInfo);
+        if(room.getCurState().equals(RoomState.NONE)) {
+            // 로비에서 접속이 끊긴 경우
+            result.setLobbyRoomDto(new LobbyRoomDto(room));
         } else {
-            // 경찰인 경우 현재 상태 강제 종료
-            RoomUserCop reconnectCop = (RoomUserCop) reconnectUser;
-            switch(reconnectCop.getCopAttackState()) {
-                case AIM:
-                    this.updateAim(roomId, AimState.END, new rVector3D(0,0,0));
-                    break;
-                case STUN:
-                    this.releaseStun(roomId);
-                    break;
-                case SHOT:
-                    reconnectCop.setCopAttackState(CopAttackState.NONE);
-                    break;
-            }
-        }
+            if (reconnectUser.checkCrimeUser()) {
+                RoomUserCrime crimeUser = (RoomUserCrime) reconnectUser;
+                result.setRemainItemCount(crimeUser.getRemainItemCount());
+                result.setMissionInfo(crimeUser.getMissionPos());
+                result.setCurrentMissionPhase(crimeUser.getClearMissionPhase() + 1);
 
-        var recentUseItemInfo = room.getRecentUseItemInfo();
-        var recentReportUserInfo = room.getRecentReportUserInfo();
-        result.setPlayRoomDto(new PlayRoomDto(room, recentUseItemInfo, recentReportUserInfo));
+                List<String> targetInfo = null;
+                if (reconnectUser.getCrimeType().equals(CrimeType.ASSASSIN)) {
+                    var assassin = (RoomUserCrimeAssassin) reconnectUser;
+                    targetInfo = assassin.getTargetInfo();
+                }
+                result.setTargetInfo(targetInfo);
+            } else {
+                // 경찰인 경우 현재 상태 강제 종료
+                RoomUserCop reconnectCop = (RoomUserCop) reconnectUser;
+                switch (reconnectCop.getCopAttackState()) {
+                    case AIM:
+                        this.updateAim(roomId, AimState.END, new rVector3D(0, 0, 0));
+                        break;
+                    case STUN:
+                        this.releaseStun(roomId);
+                        break;
+                    case SHOT:
+                        reconnectCop.setCopAttackState(CopAttackState.NONE);
+                        break;
+                }
+            }
+
+            var recentUseItemInfo = room.getRecentUseItemInfo();
+            var recentReportUserInfo = room.getRecentReportUserInfo();
+            result.setPlayRoomDto(new PlayRoomDto(room, recentUseItemInfo, recentReportUserInfo));
+        }
 
         return result;
     }
