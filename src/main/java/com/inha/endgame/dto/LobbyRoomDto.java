@@ -20,7 +20,7 @@ public class LobbyRoomDto {
 
     public LobbyRoomDto(Room room) {
         this.roomId = room.getRoomId();
-        this.roomUsers = new ArrayList<>(room.getAllMembers());
+        this.roomUsers = new ArrayList<>(room.getRoomUsers().values());
         this.roomNpcs = new ArrayList<>(room.getRoomNpcs().values());
         this.roomState = room.getCurState();
     }
