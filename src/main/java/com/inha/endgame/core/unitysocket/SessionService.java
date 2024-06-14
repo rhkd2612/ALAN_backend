@@ -21,9 +21,11 @@ public class SessionService {
         return connectSession.get(sessionId);
     }
 
+    public void addUser(String sessionId, User user) {
+        connectUser.put(sessionId, user);
+    }
 
-    public void addSession(WebSocketSession session, User user) {
-        connectUser.put(session.getId(), user);
+    public void addSession(WebSocketSession session) {
         connectSession.put(session.getId(), session);
     }
 
@@ -33,14 +35,15 @@ public class SessionService {
             return;
 
         try {
-            if (session.isOpen()) {
-                session.sendMessage(new TextMessage("다른 클라이언트의 접속으로 인해 연결이 끊어졌습니다."));
-                session.close();
-
+            if (session != null) {
+                if(session.isOpen()) {
+                    session.sendMessage(new TextMessage("세션 종료"));
+                    session.close();
+                }
                 connectSession.remove(sessionId);
             }
         } catch (Exception e) {
-            throw new IllegalStateException("세션 종료 실패");
+            throw new IllegalStateException("존재하지 않는 세션 정보입니다.");
         }
     }
 
@@ -57,7 +60,7 @@ public class SessionService {
         } else
             throw new IllegalStateException("유저 validation error");
 
-        this.addSession(nextSession, user);
+        this.addUser(nextSession.getId(), user);
     }
 
     public boolean validateSession(WebSocketSession session) {
