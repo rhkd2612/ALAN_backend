@@ -15,8 +15,8 @@ public class SettingRoomResponse implements ClientResponse {
     private final ResponseType type;
     private final List<RoomUser> roomNpcs = new ArrayList<>();;
 
-    public SettingRoomResponse(List<RoomUser> roomUsers) {
+    public SettingRoomResponse(List<RoomUser> roomNpcs) {
         this.type = ResponseType.SETTING_ROOM;
-        this.roomNpcs.addAll(roomUsers);
+        this.roomNpcs.addAll(roomNpcs);
     }
 }

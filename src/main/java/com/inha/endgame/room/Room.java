@@ -142,6 +142,18 @@ public class Room {
         return (RoomUserCrimeAssassin) (this.roomUsers.get(this.assassinUsername));
     }
 
+    public List<RoomUser> getAllRoomUsersByRoomIdOrderByCop() {
+        List<RoomUser> result = new ArrayList<>();
+        result.add(this.roomUsers.get(this.hostUsername));
+
+        for(var user : this.roomUsers.values()) {
+            if(!user.getUsername().equals(this.hostUsername))
+                result.add(user);
+        }
+
+        return result;
+    }
+
     public void setEvent(AnimEvent event) {
         this.event = event;
     }
