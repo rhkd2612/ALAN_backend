@@ -69,15 +69,7 @@ public class RoomService {
         if (room == null)
             throw new IllegalArgumentException("참여할 수 없는 방입니다.");
 
-        List<RoomUser> result = new ArrayList<>();
-        result.add(room.getRoomUsers().get(room.getHostUsername()));
-
-        for(var user : room.getRoomUsers().values()) {
-            if(!user.getUsername().equals(room.getHostUsername()))
-                result.add(user);
-        }
-
-        return result;
+        return room.getAllRoomUsersByRoomIdOrderByCop();
     }
 
     public List<RoomUser> findAllRoomNpcsById(long roomId) {
