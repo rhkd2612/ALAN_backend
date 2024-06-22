@@ -8,7 +8,7 @@
 
 <br>
 
-### Live Demo
+### Live Demo(AWS 지원 종료로 진행 불가합니다.)
 <a href="https://sangmin2ya.itch.io/act-like-an-npc-alan?secret=6dk5EZoVXKAunUJ96kmuPpsbhjc">
 <img src="https://github.com/rhkd2612/ALAN_backend/assets/26248650/7390d058-d38d-4e29-9c42-bef4e2fb02b5" width="200" height="200">
 </a>
