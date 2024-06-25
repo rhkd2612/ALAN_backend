@@ -38,8 +38,9 @@ public class UserService {
 		var newUser = new User(sessionId, username, nickname);
 		synchronized (newUser) {
 			mapUser.get(roomId).put(username, newUser);
-			sessionService.addSession(session, newUser);
+			sessionService.addUser(sessionId, newUser);
 		}
+		
 		return newUser;
 	}
 

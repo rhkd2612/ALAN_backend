@@ -15,7 +15,6 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	private final UnitySocketService unitySocketService;
 	private final SessionService sessionService;
 
-
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		// 실행 중 에러가 발생하더라도 세션 연결이 죽지 않도록
@@ -41,12 +40,14 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		LOGGER.warn("Connection Established.");
-		LOGGER.warn("User: " + session.getId());
+
+		sessionService.addSession(session);
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		LOGGER.warn("Connection Closed. Status: " + status);
-		LOGGER.warn("User: " + session.getId());
+
+		sessionService.kickSession(session.getId());
 	}
 }

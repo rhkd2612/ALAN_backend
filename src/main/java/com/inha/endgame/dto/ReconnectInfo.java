@@ -22,4 +22,5 @@ public class ReconnectInfo {
     private int currentMissionPhase;
     // 방 정보
     private PlayRoomDto playRoomDto;
+    private LobbyRoomDto lobbyRoomDto;
 }
