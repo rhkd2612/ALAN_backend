@@ -16,7 +16,7 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	private final SessionService sessionService;
 
 	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	public void handleTextMessage(WebSocketSession session, TextMessage message) {
 		// 실행 중 에러가 발생하더라도 세션 연결이 죽지 않도록
 		try {
 			String messageString = message.getPayload();
@@ -27,25 +27,25 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	}
 
 	@Override
-	protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+	protected void handlePongMessage(WebSocketSession session, PongMessage message) {
 		if(!sessionService.validateSession(session))
 			throw new IllegalStateException("다른 세션에서 접속이 확인되어 종료합니다.");
 	}
 
 	@Override
-	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+	public void handleTransportError(WebSocketSession session, Throwable exception) {
 		LOGGER.warn(exception.getMessage());
 	}
 
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+	public void afterConnectionEstablished(WebSocketSession session) {
 		LOGGER.warn("Connection Established.");
 
 		sessionService.addSession(session);
 	}
 
 	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 		LOGGER.warn("Connection Closed. Status: " + status);
 
 		sessionService.kickSession(session.getId());

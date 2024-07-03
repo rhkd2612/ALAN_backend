@@ -1,6 +1,7 @@
 package com.inha.endgame.dto.eventlistener;
 
 import com.inha.endgame.core.io.ClientEvent;
+import com.inha.endgame.core.unitysocket.SessionService;
 import com.inha.endgame.core.unitysocket.UnitySocketService;
 import com.inha.endgame.dto.RoomDto;
 import com.inha.endgame.dto.request.*;
@@ -26,6 +27,7 @@ public class UserEventListener {
     private final UnitySocketService unitySocketService;
     private final UserService userService;
     private final RoomService roomService;
+    private final SessionService sessionService;
 
     @EventListener
     public void onCreateRoomRequest(ClientEvent<CreateRoomRequest> event) {
@@ -127,10 +129,11 @@ public class UserEventListener {
     }
 
     @EventListener
-    public void pingRequest(ClientEvent<PingRequest> event) {
+    public void onPingRequest(ClientEvent<PingRequest> event) {
         var session = event.getSession();
 
         try {
+            sessionService.updatePingTime(session);
             unitySocketService.sendMessage(session, new PingResponse(new Date()));
         } catch (Exception e) {
             unitySocketService.sendErrorMessage(session, e);
