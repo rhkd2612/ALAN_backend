@@ -1,8 +1,8 @@
 package com.inha.endgame.core.unitysocket;
 
 import com.inha.endgame.core.io.ClientRequest;
-import com.inha.endgame.core.io.RoomDelayRequest;
 import com.inha.endgame.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
+@Slf4j
 public class SessionService {
     private final Map<String, User> connectUser = new ConcurrentHashMap<>();
     private final Map<String, WebSocketSession> connectSession = new ConcurrentHashMap<>();
@@ -58,16 +59,23 @@ public class SessionService {
         pingScheduler.start();
     }
 
-    public boolean requestLock(String sessionId, ClientRequest request) {
+    public boolean requestLock(String sessionId, ClientRequest request) throws InterruptedException {
         var type = request.getType();
         var userLock = requestLock.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>());
         var lock = userLock.computeIfAbsent(type.name(), k -> new AtomicBoolean(false));
-
+        var repeatCount = 0;
         // 시간이 크게 소요되지 않으므로 스핀락 처리
         while(!lock.compareAndSet(false, true)) {
             // 중복 체크 요청인 경우 무시
             if(type.checkDuplicate())
                 return false;
+
+            Thread.sleep(10);
+
+            if(repeatCount++ % 20 == 0) {
+                log.warn("session : " + sessionId + ", " + request.getType().name() + " 락 시도 " + repeatCount + " 번째 시도 중 . . .");
+                return false;
+            }
         }
 
         return true;
