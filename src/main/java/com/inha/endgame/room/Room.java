@@ -188,7 +188,7 @@ public class Room {
         this.roomUsers.put(user.getUsername(), user);
     }
 
-    public synchronized void start() {
+    public void start() {
         if(this.curState != RoomState.NONE || this.nextState == RoomState.READY)
             throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.READY;
@@ -203,23 +203,23 @@ public class Room {
         return new Date(this.readyAt.getTime() + 10000 + 1000 * 60 * 15 );
     }
 
-    public synchronized void play() {
+    public void play() {
         if(this.curState != RoomState.READY)
             throw new IllegalStateException("시작할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.PLAY;
     }
 
-    public synchronized void end() {
+    public void end() {
         if(this.curState != RoomState.PLAY)
             throw new IllegalStateException("종료할 수 없는 상태의 방입니다.");
         this.nextState = RoomState.END;
     }
 
-    public synchronized void recordUseItem(UseItemInfo useItemInfo) {
+    public void recordUseItem(UseItemInfo useItemInfo) {
         this.recentItemUseAt.put(useItemInfo.getUsername() + new Date().getTime(), useItemInfo);
     }
 
-    public synchronized void recordReportUser(ReportInfo reportInfo) {
+    public void recordReportUser(ReportInfo reportInfo) {
         this.recentReportAt.put(reportInfo.getReportUsername() + reportInfo.getTargetUsername() + new Date().getTime(), reportInfo);
     }
 

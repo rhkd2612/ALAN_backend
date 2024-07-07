@@ -56,7 +56,7 @@ public abstract class RoomUserCrime extends RoomUser {
         throw new IllegalStateException("범죄자 인원 초과");
     }
 
-    public synchronized void useItem() {
+    public void useItem() {
         if(this.remainItemCount < 1)
             throw new IllegalStateException("아이템 개수 부족");
 

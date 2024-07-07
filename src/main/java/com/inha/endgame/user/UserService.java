@@ -36,11 +36,9 @@ public class UserService {
 			throw new IllegalArgumentException("이미 있는 유저입니다.");
 
 		var newUser = new User(sessionId, username, nickname);
-		synchronized (newUser) {
 			mapUser.get(roomId).put(username, newUser);
 			sessionService.addUser(sessionId, newUser);
-		}
-		
+
 		return newUser;
 	}
 

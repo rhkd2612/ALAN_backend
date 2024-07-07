@@ -28,7 +28,7 @@ public class RoomUserNpc extends RoomUser {
         this.setColor(RandomUtils.nextInt() % 3);
     }
 
-    public synchronized void rollState(boolean force) {
+    public void rollState(boolean force) {
         if(this.stateUpAt == null || !this.getUserState().equals(UserState.NORMAL))
             return;
 
