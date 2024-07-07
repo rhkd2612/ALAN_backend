@@ -59,18 +59,15 @@ public class SessionService {
     }
 
     public boolean requestLock(String sessionId, ClientRequest request) {
-        var type = request.getType().name();
+        var type = request.getType();
         var userLock = requestLock.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>());
-        var lock = userLock.computeIfAbsent(type, k -> new AtomicBoolean(false));
+        var lock = userLock.computeIfAbsent(type.name(), k -> new AtomicBoolean(false));
 
         // 시간이 크게 소요되지 않으므로 스핀락 처리
         while(lock.compareAndSet(false, true)) {
-            // 반드시 수행되어야 하는 리퀘스트가 아닌 경우 무시(이전 처리 중인 애랑 중복된 경우 두번 되지 않도록)
-            if(request instanceof RoomDelayRequest) {
-                RoomDelayRequest delayRequest = (RoomDelayRequest) request;
-                if(!delayRequest.isNeedSuccess())
-                    return false;
-            }
+            // 중복 체크 요청인 경우 무시
+            if(type.checkDuplicate())
+                return false;
         }
 
         return true;
