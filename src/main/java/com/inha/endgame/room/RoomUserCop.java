@@ -37,7 +37,7 @@ public class RoomUserCop extends RoomUser {
         super(roomUser.getUsername(), roomUser.getNickname(), roomUser.getPos(), roomUser.getRot(), roomUser.getRoomUserType(), roomUser.getCrimeType());
     }
 
-    public synchronized void aiming(rVector3D targetPos) {
+    public void aiming(rVector3D targetPos) {
         if(!this.copAttackState.equals(CopAttackState.STUN)) {
             this.copAttackState = CopAttackState.AIM;
         }
@@ -45,7 +45,7 @@ public class RoomUserCop extends RoomUser {
         this.targetAimPos = targetPos;
     }
 
-    public synchronized void endAimingAndStun() {
+    public void endAimingAndStun() {
         if(!this.copAttackState.equals(CopAttackState.STUN)) {
             this.copAttackState = CopAttackState.NONE;
             this.targetUsername = null;
@@ -54,7 +54,7 @@ public class RoomUserCop extends RoomUser {
         this.targetAimPos = null;
     }
 
-    public synchronized void stun(RoomUser targetUser) {
+    public void stun(RoomUser targetUser) {
         Date now = new Date();
         if(now.before(this.stunAvailAt))
             throw new IllegalStateException("아직 검문을 시도할 수 없습니다.");

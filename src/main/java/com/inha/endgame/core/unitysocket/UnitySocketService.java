@@ -9,11 +9,11 @@ import com.inha.endgame.dto.response.ErrorResponse;
 import com.inha.endgame.room.RoomService;
 import com.inha.endgame.user.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -34,7 +34,6 @@ public class UnitySocketService {
 	private final RoomService roomService;
 	private final UserService userService;
 	private final SessionService sessionService;
-	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	private final ResponseQueue responseQueue;
 
@@ -52,10 +51,13 @@ public class UnitySocketService {
 		UnitySocketService.networkBounce = networkBounce;
 	}
 
-	public void parseMessage(WebSocketSession session, String messageString) throws IOException {
+	public ClientRequest parseMessage(String messageString) throws IOException {
+		return objectMapper.readValue(messageString, ClientRequest.class);
+	}
+
+	public void publishRequest(WebSocketSession session, ClientRequest cr) {
 		try { Thread.sleep(getNetworkDelay()); } catch (Exception e){}
 
-		ClientRequest cr = objectMapper.readValue(messageString, ClientRequest.class);
 
 		// 딜레이 넷코드 처리
 		if(cr instanceof RoomDelayRequest) {

@@ -1,5 +1,6 @@
 package com.inha.endgame.core.unitysocket;
 
+import com.inha.endgame.core.io.ClientRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,22 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) {
 		// 실행 중 에러가 발생하더라도 세션 연결이 죽지 않도록
+		ClientRequest request = null;
+		boolean success = false;
+
 		try {
-			String messageString = message.getPayload();
-			this.unitySocketService.parseMessage(session, messageString);
+			var messageString = message.getPayload();
+			request = this.unitySocketService.parseMessage(messageString);
+
+			// user의 request마다 lock
+			success = sessionService.requestLock(session.getId(), request);
+			if(success)
+				unitySocketService.publishRequest(session, request);
 		} catch (Exception e) {
-			this.unitySocketService.sendErrorMessage(session, e);
+			unitySocketService.sendErrorMessage(session, e);
+		} finally {
+			if(request != null && success)
+				sessionService.releaseLock(session.getId(), request.getType().name());
 		}
 	}
 

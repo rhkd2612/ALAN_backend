@@ -1,4 +1,4 @@
-package com.inha.endgame.config;
+package com.inha.endgame.core.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

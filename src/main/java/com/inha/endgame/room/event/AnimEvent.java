@@ -18,7 +18,7 @@ public class AnimEvent {
         resetAnimEvent();
     }
 
-    public synchronized void resetAnimEvent() {
+    public void resetAnimEvent() {
         List<Object> motions = JsonReader.models("motion");
         var minMotionNum = 987654321;
         var motionCount = 0;

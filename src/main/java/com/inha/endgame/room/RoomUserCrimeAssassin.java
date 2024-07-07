@@ -7,12 +7,13 @@ import com.inha.endgame.user.User;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class RoomUserCrimeAssassin extends RoomUserCrime {
     @JsonIgnore
-    private final Set<String> targetUsernames = new HashSet<>();
+    private final Set<String> targetUsernames = new ConcurrentSkipListSet<>();
 
     public RoomUserCrimeAssassin(User user) {
         super(user);

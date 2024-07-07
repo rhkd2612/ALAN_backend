@@ -270,14 +270,14 @@ public class RoomService {
         if (assassin == null)
             throw new IllegalArgumentException("암살자가 없습니다.");
 
-        synchronized (assassin) {
-            RoomUser targetNpc = room.getRoomNpcs().get(targetUsername);
-            if (targetNpc == null)
-                throw new IllegalArgumentException("NPC만 타겟으로 지정할 수 있습니다.");
+        RoomUser targetNpc = room.getRoomNpcs().get(targetUsername);
+        if (targetNpc == null)
+            throw new IllegalArgumentException("NPC만 타겟으로 지정할 수 있습니다.");
 
-            if (!assassin.getTargetUsernames().contains(targetUsername))
-                throw new IllegalArgumentException("타겟이 아닙니다.");
+        if (!assassin.getTargetUsernames().contains(targetUsername))
+            throw new IllegalArgumentException("타겟이 아닙니다.");
 
+        synchronized (targetNpc) {
             targetNpc.die();
             assassin.killTarget(targetUsername);
 

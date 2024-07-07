@@ -8,6 +8,11 @@ spring:
 
 server:
   port: 12237
+  http2:
+    enabled: true
+  connection-timeout: 10000
+  tomcat:
+    protocol: org.apache.coyote.http11.Http11Protocol
 
 springdoc:
   api-docs:

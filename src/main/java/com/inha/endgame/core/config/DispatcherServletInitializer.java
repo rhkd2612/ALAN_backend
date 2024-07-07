@@ -1,4 +1,4 @@
-package com.inha.endgame.config;
+package com.inha.endgame.core.config;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -13,7 +13,7 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return ArrayUtils.toArray(WebConfig.class);
+		return ArrayUtils.toArray(WebSocketConfig.class);
 	}
 
 	@Override
