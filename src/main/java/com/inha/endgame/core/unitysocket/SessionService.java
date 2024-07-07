@@ -64,7 +64,7 @@ public class SessionService {
         var lock = userLock.computeIfAbsent(type.name(), k -> new AtomicBoolean(false));
 
         // 시간이 크게 소요되지 않으므로 스핀락 처리
-        while(lock.compareAndSet(false, true)) {
+        while(!lock.compareAndSet(false, true)) {
             // 중복 체크 요청인 경우 무시
             if(type.checkDuplicate())
                 return false;

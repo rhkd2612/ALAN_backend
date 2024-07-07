@@ -1,4 +1,4 @@
-package com.inha.endgame.config;
+package com.inha.endgame.core.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
