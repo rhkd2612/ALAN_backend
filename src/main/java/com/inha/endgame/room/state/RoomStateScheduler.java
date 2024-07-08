@@ -5,6 +5,8 @@ import com.inha.endgame.room.RoomService;
 import com.inha.endgame.room.state.observer.StateChangePublisher;
 import com.inha.endgame.room.thread.RoomTask;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -18,8 +20,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class RoomStateScheduler {
     private final RoomService roomService;
     private final StateChangePublisher publisher;
-    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final int ROOM_SIZE_PER_THREAD = 10;
+
+    @Qualifier("roomExecutor")
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     // 0.5초마다 상태 체크(나중에는 더 빨리 바꿔야함, NPC는 별개로?)
     @Scheduled(fixedRate = 100)

@@ -16,9 +16,8 @@ public class ResponseQueue {
     private final BlockingQueue<ResponseTask> taskQueue = new LinkedBlockingQueue<>();
     private final ConcurrentLinkedQueue<List<ResponseTask>> runQueue = new ConcurrentLinkedQueue<>();
     private final ResponseWorker worker;
-    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
     private static final int BATCH_SIZE = 10; // 한 번에 쓰레드가 처리하는 양
-    private static final int TIME_OUT = 20; // 최대로 기다리는 시간
+    private static final int TIME_OUT = 50; // 최대로 기다리는 시간
 
     public ResponseQueue(@Lazy ResponseWorker worker) {
         this.worker = worker;
@@ -41,20 +40,11 @@ public class ResponseQueue {
         taskQueue.drainTo(tasks, BATCH_SIZE);
         if (!tasks.isEmpty()) {
             runQueue.add(tasks);
-            isProcessing.compareAndSet(false, true);
             worker.processTasks();
         }
     }
 
     public List<ResponseTask> pollTask() {
-        var tasks = runQueue.poll();
-        if (tasks == null || tasks.isEmpty()) {
-            isProcessing.set(false);
-        }
-        return tasks;
-    }
-
-    public boolean isEmpty() {
-        return runQueue.isEmpty();
+        return runQueue.poll();
     }
 }
