@@ -59,35 +59,35 @@ public class SessionService {
         pingScheduler.start();
     }
 
-    public boolean requestLock(String sessionId, ClientRequest request) throws InterruptedException {
-        var type = request.getType();
-        var userLock = requestLock.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>());
-        var lock = userLock.computeIfAbsent(type.name(), k -> new AtomicBoolean(false));
-        var repeatCount = 0;
-        // 시간이 크게 소요되지 않으므로 스핀락 처리
-        while(!lock.compareAndSet(false, true)) {
-            // 중복 체크 요청인 경우 무시
-            if(type.checkDuplicate())
-                return false;
-
-            Thread.sleep(10);
-
-            if(repeatCount++ % 20 == 0) {
-                log.warn("session : " + sessionId + ", " + request.getType().name() + " 락 시도 " + repeatCount + " 번째 시도 중 . . .");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public void releaseLock(String sessionId, String type) {
-        var userLock = requestLock.get(sessionId);
-
-        AtomicBoolean lock = userLock.get(type);
-        if(lock != null)
-            lock.set(false);
-    }
+//    public boolean requestLock(String sessionId, ClientRequest request) throws InterruptedException {
+//        var type = request.getType();
+//        var userLock = requestLock.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>());
+//        var lock = userLock.computeIfAbsent(type.name(), k -> new AtomicBoolean(false));
+//        var repeatCount = 0;
+//        // 시간이 크게 소요되지 않으므로 스핀락 처리
+//        while(!lock.compareAndSet(false, true)) {
+//            // 중복 체크 요청인 경우 무시
+//            if(type.checkDuplicate())
+//                return false;
+//
+//            Thread.sleep(10);
+//
+//            if(repeatCount++ % 20 == 0) {
+//                log.warn("session : " + sessionId + ", " + request.getType().name() + " 락 시도 " + repeatCount + " 번째 시도 중 . . .");
+//                return false;
+//            }
+//        }
+//
+//        return true;
+//    }
+//
+//    public void releaseLock(String sessionId, String type) {
+//        var userLock = requestLock.get(sessionId);
+//
+//        AtomicBoolean lock = userLock.get(type);
+//        if(lock != null)
+//            lock.set(false);
+//    }
 
     public User findUserBySessionId(String sessionId) {
         return connectUser.get(sessionId);

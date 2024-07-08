@@ -19,22 +19,12 @@ public class UnitySocketWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) {
 		// 실행 중 에러가 발생하더라도 세션 연결이 죽지 않도록
-		ClientRequest request = null;
-		boolean success = false;
-
 		try {
 			var messageString = message.getPayload();
-			request = this.unitySocketService.parseMessage(messageString);
-
-			// user의 request마다 lock
-			success = sessionService.requestLock(session.getId(), request);
-			if(success)
-				unitySocketService.publishRequest(session, request);
+			var request = this.unitySocketService.parseMessage(messageString);
+			unitySocketService.publishRequest(session, request);
 		} catch (Exception e) {
 			unitySocketService.sendErrorMessage(session, e);
-		} finally {
-			if(request != null && success)
-				sessionService.releaseLock(session.getId(), request.getType().name());
 		}
 	}
 
