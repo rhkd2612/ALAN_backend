@@ -21,7 +21,7 @@ public class SessionService {
     private final Map<String, WebSocketSession> connectSession = new ConcurrentHashMap<>();
     private final Map<WebSocketSession, Long> lastPingTime = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<String, ConcurrentHashMap<String, AtomicBoolean>> requestLock = new ConcurrentHashMap<>(); // 특정 유저의 다수 요청을 순서대로 이행하기 위해? 사용
+    //private final ConcurrentHashMap<String, ConcurrentHashMap<String, AtomicBoolean>> requestLock = new ConcurrentHashMap<>(); // 특정 유저의 다수 요청을 순서대로 이행하기 위해? 사용 -> 자동처리됨
 
     private final static int PING_PONG_TIME_OUT = 60000;
 
