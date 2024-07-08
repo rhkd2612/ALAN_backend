@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ResponseWorker {
@@ -11,18 +13,16 @@ public class ResponseWorker {
 
     @Async("asyncResponseTaskExecutor")
     public void processTasks() {
-        while (!responseQueue.isEmpty()) {
-            var tasks = responseQueue.pollTask();
-            if (tasks != null) {
-                tasks.forEach(task -> {
-                    try {
-                        task.run();
-                    } catch (RuntimeException e) {
-                        if (task.isResend())
-                            responseQueue.submitTask(task);
-                    }
-                });
-            }
+        List<ResponseTask> tasks;
+        while ((tasks = responseQueue.pollTask()) != null) {
+            tasks.forEach(task -> {
+                try {
+                    task.run();
+                } catch (RuntimeException e) {
+                    if (task.isResend())
+                        responseQueue.submitTask(task);
+                }
+            });
         }
     }
 }
